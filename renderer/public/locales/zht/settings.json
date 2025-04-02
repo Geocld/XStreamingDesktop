@@ -92,5 +92,8 @@
   "Small": "小",
   "Normal": "正常",
   "Big": "大",
-  "Super Big": "超大"
+  "Super Big": "超大",
+  "Audio_volume_title": "音量控制",
+  "Audio_volume_desc":
+    "如果默认音量最大值达不到预期，可以在此处选择放大音源(注意过大的音量会影响听力！)"
 }

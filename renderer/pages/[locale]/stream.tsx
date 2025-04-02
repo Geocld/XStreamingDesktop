@@ -147,6 +147,11 @@ function Stream() {
         xPlayer.setAudioBitrate(settings.audio_bitrate);
       }
 
+      // Set audio control
+      if (settings.enable_audio_control) {
+        xPlayer.setAudioControl(true)
+      }
+
       xPlayer.setConnectFailHandler(() => {
         // Not connected
         if (connectStateRef.current === "") {
@@ -317,7 +322,7 @@ function Stream() {
                     new xStreamingPlayer("videoHolder", {
                       ui_systemui: [],
                       ui_touchenabled: false,
-                      input_legacykeyboard: true,
+                      input_legacykeyboard: true, // Keep keyboard input
                       // @ts-ignore
                       input_mousekeyboard_config: settings.input_mousekeyboard_maping
                     })
@@ -567,7 +572,10 @@ function Stream() {
         }}
         onDisplay={() => setShowDisplay(true)}
         onAudio={() => setShowAudio(true)}
-        onText={() => setShowTextModal(true)}
+        onText={() => {
+          xPlayer.setKeyboardInput(false)
+          setShowTextModal(true)
+        }}
         onPressNexus={handlePressNexus}
         onLongPressNexus={handleLongPressNexus}
       />
@@ -605,7 +613,10 @@ function Stream() {
       {
         showTextModal && (
           <TextModal 
-            onClose={() => setShowTextModal(false)}
+            onClose={() => {
+              setShowTextModal(false)
+              xPlayer.setKeyboardInput(true)
+            }}
             onConfirm={value => {
               let text = value.trim()
               if (!text) return

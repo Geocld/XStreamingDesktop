@@ -120,7 +120,7 @@ function ActionBar(props) {
           }
 
           {
-            props.connectState === CONNECTED && (
+            props.connectState === CONNECTED && settings.enable_audio_control && (
               <DropdownItem key="audio" onClick={handleAudio}>
                 {t("Audio settings")}
               </DropdownItem>

@@ -6,8 +6,12 @@
   position: fixed;
   top: 0;
   right: 0;
-  padding: 5px;
+  padding: 3px;
   text-align: right;
+  border-radius: 5;
+
+  user-select: none;
+    outline: none;
 
   -webkit-transition: all 0.3s ease-in-out;
   -moz-transition: all 0.3s ease-in-out;

@@ -18,7 +18,7 @@ const getSettingsMetas = (t) => {
       },
       {
         name: 'preferred_game_language',
-        type: 'select',
+        type: 'radio',
         title: t('Preferred language of game'),
         description: t('Set language of cloud game'),
         data: [
@@ -125,17 +125,16 @@ const getSettingsMetas = (t) => {
         ),
         data: [
           {value: '', label: 'Auto'},
-          // {value: 'video/AV1', label: 'AV1'},
-          // {value: 'video/VP9', label: 'VP9'},
-          {value: 'video/H265', label: 'H265'},
-          // {value: 'video/VP8', label: 'VP8'},
+          {value: 'video/AV1', label: 'AV1'},
+          {value: 'video/VP9', label: 'VP9'},
+          {value: 'video/VP8', label: 'VP8'},
           {value: 'video/H264-4d', label: 'H264-High'},
           {value: 'video/H264-42e', label: 'H264-Medium'},
           {value: 'video/H264-420', label: 'H264-Low'},
-          // {value: 'video/flexfec-03', label: 'flexfec-03'},
-          // {value: 'video/ulpfec', label: 'ulpfec'},
-          // {value: 'video/rtx', label: 'rtx'},
-          // {value: 'video/red', label: 'red'},
+          {value: 'video/flexfec-03', label: 'flexfec-03'},
+          {value: 'video/ulpfec', label: 'ulpfec'},
+          {value: 'video/rtx', label: 'rtx'},
+          {value: 'video/red', label: 'red'},
         ],
       },
       {
@@ -161,6 +160,16 @@ const getSettingsMetas = (t) => {
         description: t(
           'Set the streaming audio bitrate',
         )
+      },
+      {
+        name: 'enable_audio_control',
+        type: 'radio',
+        title: t('Audio_volume_title'),
+        description: t('Audio_volume_desc'),
+        data: [
+          {value: false, label: t('Disable')},
+          {value: true, label: t('Enable')},
+        ],
       },
     ],
     gamepad: [

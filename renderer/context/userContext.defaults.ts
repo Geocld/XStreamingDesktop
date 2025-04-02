@@ -8,6 +8,7 @@ export const defaultSettings = {
   xcloud_bitrate: 20,
   audio_bitrate_mode: "Auto",
   audio_bitrate: 20,
+  enable_audio_control: false,
   preferred_game_language: "en-US",
   force_region_ip: "",
   codec: "",

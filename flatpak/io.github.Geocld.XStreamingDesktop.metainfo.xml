@@ -28,6 +28,16 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.6.1" date="2025-04-02">
+      <description>
+          <ul>
+            <li>Fixed:</li>
+            <li>Keyboard maping not working in SteamDeck</li>
+            <li>Send text issue</li>
+            <li>Optimize audio controller</li>
+          </ul>
+      </description>
+    </release>
     <release version="1.6.0" date="2025-03-28">
       <description>
           <ul>
