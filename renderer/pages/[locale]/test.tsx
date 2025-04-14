@@ -194,6 +194,7 @@ function GamepadTester() {
       </div>
       <div>
         <Button
+          style={{marginRight: 10}}
           color="secondary"
           onClick={() => {
             const gamepads = navigator.getGamepads();

@@ -40,6 +40,7 @@ function Stream() {
   const [showDisplay, setShowDisplay] = useState(false);
   const [showAudio, setShowAudio] = useState(false);
   const [showTextModal, setShowTextModal] = useState(false);
+  const [showActionbar, setShowActionbar] = useState(false);
   const [volume, setVolume] = useState(1);
   const [streamingType, setStreamingType] = useState('');
   const [consoleId, setConsoleId] = useState('');
@@ -64,6 +65,28 @@ function Stream() {
     setConsoleId(serverId)
 
     setStreamingType(streamType)
+
+    let lastMovement = 0;
+    const mouseEvent = () => {
+      lastMovement = Date.now();
+    };
+    window.addEventListener("mousemove", mouseEvent);
+    window.addEventListener("mousedown", mouseEvent);
+
+    const escEvent = (event) => {
+      if (event.key === 'Escape') {
+        Ipc.send('app', 'exitFullscreen')
+      }
+    }
+    window.addEventListener('keydown', escEvent)
+
+    const mouseInterval = setInterval(() => {
+      if (Date.now() - lastMovement >= 2000) {
+        setShowActionbar(false)
+      } else {
+        setShowActionbar(true)
+      }
+    }, 100);
 
     if (xPlayer !== undefined) {
       xPlayer.bind();
@@ -390,6 +413,12 @@ function Stream() {
       if (streamStateInterval.current) {
         clearInterval(streamStateInterval.current);
       }
+
+      if (mouseInterval) clearInterval(mouseInterval);
+
+      window.removeEventListener("mousemove", mouseEvent);
+      window.removeEventListener("mousedown", mouseEvent);
+      window.removeEventListener('keydown', escEvent)
     };
   }, [xPlayer, sessionId, t, router.query.serverid, settings]);
 
@@ -548,6 +577,15 @@ function Stream() {
     }
   };
 
+  const handleToggleMic = () => {
+    if (!xPlayer) return
+    if(xPlayer.getChannelProcessor('chat').isPaused === true){
+      xPlayer.getChannelProcessor('chat').startMic()
+    } else {
+      xPlayer.getChannelProcessor('chat').stopMic()
+    }
+  };
+
   let videoHolderStyle = {}
 
   if (settings.video_format) {
@@ -562,23 +600,28 @@ function Stream() {
 
   return (
     <>
-      <ActionBar
-        connectState={connectState}
-        type={streamingType}
-        onDisconnect={onDisconnect}
-        onDisconnectPowerOff={onDisconnectPowerOff}
-        onTogglePerformance={() => {
-          setShowPerformance(!showPerformance);
-        }}
-        onDisplay={() => setShowDisplay(true)}
-        onAudio={() => setShowAudio(true)}
-        onText={() => {
-          xPlayer.setKeyboardInput(false)
-          setShowTextModal(true)
-        }}
-        onPressNexus={handlePressNexus}
-        onLongPressNexus={handleLongPressNexus}
-      />
+      {
+        showActionbar && (
+          <ActionBar
+            connectState={connectState}
+            type={streamingType}
+            onDisconnect={onDisconnect}
+            onDisconnectPowerOff={onDisconnectPowerOff}
+            onTogglePerformance={() => {
+              setShowPerformance(!showPerformance);
+            }}
+            onDisplay={() => setShowDisplay(true)}
+            onAudio={() => setShowAudio(true)}
+            onMic={handleToggleMic}
+            onText={() => {
+              xPlayer.setKeyboardInput(false)
+              setShowTextModal(true)
+            }}
+            onPressNexus={handlePressNexus}
+            onLongPressNexus={handleLongPressNexus}
+          />
+        )
+      }
 
       <FailedModal
         show={showFailed}

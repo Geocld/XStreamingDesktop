@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useTranslation } from "next-i18next";
 import {
   Button,
@@ -16,47 +15,6 @@ function ActionBar(props) {
   const { t } = useTranslation('cloud');
 
   const { settings } = useSettings();
-
-  useEffect(() => {
-    let lastMovement = 0;
-    const mouseEvent = () => {
-      lastMovement = Date.now();
-    };
-    window.addEventListener("mousemove", mouseEvent);
-    window.addEventListener("mousedown", mouseEvent);
-
-    const escEvent = (event) => {
-      if (event.key === 'Escape') {
-        Ipc.send('app', 'exitFullscreen')
-      }
-    }
-    window.addEventListener('keydown', escEvent)
-
-    const mouseInterval = setInterval(() => {
-      const gamebarElement = document.getElementById("actionBar");
-      if (gamebarElement === null) {
-        return;
-      }
-
-      if (Date.now() - lastMovement >= 2000) {
-        if (!gamebarElement.className.includes("hidden")) {
-          gamebarElement.className = "hidden";
-        }
-      } else {
-        if (gamebarElement.className.includes("hidden")) {
-          gamebarElement.className = "";
-        }
-      }
-    }, 100);
-
-    return () => {
-      if (mouseInterval) clearInterval(mouseInterval);
-
-      window.removeEventListener("mousemove", mouseEvent);
-      window.removeEventListener("mousedown", mouseEvent);
-      window.removeEventListener('keydown', escEvent)
-    };
-  }, []);
 
   const handleDisconnect = () => {
     props.onDisconnect && props.onDisconnect();
@@ -76,6 +34,10 @@ function ActionBar(props) {
 
   const handleAudio = () => {
     props.onAudio && props.onAudio();
+  };
+
+  const handleMic = () => {
+    props.onMic && props.onMic();
   };
 
   const handleText = () => {
@@ -126,6 +88,14 @@ function ActionBar(props) {
               </DropdownItem>
             )
           }
+
+          {/* {
+            props.connectState === CONNECTED && (
+              <DropdownItem key="mic" onClick={handleMic}>
+                {t("Toggle mic")}
+              </DropdownItem>
+            )
+          } */}
 
           {
             (props.connectState === CONNECTED && props.type !== 'cloud') && (

@@ -36,7 +36,6 @@ div#app_body_container{
 }
 
 div#videoHolder {
-  background: rgb(26, 27, 30);
   position: fixed;
   top: 0px;
   left: 0px;

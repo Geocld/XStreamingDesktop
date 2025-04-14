@@ -7894,10 +7894,10 @@ xmlbuilder@>=11.0.1, xmlbuilder@^15.1.1:
   resolved "https://registry.npmjs.org/xmlbuilder/-/xmlbuilder-15.1.1.tgz"
   integrity sha512-yMqGBqtXyeN1e3TGYvgNgDVZ3j84W4cwkOXQswghol6APgZWaff9lnbvN7MHYJOiXsvGPXtjTYJEiC9J2wv9Eg==
 
-xstreaming-player@0.2.11:
-  version "0.2.11"
-  resolved "https://registry.yarnpkg.com/xstreaming-player/-/xstreaming-player-0.2.11.tgz#fb7fcf897f5de658f952790e5176225e1336d436"
-  integrity sha512-KSGx7WkI6xkZ0J14rSYUxt9Ewb8kHi/n+pUNKLTbkNVvjfeI3BXfU8Gz4llHugtm/uPvDzTrbh4DUnWvNcSOMA==
+xstreaming-player@0.2.12:
+  version "0.2.12"
+  resolved "https://registry.yarnpkg.com/xstreaming-player/-/xstreaming-player-0.2.12.tgz#15caf4c4051b7109302d08f9a5e6a353454b0167"
+  integrity sha512-V9q6oPy/SmymsIwXjzTaRho6jUNVOgPbwRbBoICEz2FwgnbA7fUfbPPp3QmpzxgzfeDHne3wAoGqjtyepM4Rww==
 
 xvfb-maybe@^0.2.1:
   version "0.2.1"

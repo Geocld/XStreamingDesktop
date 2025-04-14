@@ -28,6 +28,15 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.6.2" date="2025-04-15">
+      <description>
+          <ul>
+            <li>Fixed:</li>
+            <li>Keyboard not working</li>
+            <li>Optimize action bar</li>
+          </ul>
+      </description>
+    </release>
     <release version="1.6.1" date="2025-04-02">
       <description>
           <ul>
