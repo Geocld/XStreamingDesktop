@@ -36,9 +36,9 @@ function ActionBar(props) {
     props.onAudio && props.onAudio();
   };
 
-  const handleMic = () => {
-    props.onMic && props.onMic();
-  };
+  // const handleMic = () => {
+  //   props.onMic && props.onMic();
+  // };
 
   const handleText = () => {
     props.onText && props.onText();
