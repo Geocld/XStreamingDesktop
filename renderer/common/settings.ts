@@ -118,7 +118,7 @@ const getSettingsMetas = (t) => {
       },
       {
         name: 'codec',
-        type: 'select',
+        type: 'radio',
         title: t('Codec'),
         description: t(
           'If your device supports newer codecs, it can reduce the video bandwidth requirements',

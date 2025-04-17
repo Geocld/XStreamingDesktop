@@ -5,13 +5,19 @@
   <name>XStreamingDesktop</name>
   <project_license>MIT</project_license>
   <developer_name>Geocld</developer_name>
-  <summary>XStreaming is an open-source client for xCloud and Xbox home streaming</summary>
+  <summary>XStreaming: Lets you stream Xbox games to your device, supporting Xbox streaming and Xbox Cloud Gaming (XCloud).</summary>
   <metadata_license>CC0-1.0</metadata_license>
   <url type="homepage">https://github.com/Geocld/XStreamingDesktop</url>
   <url type="help">https://github.com/Geocld/XStreamingDesktop/issues</url>
   <url type="bugtracker">https://github.com/Geocld/XStreamingDesktop/issues</url>
   <description>
-    <p>Xbox streaming client, you can play Xbox games anywhere.</p>
+    <p>XStreaming allows you to stream audio and video from your Xbox One and Xbox Series X/S to your device, enabling you to play Xbox games anywhere. It also supports XCloud - a user-friendly Xbox streaming app that supports playing the Xbox Game Pass Ultimate game library without proxy, features gamepad vibration, and provides you with an enhanced Xbox gaming experience.</p>
+    <p>Key Features:</p>
+    <p>Stream audio and video from Xbox One, Xbox Series S/X</p>
+    <p>Support 1080P(HQ) resolution</p>
+    <p>Support external, Bluetooth, virtual controllers with rumble</p>
+    <p>Support controller button mapping</p>
+    <p>Proxy-free cloud gaming</p>
   </description>
   <screenshots>
     <screenshot type="default">
@@ -28,6 +34,14 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.6.3" date="2025-04-17">
+      <description>
+          <ul>
+            <li>Changes:</li>
+            <li>Optimize SteamDeck's video decode</li>
+          </ul>
+      </description>
+    </release>
     <release version="1.6.2" date="2025-04-15">
       <description>
           <ul>
