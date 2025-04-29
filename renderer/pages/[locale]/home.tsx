@@ -307,19 +307,28 @@ function Home() {
               consoleName = console.consoleType
               break;
             }
+            let consoleImg = '/images/xss.svg'
+            if (theme === 'xbox-light') {
+              consoleImg = '/images/xss-light.svg'
+            }
+
+            if (console.consoleType === 'XboxSeriesX') {
+              consoleImg = '/images/series-x.png'
+            }
             return (
               <Card key={console.id}>
                 <CardBody>
-                  <p className="pb-3 text-center">{console.name} ({consoleName})</p>
+                  <p className="text-center">{console.name}</p>
+                  <p className="text-center text-sm text-gray-400">{consoleName}</p>
                   <div className="flex justify-center items-center">
                     <Image
-                      src={theme === 'xbox-light' ? '/images/xss-light.svg' : '/images/xss.svg'}
+                      src={consoleImg}
                       alt="xss"
                       width={100}
                       height={100}
                     />
                   </div>
-                  <div className="flex justify-center py-2">
+                  <div className="flex justify-center py-1">
                     {console.powerState === "On" ? (
                       <Chip size="sm" radius="none" color="success">
                         {t("Powered on")}

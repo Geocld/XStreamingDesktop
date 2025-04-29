@@ -219,7 +219,7 @@ export default class xCloudApi {
         env: {
           clientAppId: "www.xbox.com",
           clientAppType: "browser",
-          clientAppVersion: "26.1.91",
+          clientAppVersion: "26.1.97",
           clientSdkVersion: "10.3.7",
           httpEnvironment: "prod",
           sdkInstallId: "",
@@ -529,5 +529,65 @@ export default class xCloudApi {
 
   getActiveSessions() {
     return this.get("/v5/sessions/" + this._type + "/active");
+  }
+
+  inputConfigs(xboxTitleId: string) {
+    console.log('xboxTitleId:', xboxTitleId)
+    const settings: any = this._application._store.get(
+      "settings",
+      defaultSettings
+    );
+    let osName = 'android';
+
+    if (settings.resolution == 1080) {
+      osName = 'windows';
+    } else if (settings.resolution === 1081) { // 1080 HQ
+      osName = "tizen";
+    }
+
+    const deviceInfo = JSON.stringify({
+      appInfo: {
+        env: {
+          clientAppId: "www.xbox.com",
+          clientAppType: "browser",
+          clientAppVersion: "26.1.97",
+          clientSdkVersion: "10.3.7",
+          httpEnvironment: "prod",
+          sdkInstallId: "",
+        },
+      },
+      dev: {
+        hw: {
+          make: "Microsoft",
+          model: "unknown",
+          sdktype: "web",
+        },
+        os: {
+          name: osName,
+          ver: "22631.2715",
+          platform: "desktop",
+        },
+        displayInfo: {
+          dimensions: {
+            widthInPixels: 1920,
+            heightInPixels: 1080,
+          },
+          pixelDensity: {
+            dpiX: 1,
+            dpiY: 1,
+          },
+        },
+        browser: {
+          browserName: "chrome",
+          browserVersion: "130.0",
+        },
+      },
+    });
+
+    const postData = { titleIds: [xboxTitleId], titleIdType: "xboxTitleId" };
+
+    return this.post("/v2/titles/inputconfigs", postData, {
+      "X-MS-Device-Info": deviceInfo,
+    });
   }
 }

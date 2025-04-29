@@ -4,6 +4,7 @@ import { Preload } from '../main/preload'
 declare global {
     interface Window {
         XStreaming: typeof Preload;
+        _xboxTitleId: any;
     }
 }
 /* eslint-enable */

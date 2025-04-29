@@ -243,4 +243,16 @@ export default class StreamManager {
             })
         })
     }
+
+    inputConfigs(xboxTitleId: string) {
+        return new Promise((resolve, reject) => {
+            this.getApi('home').inputConfigs(xboxTitleId).then((res) => {
+                console.log('inputConfigs res:', res)
+
+                resolve('')
+            }).catch((error) => {
+                reject(error)
+            })
+        })
+    }
 }

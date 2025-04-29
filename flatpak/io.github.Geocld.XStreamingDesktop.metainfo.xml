@@ -34,6 +34,14 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.6.4" date="2025-04-29">
+      <description>
+          <ul>
+            <li>Changes:</li>
+            <li>Update UI</li>
+          </ul>
+      </description>
+    </release>
     <release version="1.6.3" date="2025-04-17">
       <description>
           <ul>

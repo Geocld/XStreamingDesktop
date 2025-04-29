@@ -77,4 +77,8 @@ export default class IpcStreaming extends IpcBase {
         return this._streamManager.getActiveSessions()
     }
 
+    inputConfigs(args: any) {
+        return this._streamManager.inputConfigs(args.xboxTitleId)
+    }
+
 }

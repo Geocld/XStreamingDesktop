@@ -261,7 +261,6 @@ function Stream() {
 
             // Start keepalive loop
             if (!keepaliveInterval.current) {
-              console.log("init keepaliveInterval");
               keepaliveInterval.current = setInterval(() => {
                 console.log("sendKeepalive sessionId:", sessionId);
                 Ipc.send("streaming", "sendKeepalive", {
@@ -283,6 +282,12 @@ function Stream() {
             if (settings.display_options) {
               refreshPlayer(settings.display_options)
             }
+
+            // const xboxTitleId = window._xboxTitleId || ''
+            // // inputConfigs
+            // Ipc.send("streaming", "inputConfigs", {
+            //   xboxTitleId,
+            // })
           }, 500);
         } else if (event.state === "closed") {
           console.log(":: We are disconnected!");
