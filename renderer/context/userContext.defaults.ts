@@ -12,6 +12,7 @@ export const defaultSettings = {
   preferred_game_language: "en-US",
   force_region_ip: "",
   codec: "",
+  polling_rate: 250,
   vibration: true,
   vibration_mode: "Native",
   gamepad_kernal: "Native",

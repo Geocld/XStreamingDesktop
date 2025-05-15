@@ -324,8 +324,8 @@ function Home() {
                     <Image
                       src={consoleImg}
                       alt="xss"
-                      width={100}
-                      height={100}
+                      width={130}
+                      height={130}
                     />
                   </div>
                   <div className="flex justify-center py-1">

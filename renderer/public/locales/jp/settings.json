@@ -96,5 +96,7 @@
   "Super Big": "Super Big",
   "Audio_volume_title": "Volume Control",
   "Audio_volume_desc":
-      "If the default maximum volume does not meet your expectations, you can choose to amplify the audio source here (Note: excessive volume may affect your hearing!)"
+      "If the default maximum volume does not meet your expectations, you can choose to amplify the audio source here (Note: excessive volume may affect your hearing!)",
+  "Polling rate": "Polling rate",
+  "Modify controller response rate": "Modify controller response rate"
 }

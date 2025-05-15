@@ -175,6 +175,11 @@ function Stream() {
         xPlayer.setAudioControl(true)
       }
 
+      // Set polling rate
+      if (settings.polling_rate) {
+        xPlayer.setPollRate(settings.polling_rate)
+      }
+
       xPlayer.setConnectFailHandler(() => {
         // Not connected
         if (connectStateRef.current === "") {
@@ -515,6 +520,7 @@ function Stream() {
   }
 
   const onDisconnectPowerOff = () => {
+    xPlayer && xPlayer.close();
     setLoading(true);
     setLoadingText(t("Disconnecting..."));
     Ipc.send("consoles", "powerOff", consoleId).then(res => {
