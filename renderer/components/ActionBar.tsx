@@ -36,9 +36,9 @@ function ActionBar(props) {
     props.onAudio && props.onAudio();
   };
 
-  // const handleMic = () => {
-  //   props.onMic && props.onMic();
-  // };
+  const handleMic = () => {
+    props.onMic && props.onMic();
+  };
 
   const handleText = () => {
     props.onText && props.onText();
@@ -89,13 +89,13 @@ function ActionBar(props) {
             )
           }
 
-          {/* {
+          {
             props.connectState === CONNECTED && (
               <DropdownItem key="mic" onClick={handleMic}>
-                {t("Toggle mic")}
+                {props.openMicro ? t("Close Mic") : t("Open Mic")}
               </DropdownItem>
             )
-          } */}
+          }
 
           {
             (props.connectState === CONNECTED && props.type !== 'cloud') && (
@@ -121,9 +121,9 @@ function ActionBar(props) {
             )
           }
           
-          <DropdownItem key="fullscreen" onClick={handleToggleFullscreen}>
+          {/* <DropdownItem key="fullscreen" onClick={handleToggleFullscreen}>
             {t("Toggle fullscreen")}
-          </DropdownItem>
+          </DropdownItem> */}
 
           {
             (props.connectState === CONNECTED && settings.power_on && props.type !== 'cloud') && (

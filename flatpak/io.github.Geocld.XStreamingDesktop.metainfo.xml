@@ -34,6 +34,14 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.7.0" date="2025-05-28">
+      <description>
+          <ul>
+            <li>Changes:</li>
+            <li>Microphone supported</li>
+          </ul>
+      </description>
+    </release>
     <release version="1.6.5" date="2025-05-15">
       <description>
           <ul>

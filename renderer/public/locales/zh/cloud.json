@@ -51,5 +51,6 @@
   "Volume": "音量",
   "Audio settings": "声音设置",
   "Send text": "发送文字",
-  "Toggle mic": "开启/关闭音麦"
+  "Open Mic": "开启音麦",
+  "Close Mic": "关闭音麦"
 }

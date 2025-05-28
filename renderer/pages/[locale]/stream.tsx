@@ -14,8 +14,16 @@ import TextModal from "../../components/TextModal";
 import { useSettings } from "../../context/userContext";
 import { getStaticPaths, makeStaticProperties } from "../../lib/get-static";
 import Ipc from "../../lib/ipc";
+import { DISPLAY_KEY } from "../../common/constans";
 
 const XCLOUD_PREFIX = "xcloud_";
+
+const DEFAULT_OPTIONS = {
+  sharpness: 5,
+  saturation: 100,
+  contrast: 100,
+  brightness: 100,
+};
 
 function format(source: string, ...args: string[]): string {
   let n = 0
@@ -42,6 +50,7 @@ function Stream() {
   const [showTextModal, setShowTextModal] = useState(false);
   const [showActionbar, setShowActionbar] = useState(false);
   const [volume, setVolume] = useState(1);
+  const [openMicro, setOpenMicro] = useState(false);
   const [streamingType, setStreamingType] = useState('');
   const [consoleId, setConsoleId] = useState('');
   const connectStateRef = useRef("");
@@ -251,6 +260,12 @@ function Stream() {
 
       xPlayer.getEventBus().on("connectionstate", (event) => {
         console.log("connectionstate changed:", event);
+
+        // Toggle microphone
+        if (connectStateRef.current === "connected" && (event.state === "new" || event.state === "connecting")) {
+          return;
+        }
+
         setConnectState(event.state);
         connectStateRef.current = event.state;
 
@@ -284,9 +299,32 @@ function Stream() {
             }
 
             // Refresh video player
-            if (settings.display_options) {
-              refreshPlayer(settings.display_options)
-            }
+            setTimeout(() => {
+              const _displayOptions = window.localStorage.getItem(DISPLAY_KEY);
+
+              let displayOptions: any = DEFAULT_OPTIONS;
+              if (_displayOptions) {
+                try {
+                  displayOptions = JSON.parse(_displayOptions);
+                } catch {
+                  displayOptions = DEFAULT_OPTIONS;
+                }
+              }
+
+              const videoStyle = document.getElementById("video-css");
+              console.log('Refresh video player:', displayOptions)
+              const filters = getVideoPlayerFilterStyle(displayOptions);
+              let videoCss = "";
+              if (filters) {
+                videoCss += `filter: ${filters} !important;`;
+              }
+              let css = "";
+              if (videoCss) {
+                css = `#videoHolder video { ${videoCss} }`;
+              }
+
+              videoStyle!.textContent = css;
+            }, 1000);
 
             // const xboxTitleId = window._xboxTitleId || ''
             // // inputConfigs
@@ -554,16 +592,23 @@ function Stream() {
 
     setTimeout(() => {
       console.log("stopStream:", sessionId);
+      const timer = setTimeout(() => {
+        setLoading(false);
+          router.back();
+      }, 20 * 1000);
+
       Ipc.send("streaming", "stopStream", {
         sessionId: sessionId,
       })
         .then((result) => {
           console.log("Stream stopped:", result);
+          clearTimeout(timer)
           setLoading(false);
           router.back();
         })
         .catch((e) => {
           console.log(e);
+          clearTimeout(timer)
           setLoading(false);
           router.back();
         });
@@ -591,9 +636,11 @@ function Stream() {
   const handleToggleMic = () => {
     if (!xPlayer) return
     if(xPlayer.getChannelProcessor('chat').isPaused === true){
-      xPlayer.getChannelProcessor('chat').startMic()
+      xPlayer.getChannelProcessor('chat').startMic();
+      setOpenMicro(true);
     } else {
-      xPlayer.getChannelProcessor('chat').stopMic()
+      xPlayer.getChannelProcessor('chat').stopMic();
+      setOpenMicro(false);
     }
   };
 
@@ -616,6 +663,7 @@ function Stream() {
           <ActionBar
             connectState={connectState}
             type={streamingType}
+            openMicro={openMicro}
             onDisconnect={onDisconnect}
             onDisconnectPowerOff={onDisconnectPowerOff}
             onTogglePerformance={() => {
@@ -668,16 +716,16 @@ function Stream() {
         showTextModal && (
           <TextModal 
             onClose={() => {
-              setShowTextModal(false)
-              xPlayer.setKeyboardInput(true)
+              setShowTextModal(false);
+              xPlayer.setKeyboardInput(true);
             }}
             onConfirm={value => {
-              let text = value.trim()
+              let text = value.trim();
               if (!text) return
               if (text.length > 150) {
                 text = text.substring(0, 150);
               }
-              handleSendText(text)
+              handleSendText(text);
             }}
           />
         )
