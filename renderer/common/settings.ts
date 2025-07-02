@@ -171,6 +171,36 @@ const getSettingsMetas = (t) => {
           {value: true, label: t('Enable')},
         ],
       },
+      {
+        name: 'performance_style',
+        type: 'radio',
+        title: t('Performance show style'),
+        description: t('Setting performance show style'),
+        data: [
+          {value: false, label: t('Vertical')},
+          {value: true, label: t('Horizon')},
+        ],
+      },
+      {
+        name: 'enable_native_mouse_keyboard',
+        type: 'radio',
+        title: t('native_mouse_keyboard_title'),
+        description: t('native_mouse_keyboard_desc'),
+        data: [
+          {value: false, label: t('Disable')},
+          {value: true, label: t('Enable')},
+        ],
+      },
+      {
+        name: 'mouse_sensitive',
+        type: 'slider',
+        min: 0.1,
+        max: 5,
+        step: 0.1,
+        title: t('mouse_sensitive_title'),
+        description: t('mouse_sensitive_desc'),
+        data: [],
+      },
     ],
     gamepad: [
       {

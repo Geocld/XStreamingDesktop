@@ -376,7 +376,7 @@ function Stream() {
               const formatQueueData = () => {
                 const currentDate = new Date()
                 currentDate.setSeconds(session.waitingTimes.estimatedTotalWaitTimeInSeconds)
-                return format(t("YouConnect", {defaultValue: "You connect in %s"}), moment(currentDate.toISOString()).local().format(t('dateFormat', {defaultValue: 'YYYY-MM-DD HH:mm'})))
+                return format(t("YouConnect", {defaultValue: "You connect in %s"}), moment(currentDate.toISOString()).local().format(t('dateFormat', {defaultValue: 'YYYY/MM/DD HH:mm'})))
               }
 
               switch (session.playerState) {
@@ -391,8 +391,9 @@ function Stream() {
                   // Start xPlayer interface
                   setxPlayer(
                     new xStreamingPlayer("videoHolder", {
-                      ui_systemui: [],
+                      input_touch: false, // 支持原生触摸, PC端禁用
                       ui_touchenabled: false,
+                      input_mousekeyboard: settings.enable_native_mouse_keyboard, // 支持原生键鼠操作
                       input_legacykeyboard: true, // Keep keyboard input
                       // @ts-ignore
                       input_mousekeyboard_config: settings.input_mousekeyboard_maping

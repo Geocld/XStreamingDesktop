@@ -97,5 +97,13 @@
   "Audio_volume_desc":
     "如果默认音量最大值达不到预期，可以在此处选择放大音源(注意过大的音量会影响听力！)",
   "Polling rate": "手柄回报率",
-  "Modify controller response rate": "修改手柄回报率"
+  "Modify controller response rate": "修改手柄回报率",
+  "native_mouse_keyboard_title": "使用原生鍵盤滑鼠(實驗性)",
+  "native_mouse_keyboard_desc": "部分遊戲可以支援原生鍵鼠操作，可以開啟此選項",
+  "mouse_sensitive_title": "調節滑鼠靈敏度",
+  "mouse_sensitive_desc": "啟用原生鍵鼠後，如滑鼠靈敏度不符合預期，可以調節滑鼠靈敏度",
+  "Performance show style": "性能展示样式",
+  "Setting performance show style": "设置性能展示(水平/垂直)",
+  "Vertical": "垂直",
+  "Horizon": "水平"
 }

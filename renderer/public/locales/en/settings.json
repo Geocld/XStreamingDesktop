@@ -112,5 +112,13 @@
   "Audio_volume_desc":
       "If the default maximum volume does not meet your expectations, you can choose to amplify the audio source here (Note: excessive volume may affect your hearing!)",
   "Polling rate": "Polling rate",
-  "Modify controller response rate": "Modify controller response rate"
+  "Modify controller response rate": "Modify controller response rate",
+  "native_mouse_keyboard_title": "Use Native Keyboard and Mouse (Experimental)",
+  "native_mouse_keyboard_desc": "Some games support native keyboard and mouse operation, you can enable this option",
+  "mouse_sensitive_title": "Adjust Mouse Sensitivity",
+  "mouse_sensitive_desc": "After enabling native keyboard and mouse, if the mouse sensitivity doesn't meet expectations, you can adjust the mouse sensitivity",
+  "Performance show style": "Performance show style",
+  "Setting performance show style": "Setting performance show style",
+  "Vertical": "Vertical",
+  "Horizon": "Horizon"
 }

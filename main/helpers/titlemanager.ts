@@ -2,6 +2,8 @@ import Application from '../application'
 import HTTP from './http'
 import Store from 'electron-store'
 import axios from 'axios'
+import { defaultSettings } from "../../renderer/context/userContext.defaults";
+
 interface titleInfoArgs {
     ProductTitle: string;
     PublisherName: string;
@@ -95,13 +97,19 @@ export default class TitleManager {
                 }
             });
 
+            const settings: any = this._application._store.get(
+                "settings",
+                defaultSettings
+            );
+            const lang = settings.locale.indexOf('zh') > -1 ? 'zh-TW' : 'en-US';
+
             // Get officialTitles
             this.getOfficialTitles().then((officialTitles: any) => {
                 const mergeProductIds = [
                     ...new Set([...productIdQueue, ...officialTitles]),
                 ];
     
-                this._http.post('catalog.gamepass.com', '/v3/products?market=US&language=en-US&hydration=RemoteLowJade0', { // RemoteLowJade0
+                this._http.post('catalog.gamepass.com', `/v3/products?market=US&language=${lang}&hydration=RemoteLowJade0`, { // RemoteLowJade0
                     'Products': mergeProductIds,
                 }, {
                     'ms-cv': 0,
