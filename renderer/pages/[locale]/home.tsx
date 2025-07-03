@@ -314,6 +314,8 @@ function Home() {
 
             if (console.consoleType === 'XboxSeriesX') {
               consoleImg = '/images/series-x.png'
+            } else if (console.consoleType === 'XboxSeriesS') {
+              consoleImg = '/images/series-s.png'
             }
             return (
               <Card key={console.id}>
