@@ -34,6 +34,16 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.8.0" date="2025-07-03">
+      <description>
+          <ul>
+            <li>Changes:</li>
+            <li>Some cloud games support native keyboard and mouse operations.</li>
+            <li>Fix the issue of multiple controllers not working on Windows.</li>
+            <li>Optimize the interface.</li>
+          </ul>
+      </description>
+    </release>
     <release version="1.7.0" date="2025-05-28">
       <description>
           <ul>
