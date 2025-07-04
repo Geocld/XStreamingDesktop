@@ -308,7 +308,7 @@ function Xcloud() {
             </div>
 
             {!loading && currentTitles.current && (
-              <div className="gap-2 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6 pt-10">
+              <div className="gap-2 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 pt-10">
                 {currentTitles.current.map((title, idx) => {
                   if (keyword) {
                     if (title.ProductTitle.toUpperCase().indexOf(keyword.toUpperCase()) > -1) {

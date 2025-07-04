@@ -21,12 +21,14 @@ function TitleItem(props) {
         <Card className="mb-5" shadow="sm" isPressable onClick={handleClick}>
           <CardBody className="overflow-visible py-2">
             <div className="relative">
-              <Image
-                alt="Card background"
-                className="object-cover rounded-xl"
-                src={"https:" + titleItem.Image_Tile.URL}
-                width={270}
-              />
+              {
+                titleItem.Image_Tile && (<Image
+                  alt="Card background"
+                  className="object-cover rounded-xl"
+                  src={"https:" + titleItem.Image_Tile.URL}
+                  width={270}
+                />)
+              }
 
               <div className="absolute bottom-0 right-0 flex flex-row justify-end z-40 space-x-2 px-2" style={{background: 'rgba(0, 0, 0, .7)'}}>
                 <Image

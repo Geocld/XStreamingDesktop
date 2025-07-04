@@ -81,4 +81,8 @@ export default class IpcStreaming extends IpcBase {
         return this._streamManager.inputConfigs(args.xboxTitleId)
     }
 
+    getConsoles() {
+        return this._streamManager.getConsoles()
+    }
+
 }

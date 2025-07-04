@@ -33,7 +33,7 @@ function Home() {
   const [isLogined, setIsLogined] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [consoles, setConsoles] = useState<{
-    id: string,
+    serverId: string,
     name: string,
     locale: string,
     region: string,
@@ -157,7 +157,7 @@ function Home() {
     if (_isLogined === "1") {
       // Get Consoles
       setLoadingText(t("Fetching consoles..."));
-      Ipc.send("consoles", "get").then((res) => {
+      Ipc.send("streaming", "getConsoles").then((res) => {
         console.log("consoles:", res);
         setConsoles(res);
         setLoading(false);
@@ -189,7 +189,7 @@ function Home() {
 
                 // Get Consoles
                 setLoadingText(t("Fetching consoles..."));
-                Ipc.send("consoles", "get").then((res) => {
+                Ipc.send("streaming", "getConsoles").then((res) => {
                   console.log("consoles:", res);
                   setConsoles(res);
                   setLoading(false);
@@ -241,7 +241,7 @@ function Home() {
 
             // Get Consoles
             setLoadingText(t("Fetching consoles..."));
-            Ipc.send("consoles", "get").then((res) => {
+            Ipc.send("streaming", "getConsoles").then((res) => {
               setConsoles(res);
 
               setTimeout(() => {
@@ -318,10 +318,11 @@ function Home() {
               consoleImg = '/images/series-s.png'
             }
             return (
-              <Card key={console.id}>
+              <Card key={console.serverId}>
                 <CardBody>
                   <p className="text-center">{console.name}</p>
                   <p className="text-center text-sm text-gray-400">{consoleName}</p>
+                  <p className="text-center text-xs text-gray-500">({console.serverId})</p>
                   <div className="flex justify-center items-center">
                     <Image
                       src={consoleImg}
@@ -351,7 +352,7 @@ function Home() {
                       <Button
                         color="primary"
                         fullWidth
-                        onClick={() => powerOnAndStartSession(console.id)}
+                        onClick={() => powerOnAndStartSession(console.serverId)}
                       >
                         {t('Power on and start stream')}
                       </Button>
@@ -359,7 +360,7 @@ function Home() {
                       <Button
                         color="primary"
                         fullWidth
-                        onClick={() => startSession(console.id)}
+                        onClick={() => startSession(console.serverId)}
                       >
                         {t('Start stream')}
                       </Button>

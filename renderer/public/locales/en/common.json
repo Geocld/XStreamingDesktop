@@ -21,5 +21,7 @@
   "Toggle fullscreen": "Toggle fullscreen",
   "All": "All",
   "Unlocked": "Unlocked",
-  "Lock": "Lock"
+  "Lock": "Lock",
+  "curVerson": "Current",
+  "latestVerson": "Latest"
 }

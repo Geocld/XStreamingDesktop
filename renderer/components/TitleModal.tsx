@@ -77,7 +77,7 @@ function TitleModal(props) {
                   )
                 }
                 <div className="pt-5 flex gap-4">
-                  {titleItem.Categories.map((item, idx) => {
+                  {titleItem.LocalizedCategories.map((item, idx) => {
                     return (
                       <Chip key={idx} color="success" variant="bordered">
                         {item}

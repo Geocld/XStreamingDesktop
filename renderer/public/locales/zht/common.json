@@ -21,5 +21,7 @@
   "Toggle fullscreen": "進入/退出全屏",
   "All": "全部",
   "Unlocked": "已解鎖",
-  "Lock": "未解鎖"
+  "Lock": "未解鎖",
+  "curVerson": "当前版本",
+  "latestVerson": "最新版本"
 }

@@ -1,6 +1,7 @@
 import https from "https";
 import Application from "../application";
 import { Address6 } from "ip-address";
+import axios from 'axios';
 import { defaultSettings } from "../../renderer/context/userContext.defaults";
 
 export interface playResult {
@@ -529,6 +530,73 @@ export default class xCloudApi {
 
   getActiveSessions() {
     return this.get("/v5/sessions/" + this._type + "/active");
+  }
+
+  getConsoles() {
+    return new Promise((resolve) => {
+      const deviceInfo = JSON.stringify({
+        appInfo: {
+          env: {
+            clientAppId: 'www.xbox.com',
+            clientAppType: 'browser',
+            clientAppVersion: '26.1.97',
+            clientSdkVersion: '10.3.7',
+            httpEnvironment: 'prod',
+            sdkInstallId: '',
+          },
+        },
+        dev: {
+          hw: {
+            make: 'Microsoft',
+            // 'model': 'Surface Pro',
+            model: 'unknown',
+            // 'sdktype': 'native',
+            sdktype: 'web',
+          },
+          os: {
+            name: 'windows',
+            ver: '22631.2715',
+            platform: 'desktop',
+          },
+          displayInfo: {
+            dimensions: {
+              widthInPixels: 1920,
+              heightInPixels: 1080,
+            },
+            pixelDensity: {
+              dpiX: 1,
+              dpiY: 1,
+            },
+          },
+          browser: {
+            browserName: 'chrome',
+            browserVersion: '130.0',
+          },
+        },
+      });
+      const host = this._host.startsWith('http') ? this._host : 'https://' + this._host;
+      axios
+        .get(`${host}/v6/servers/home?mr=50`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-MS-Device-Info': deviceInfo,
+            Authorization: 'Bearer ' + this._token,
+          },
+          timeout: 15 * 1000
+        })
+        .then(res => {
+          console.log('[xcloudapi.ts] getConsoles res:', res.data);
+          if (res.data && res.data.results) {
+            resolve(res.data.results);
+          } else {
+            resolve([]);
+          }
+        })
+        .catch(e => {
+          console.log('get consoles error:', e)
+          resolve([]);
+        });
+    });
   }
 
   inputConfigs(xboxTitleId: string) {
