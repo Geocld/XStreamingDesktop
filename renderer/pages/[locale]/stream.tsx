@@ -191,10 +191,8 @@ function Stream() {
 
       xPlayer.setConnectFailHandler(() => {
         // Not connected
-        if (connectStateRef.current === "") {
-          setShowWarning(false);
-          setShowFailed(true);
-        }
+        setShowWarning(false);
+        setShowFailed(true);
       });
 
       xPlayer.setSdpHandler((client, offer) => {

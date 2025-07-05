@@ -34,6 +34,14 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.8.2" date="2025-07-05">
+      <description>
+          <ul>
+            <li>Fixed:</li>
+            <li>Can not exit when connecting.</li>
+          </ul>
+      </description>
+    </release>
     <release version="1.8.1" date="2025-07-04">
       <description>
           <ul>
