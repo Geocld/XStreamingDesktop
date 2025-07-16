@@ -106,5 +106,12 @@
   "Performance show style": "Performance show style",
   "Setting performance show style": "Setting performance show style",
   "Vertical": "Vertical",
-  "Horizon": "Horizon"
+  "Horizon": "Horizon",
+  "TURN server": "TURN server",
+  "Custom TURN server": "Custom TURN server",
+  "UrlIncorrect": "Server URL format is incorrect",
+  "Username": "Username",
+  "Password": "Password",
+  "Save server": "Save server",
+  "Saved": "Saved"
 }

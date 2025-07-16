@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button} from "@nextui-org/react"
+import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button} from "@heroui/react"
 import { useTranslation } from 'next-i18next'
 import Image from "next/image";
 

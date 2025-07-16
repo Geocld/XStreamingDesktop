@@ -5,3 +5,11 @@
   background-color: rgba(0, 0, 0, 0.5);
   padding: 2px;
 }
+#performances-x {
+  position: fixed;
+  left: 0;
+  z-index: 100;
+}
+.performance-x-wrap {
+  background-color: rgba(0, 0, 0, 0.5);
+}

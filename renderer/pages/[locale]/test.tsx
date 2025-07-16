@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import { useTranslation } from "next-i18next";
 import Nav from "../../components/Nav";
 

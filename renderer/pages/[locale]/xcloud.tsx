@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Tabs, Tab, Input } from "@nextui-org/react";
+import { Tabs, Tab, Input } from "@heroui/react";
 import { useTranslation } from "next-i18next";
 import Layout from "../../components/Layout";
 import TitleItem from "../../components/TitleItem";

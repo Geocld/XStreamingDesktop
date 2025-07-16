@@ -7,7 +7,7 @@ import {
   ModalFooter,
   Button,
   Slider,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useTranslation } from "next-i18next";
 import { DISPLAY_KEY } from "../common/constans";
 

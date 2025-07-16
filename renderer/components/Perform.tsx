@@ -38,27 +38,29 @@ function Perform({ xPlayer, connectState }) {
     <>
       {
         settings.performance_style ? (
-          <div id="performances" className="flex flex-row justify-center w-full">
-            <span className="text-xs">
-              {resolutionText || "--"} | &nbsp;
-            </span>
-            <span className="text-xs">
-              {t("RTT")}: {performance.rtt || "--"} | &nbsp;
-            </span>
-            <span className="text-xs">
-              {t("FPS")}: {performance.fps || "--"} | &nbsp;
-            </span>
-            <span className="text-xs">
-              {t("FD")}: {performance.fl || "--"} | &nbsp;
-            </span>
-            <span className="text-xs">
-              {t("PL")}: {performance.pl || "--"} | &nbsp;
-            </span>
-            <span className="text-xs">
-              {t("Bitrate")}: {performance.br || "--"} | &nbsp;
-            </span>
-            <span className="text-xs">
-              {t("DT")}: {performance.decode || "--"}
+          <div id="performances-x" className="flex flex-row justify-center w-full">
+            <span className="performance-x-wrap">
+              <span className="text-xs">
+                {resolutionText || "--"} | &nbsp;
+              </span>
+              <span className="text-xs">
+                {t("RTT")}: {performance.rtt || "--"} | &nbsp;
+              </span>
+              <span className="text-xs">
+                {t("FPS")}: {performance.fps || "--"} | &nbsp;
+              </span>
+              <span className="text-xs">
+                {t("FD")}: {performance.fl || "--"} | &nbsp;
+              </span>
+              <span className="text-xs">
+                {t("PL")}: {performance.pl || "--"} | &nbsp;
+              </span>
+              <span className="text-xs">
+                {t("Bitrate")}: {performance.br || "--"} | &nbsp;
+              </span>
+              <span className="text-xs">
+                {t("DT")}: {performance.decode || "--"}
+              </span>
             </span>
           </div>
         ) : (

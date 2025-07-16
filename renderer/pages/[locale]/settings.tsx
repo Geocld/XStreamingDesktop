@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Button, Tabs, Tab, Card, CardBody } from "@nextui-org/react";
+import { Button, Tabs, Tab, Card, CardBody, Input, addToast } from "@heroui/react";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
+import { useTheme } from "next-themes";
 import { useSettings } from "../../context/userContext";
 
 import Ipc from "../../lib/ipc";
@@ -21,8 +22,9 @@ import { getStaticPaths, makeStaticProperties } from "../../lib/get-static";
 
 function Settings() {
   const { t, i18n: {language: locale} } = useTranslation("settings");
-  const { resetSettings } = useSettings();
+  const { settings: localSettings, setSettings: setLocalSettings, resetSettings } = useSettings();
   const router = useRouter();
+  const { theme } = useTheme();
 
   const [showAlert, setShowAlert] = useState(false);
   const [showRestartModal, setShowRestartModal] = useState(false);
@@ -34,6 +36,10 @@ function Settings() {
   const [showFeedback, setShowFeedback] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [settings, setSettings] = useState<any>({});
+
+  const [serverUrl, setServerUrl] = useState('');
+  const [serverUsername, setServerUsername] = useState('');
+  const [serverPwd, setServerPwd] = useState('');
 
   const currentIndex = useRef(0);
   const focusable = useRef<any>([]);
@@ -54,6 +60,10 @@ function Settings() {
 
     setTimeout(() => {
       focusable.current = document.querySelectorAll(FOCUS_ELEMS);
+
+      setServerUrl(localSettings.server_url);
+      setServerUsername(localSettings.server_username);
+      setServerPwd(localSettings.server_credential);
     },  1000);
 
     function nextItem(index) {
@@ -133,7 +143,7 @@ function Settings() {
     return () => {
       timer && clearInterval(timer)
     }
-  }, [t]);
+  }, [t, localSettings]);
 
   const resetNavigationElems = () => {
     setTimeout(() => {
@@ -174,6 +184,35 @@ function Settings() {
 
   const handleExit = () => {
     Ipc.send("app", "quit");
+  };
+
+  const handleServerChange = (name: string, text: string) => {
+    if (name === 'url') {
+      setServerUrl(text);
+    }
+    if (name === 'username') {
+      setServerUsername(text);
+    }
+    if (name === 'password') {
+      setServerPwd(text);
+    }
+  };
+
+  const handleSaveServer = () => {
+    if (serverUrl && !serverUrl.startsWith('turn:')) {
+      alert(t('UrlIncorrect'));
+      return;
+    }
+    setLocalSettings({
+      ...localSettings,
+      server_url: serverUrl,
+      server_username: serverUsername,
+      server_credential: serverPwd
+    });
+    addToast({
+      title: t('Saved'),
+      color: 'success'
+    });
   };
 
   return (
@@ -239,6 +278,22 @@ function Settings() {
                   />
                 );
               })}
+
+              <div className="setting-item">
+                <Card>
+                  <CardBody>
+                    <div className={`setting-title ${theme === 'xbox-light' ? 'text-black' : 'text-white'}`}>{t('TURN server')}</div>
+                    <div className={`setting-description ${theme === 'xbox-light' ? 'text-black' : 'text-gray'}`}>{t('Custom TURN server')}</div>
+                    <Input className="mb-4" value={serverUrl} label="URL" type="text" labelPlacement="outside-top" size="sm" isClearable onValueChange={(text: string) => handleServerChange('url', text)}/>
+                    <Input className="mb-4" value={serverUsername} label={t('Username')} type="text" labelPlacement="outside-top" isClearable size="sm" onValueChange={(text: string) => handleServerChange('username', text)}/>
+                    <Input className="mb-4" value={serverPwd} label={t('Password')} type="text" labelPlacement="outside-top" size="sm" isClearable onValueChange={(text: string) => handleServerChange('password', text)}/>
+
+                    <Button color="primary" onPress={handleSaveServer}>
+                      {t('Save server')}
+                    </Button>
+                  </CardBody>
+                </Card>
+              </div>
           </Tab>
 
           <Tab key="Gamepad" title={t("Gamepad")}>
@@ -262,7 +317,7 @@ function Settings() {
 
                 <Button
                   color="primary"
-                  onClick={() => {
+                  onPress={() => {
                     router.push({
                       pathname: `/${locale}/map`
                     });
@@ -310,7 +365,7 @@ function Settings() {
 
                 <Button
                   color="primary"
-                  onClick={() => {
+                  onPress={() => {
                     router.push({
                       pathname: `/${locale}/test`
                     });
@@ -328,7 +383,7 @@ function Settings() {
                   {t("Reset XStreaming settings to default")}
                 </div>
 
-                <Button color="primary" onClick={handleResetSettings}>
+                <Button color="primary" onPress={handleResetSettings}>
                   {t("Reset Settings")}
                 </Button>
               </CardBody>
@@ -347,7 +402,7 @@ function Settings() {
                 <Button
                   color="primary"
                   isLoading={isChecking}
-                  onClick={handleCheckUpdate}
+                  onPress={handleCheckUpdate}
                 >
                   {t("Check")}
                 </Button>
@@ -362,7 +417,7 @@ function Settings() {
                     支持开发或交流更多串流技术
                   </div>
 
-                  <Button color="primary" onClick={() => setShowFeedback(true)}>
+                  <Button color="primary" onPress={() => setShowFeedback(true)}>
                     加群
                   </Button>
                 </CardBody>
@@ -373,7 +428,7 @@ function Settings() {
               isLogined && (
                 <Card className="setting-item">
                   <CardBody>
-                    <Button color="danger" onClick={handleLogout}>
+                    <Button color="danger" onPress={handleLogout}>
                       {t("Logout")}
                     </Button>
                   </CardBody>
@@ -383,7 +438,7 @@ function Settings() {
 
             <Card className="setting-item">
               <CardBody>
-                <Button color="danger" onClick={handleLogout}>
+                <Button color="danger" onPress={handleLogout}>
                   {t("Clear cache")}
                 </Button>
               </CardBody>
@@ -391,7 +446,7 @@ function Settings() {
 
             <Card className="setting-item">
               <CardBody>
-                <Button color="danger" onClick={handleExit}>
+                <Button color="danger" onPress={handleExit}>
                   {t("Exit")}
                 </Button>
               </CardBody>

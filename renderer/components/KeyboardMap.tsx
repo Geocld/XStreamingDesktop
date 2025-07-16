@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Card, CardBody, Button } from "@nextui-org/react";
+import { Card, CardBody, Button } from "@heroui/react";
 import { useTranslation } from "next-i18next";
 import { useSettings } from "../context/userContext";
 import { defaultSettings } from "../context/userContext.defaults";

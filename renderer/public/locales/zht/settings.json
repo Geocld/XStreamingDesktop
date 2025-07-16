@@ -105,5 +105,12 @@
   "Performance show style": "性能展示样式",
   "Setting performance show style": "设置性能展示(水平/垂直)",
   "Vertical": "垂直",
-  "Horizon": "水平"
+  "Horizon": "水平",
+  "TURN server": "TURN 伺服器",
+  "Custom TURN server": "自訂 TURN 伺服器",
+  "UrlIncorrect": "伺服器URL格式不正確",
+  "Username": "用户名",
+  "Password": "密碼",
+  "Save server": "儲存伺服器",
+  "Saved": "儲存成功"
 }

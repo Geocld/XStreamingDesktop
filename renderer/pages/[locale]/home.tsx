@@ -5,7 +5,7 @@ import {
   CardFooter,
   Chip,
   Divider,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useTranslation } from "next-i18next";
 import { useTheme } from "next-themes";
 import { useRouter } from 'next/router';
@@ -20,6 +20,7 @@ import Ipc from "../../lib/ipc";
 import Image from "next/image";
 import { FOCUS_ELEMS } from '../../common/constans';
 
+import getServer from '../../lib/get-server';
 import { getStaticPaths, makeStaticProperties } from "../../lib/get-static";
 
 function Home() {
@@ -32,6 +33,7 @@ function Home() {
   const [loadingText, setLoadingText] = useState("");
   const [isLogined, setIsLogined] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [server, setServer]= useState<any>(null);
   const [consoles, setConsoles] = useState<{
     serverId: string,
     name: string,
@@ -72,6 +74,13 @@ function Home() {
     
     setLoading(true);
     setLoadingText(t("Loading..."));
+
+    getServer().then((res: any) => {
+      if (res && res.url) {
+        console.log('getServer res:', res)
+        setServer(res)
+      }
+    })
 
     focusable.current = document.querySelectorAll(FOCUS_ELEMS);
 
@@ -269,9 +278,25 @@ function Home() {
 
   const startSession = (sessionId: string) => {
     console.log("sessionId:", sessionId);
+    const query: any = { serverid: sessionId };
+    
+    const { server_url, server_username, server_credential } = settings;
+
+    // Custom server
+    if (server_url && server_username && server_credential) {
+      query.server_url = server_url;
+      query.server_username = server_username;
+      query.server_credential = server_credential;
+    } else if (server) { // Default server
+      const { url, username, credential } = server;
+      query.server_url = url;
+      query.server_username = username;
+      query.server_credential = credential;
+    }
+
     router.push({
       pathname: `/${locale}/stream`,
-      query: { serverid: sessionId }
+      query
     });
   };
 
@@ -351,16 +376,18 @@ function Home() {
                     settings.power_on && console.powerState === 'ConnectedStandby' ? (
                       <Button
                         color="primary"
+                        size="sm"
                         fullWidth
-                        onClick={() => powerOnAndStartSession(console.serverId)}
+                        onPress={() => powerOnAndStartSession(console.serverId)}
                       >
                         {t('Power on and start stream')}
                       </Button>
                     ) : (
                       <Button
                         color="primary"
+                        size="sm"
                         fullWidth
-                        onClick={() => startSession(console.serverId)}
+                        onPress={() => startSession(console.serverId)}
                       >
                         {t('Start stream')}
                       </Button>

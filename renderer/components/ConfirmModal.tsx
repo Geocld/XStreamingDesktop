@@ -5,7 +5,7 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useTranslation } from "next-i18next";
 
 function ConfirmModal(props) {

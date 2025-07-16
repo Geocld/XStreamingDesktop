@@ -98,7 +98,21 @@ function Stream() {
     }, 100);
 
     if (xPlayer !== undefined) {
-      xPlayer.bind();
+      const server_url: any = router.query.server_url;
+      const server_username: any = router.query.server_username;
+      const server_credential: any = router.query.server_credential;
+      if (server_url && server_username && server_credential) {
+        // Init with TURN server
+        xPlayer.bind({
+          turnServer: {
+            url: server_url,
+            username: server_username,
+            credential: server_credential
+          }
+        });
+      } else {
+        xPlayer.bind();
+      }
 
       console.log("streamType:", streamType);
       console.log("serverId:", serverId);

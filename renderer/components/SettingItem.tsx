@@ -6,7 +6,7 @@ import {
   Radio,
   RadioGroup,
   Slider,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useTranslation } from "next-i18next";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
@@ -54,7 +54,7 @@ const SettingItem = (props) => {
         // console.log('item:', item)
       });
     }
-  }, [item, settings]);
+  }, [item, settings, t]);
 
   const handleChangeSetting = (value) => {
     console.log("handleChangeSetting:", value);

@@ -5,7 +5,7 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-} from "@nextui-org/react";
+} from "@heroui/react";
 // import Ipc from "../lib/ipc";
 import { useSettings } from "../context/userContext";
 

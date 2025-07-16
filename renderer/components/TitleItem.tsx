@@ -1,4 +1,4 @@
-import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
+import { Card, CardBody, CardFooter, Image } from "@heroui/react";
 
 function TitleItem(props) {
   const titleItem = props.title || { name: "" };

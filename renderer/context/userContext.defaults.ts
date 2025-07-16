@@ -29,6 +29,9 @@ export const defaultSettings = {
   enable_native_mouse_keyboard: false,
   mouse_sensitive: 0.5,
   performance_style: false,
+  server_url: '',
+  server_username: '',
+  server_credential: '',
   input_mousekeyboard_maping: {
     ArrowLeft: 'DPadLeft',
     ArrowUp: 'DPadUp',

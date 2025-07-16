@@ -2,7 +2,7 @@
   "private": true,
   "name": "xstreaming",
   "description": "xstreaming",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "author": "Geocld <lijiahao5372@gmail.com>",
   "main": "app/background.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "flatpak-build": "nextron build --no-pack && electron-builder --dir"
   },
   "dependencies": {
-    "@nextui-org/react": "^2.4.6",
+    "@heroui/react": "^2.8.1",
     "axios": "^1.7.7",
     "compare-versions": "^6.1.0",
     "debounce": "^2.1.1",
@@ -39,7 +39,7 @@
     "uplot": "^1.6.30",
     "uuid-1345": "^1.0.2",
     "xbox-webapi": "^1.4.1",
-    "xstreaming-player": "0.2.17",
+    "xstreaming-player": "0.2.18",
     "xvfb-maybe": "^0.2.1"
   },
   "devDependencies": {

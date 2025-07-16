@@ -34,6 +34,14 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.8.3" date="2025-07-16">
+      <description>
+          <ul>
+            <li>Feature:</li>
+            <li>Enable custom TURN server.</li>
+          </ul>
+      </description>
+    </release>
     <release version="1.8.2" date="2025-07-05">
       <description>
           <ul>

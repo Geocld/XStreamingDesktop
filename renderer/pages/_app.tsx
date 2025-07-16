@@ -1,4 +1,5 @@
-import { NextUIProvider } from "@nextui-org/react";
+import {HeroUIProvider} from "@heroui/react";
+import {ToastProvider} from "@heroui/toast";
 import { appWithTranslation } from 'next-i18next';
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import React from "react";
@@ -39,13 +40,14 @@ const  App = ({ Component, pageProps }) => {
   }, []);
 
   return (
-    <NextUIProvider>
+    <HeroUIProvider>
+      <ToastProvider />
       <NextThemesProvider attribute="class" defaultTheme={'xbox-dark'}>
         <UserProvider>
           <Component {...pageProps} />
         </UserProvider>
       </NextThemesProvider>
-    </NextUIProvider>
+    </HeroUIProvider>
   );
 }
 

@@ -1,4 +1,4 @@
-import { Card, CardBody, CardHeader, Divider, Progress } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Divider, Progress } from "@heroui/react";
 import moment from 'moment';
 import { useTranslation } from "next-i18next";
 import { useEffect, useRef, useState } from "react";

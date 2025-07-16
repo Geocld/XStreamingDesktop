@@ -4,7 +4,7 @@ import {
   ModalHeader,
   ModalBody,
   Slider,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useTranslation } from "next-i18next";
 
 function Audio(props) {

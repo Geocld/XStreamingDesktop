@@ -8,7 +8,7 @@ import {
   Button,
   Image,
   Chip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useTranslation } from "next-i18next";
 
 const XCLOUD_PREFIX = "xcloud_";
