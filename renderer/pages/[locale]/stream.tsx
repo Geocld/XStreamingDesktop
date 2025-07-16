@@ -6,7 +6,7 @@ import xStreamingPlayer from "xstreaming-player";
 import ActionBar from "../../components/ActionBar";
 import Display from "../../components/Display";
 import Audio from "../../components/Audio";
-import FailedModal from "../../components/FailedModal";
+// import FailedModal from "../../components/FailedModal";
 import Loading from "../../components/Loading";
 import Perform from "../../components/Perform";
 import WarningModal from "../../components/WarningModal";
@@ -43,7 +43,7 @@ function Stream() {
   const [connectState, setConnectState] = useState("");
   const [sessionId, setSessionId] = useState("");
   const [showPerformance, setShowPerformance] = useState(false);
-  const [showFailed, setShowFailed] = useState(false);
+  // const [showFailed, setShowFailed] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [showDisplay, setShowDisplay] = useState(false);
   const [showAudio, setShowAudio] = useState(false);
@@ -206,7 +206,12 @@ function Stream() {
       xPlayer.setConnectFailHandler(() => {
         // Not connected
         setShowWarning(false);
-        setShowFailed(true);
+        // setShowFailed(true);
+        alert(
+          t(
+            "NAT failed. If you are trying to stream remotely, please ensure that you have a public IPV4/6 address and that your router has port forwarding enabled for ports 9002/3074."
+          )
+        )
       });
 
       xPlayer.setSdpHandler((client, offer) => {
@@ -488,7 +493,7 @@ function Stream() {
       window.removeEventListener("mousedown", mouseEvent);
       window.removeEventListener('keydown', escEvent)
     };
-  }, [xPlayer, sessionId, t, router.query.serverid, settings]);
+  }, [xPlayer, sessionId, t, router.query, settings]);
 
   const getVideoPlayerFilterStyle = (options) => {
     const filters = [];
@@ -702,12 +707,12 @@ function Stream() {
         )
       }
 
-      <FailedModal
+      {/* <FailedModal
         show={showFailed}
         onCancel={() => {
           setShowFailed(false);
         }}
-      />
+      /> */}
 
       <WarningModal
         show={showWarning}
