@@ -34,6 +34,15 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.8.4" date="2025-08-06">
+      <description>
+          <ul>
+            <li>Changes:</li>
+            <li>Fix audio issue.</li>
+            <li>Optimize consoles fetching.</li>
+          </ul>
+      </description>
+    </release>
     <release version="1.8.3" date="2025-07-16">
       <description>
           <ul>

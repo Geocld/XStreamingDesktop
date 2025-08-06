@@ -168,12 +168,25 @@ function Home() {
       setLoadingText(t("Fetching consoles..."));
       Ipc.send("streaming", "getConsoles").then((res) => {
         console.log("consoles:", res);
-        setConsoles(res);
-        setLoading(false);
 
-        setTimeout(() => {
-          focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-        },  1000);
+        if (!res.length) {
+          // Fetch consoles by lagecy API
+          Ipc.send("consoles", "get").then(res2 => {
+            setConsoles(res2);
+            setLoading(false);
+
+            setTimeout(() => {
+              focusable.current = document.querySelectorAll(FOCUS_ELEMS);
+            },  1000);
+          });
+        } else {
+          setConsoles(res);
+          setLoading(false);
+
+          setTimeout(() => {
+            focusable.current = document.querySelectorAll(FOCUS_ELEMS);
+          },  1000);
+        }
       });
     } else {
       Ipc.send("app", "checkAuthentication").then((isLogin) => {

@@ -257,7 +257,6 @@ export default class StreamManager {
     }
 
     getConsoles() {
-        console.log('getConsoles11111')
         return new Promise((resolve) => {
             this.getApi('home').getConsoles().then((result) => {
                 resolve(result)

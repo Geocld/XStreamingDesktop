@@ -6,8 +6,14 @@ function Perform({ xPlayer, connectState }) {
   const { t } = useTranslation('cloud');
   const { settings } = useSettings();
   const [performance, setPerformance] = useState<any>({});
+  const [isLight, setIslight] = useState(false);
 
   useEffect(() => {
+    const localTheme = localStorage.getItem('theme');
+    if (localTheme === 'xbox-light') {
+      setIslight(true)
+    }
+
     let perfInterval;
     if (!perfInterval) {
       perfInterval = setInterval(() => {
@@ -39,7 +45,7 @@ function Perform({ xPlayer, connectState }) {
       {
         settings.performance_style ? (
           <div id="performances-x" className="flex flex-row justify-center w-full">
-            <span className="performance-x-wrap">
+            <span className={isLight ? "performance-x-wrap-light" : "performance-x-wrap"}>
               <span className="text-xs">
                 {resolutionText || "--"} | &nbsp;
               </span>

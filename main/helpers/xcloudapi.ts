@@ -78,6 +78,7 @@ export default class xCloudApi {
               let returnData = responseData;
               try {
                 returnData = JSON.parse(responseData);
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               } catch (error) {
                 // Data is not JSON..
               }
@@ -155,6 +156,7 @@ export default class xCloudApi {
               let returnData = responseData;
               try {
                 returnData = JSON.parse(responseData);
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               } catch (error) {
                 // Data is not JSON..
               }

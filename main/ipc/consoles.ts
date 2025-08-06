@@ -61,7 +61,7 @@ export default class IpcConsoles extends IpcBase {
                 resolve([]);
               }
             })
-            .catch(e => {
+            .catch(() => {
               resolve([]);
               // reject(e);
             });
@@ -74,6 +74,10 @@ export default class IpcConsoles extends IpcBase {
                 // this._application._events._webApi.getProvider('smartglass').getConsolesList().then((consoles) => {
                 this._application._webApi.getProvider('smartglass').getConsolesList().then(consoles => {
                     this._consoles = consoles.result
+                    this._consoles.forEach((item: any) => {
+                      item.serverId = item.id;
+                      item.deviceName = item.name;
+                    });
                     this._consolesLastUpdate = Date.now()
 
                     resolve(this._consoles)

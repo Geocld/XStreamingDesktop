@@ -60,7 +60,7 @@ function ActionBar(props) {
     <div id="actionBar">
       <Dropdown>
         <DropdownTrigger>
-          <Button variant="bordered" size="sm">
+          <Button variant="bordered" size="sm" style={{color: '#fff'}}>
             {t("Menu")}
           </Button>
         </DropdownTrigger>
