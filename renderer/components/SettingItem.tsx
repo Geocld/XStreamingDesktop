@@ -78,7 +78,10 @@ const SettingItem = (props) => {
           [key]: value,
         });
         if (item.needRestart) {
-          props.onRestartWarn && props.onRestartWarn()
+          props.onRestartWarn && props.onRestartWarn();
+        }
+        if (item.needClearCache) {
+          props.onClearCache && props.onClearCache();
         }
         if (key === 'fullscreen') {
           Ipc.send("app", value ? 'enterFullscreen' : 'exitFullscreen', value);

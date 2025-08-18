@@ -21,6 +21,7 @@ const getSettingsMetas = (t) => {
         type: 'radio',
         title: t('Preferred language of game'),
         description: t('Set language of cloud game'),
+        needClearCache: true,
         data: [
           {value: '', label: 'Default'},
           {value: 'ar-SA', label: 'Arabic (Saudi Arabia)'},
@@ -322,6 +323,7 @@ const getSettingsMetas = (t) => {
         type: 'select',
         title: t('Set region'),
         needRestart: true,
+        needClearCache: true,
         description: t(
           'Changing the region allows you to use XGPU services without a proxy',
         ),

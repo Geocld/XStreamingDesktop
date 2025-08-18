@@ -34,6 +34,16 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.8.5" date="2025-08-18">
+      <description>
+          <ul>
+            <li>Changes:</li>
+            <li>Optimize login wating time.</li>
+            <li>Optimize xcloud loading time.</li>
+            <li>Fix xcloud game error issue.</li>
+          </ul>
+      </description>
+    </release>
     <release version="1.8.4" date="2025-08-06">
       <description>
           <ul>

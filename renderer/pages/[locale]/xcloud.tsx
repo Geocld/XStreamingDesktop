@@ -30,6 +30,11 @@ function Xcloud() {
   const currentIndex = useRef(0);
   const focusable = useRef<any>([]);
 
+  const LOCAL_TITLES = 'local-titles';
+  const LOCAL_NEW_TITLES = 'local-new-titles';
+  const LOCAL_ORG_TITLES = 'local-org-titles';
+  const LOCAL_RECENT_TITLES = 'local-recent-titles';
+
   useEffect(() => {
 
     setLoading(true);
@@ -115,77 +120,122 @@ function Xcloud() {
 
     const timer = setInterval(pollGamepads, 100);
 
+    const fetchGames = (silent = false) => {
+      console.log('Fetch Games');
+      if (silent) {
+        console.log('Fetch games silent');
+      }
+      Ipc.send("xCloud", "getTitles").then((res) => {
+        console.log("originTitles:", res.results);
+        Ipc.send("xCloud", "getGamePassProducts", res.results).then(
+          (_titles) => {
+            setTitles(_titles);
+            localStorage.setItem(LOCAL_TITLES, JSON.stringify(_titles));
+
+            const _titleMap = {};
+            const _orgTitles = [];
+            _titles.forEach((item) => {
+              _titleMap[item.productId] = item;
+
+              // Get org games
+              if (
+                !item.XCloudTitleId &&
+                item.details &&
+                item.details.programs &&
+                item.details.programs.indexOf('BYOG') > -1
+              ) {
+                _orgTitles.push(item);
+              }
+            });
+
+            setOrgTitles(_orgTitles);
+            localStorage.setItem(LOCAL_ORG_TITLES, JSON.stringify(_orgTitles));
+
+            // console.log("_titleMap:", _titleMap);
+
+            // Get new games
+            Ipc.send("xCloud", "getNewTitles").then((newTitleRes) => {
+              console.log("newTitleRes:", newTitleRes);
+              const _newTitles = [];
+              newTitleRes.forEach((item) => {
+                if (
+                  item.id &&
+                  _titleMap[item.id] &&
+                  (_titleMap[item.id].titleId ||
+                    _titleMap[item.id].XCloudTitleId)
+                ) {
+                  _newTitles.push(_titleMap[item.id]);
+                }
+              });
+              setNewTitles(_newTitles);
+              localStorage.setItem(LOCAL_NEW_TITLES, JSON.stringify(_newTitles));
+
+              // Get recent games
+              Ipc.send("xCloud", "getRecentTitles").then((recentTitleRes) => {
+                console.log("recentTitleRes:", recentTitleRes.results);
+                const results = recentTitleRes.results || [];
+                const _recentTitles = [];
+                results.forEach((item) => {
+                  if (item.details && item.details.productId) {
+                    const productId = item.details.productId;
+                    const productIdUp = productId.toUpperCase();
+                    if (_titleMap[productId] || _titleMap[productIdUp]) {
+                      _recentTitles.push(
+                        _titleMap[productId] || _titleMap[productIdUp]
+                      );
+                    }
+                  }
+                });
+                console.log("_recentTitles:", _recentTitles);
+                setRecentNewTitles(_recentTitles);
+                localStorage.setItem(LOCAL_RECENT_TITLES, JSON.stringify(_recentTitles));
+                setLoading(false);
+
+                setTimeout(() => {
+                  focusable.current = document.querySelectorAll(FOCUS_ELEMS);
+                },  1000);
+              });
+            });
+          }
+        );
+      });
+    };
+
     Ipc.send("app", "getAppLevel").then((appLevel) => {
       console.log("appLevel:", appLevel);
       if (appLevel !== 2) {
         setIsLimited(true);
         setLoading(false);
       } else {
-        console.log("Get titles");
-        Ipc.send("xCloud", "getTitles").then((res) => {
-          console.log("originTitles:", res.results);
-          Ipc.send("xCloud", "getGamePassProducts", res.results).then(
-            (_titles) => {
-              setTitles(_titles);
-              const _titleMap = {};
-              const _orgTitles = [];
-              _titles.forEach((item) => {
-                _titleMap[item.productId] = item;
+        console.log('get from cache')
+        // Get xcloud data from cache
+        let cacheTitles: any = localStorage.getItem(LOCAL_TITLES) || '[]';
+        let cacheNewTitles: any = localStorage.getItem(LOCAL_NEW_TITLES) || '[]';
+        let cacheOrgTitles: any = localStorage.getItem(LOCAL_ORG_TITLES) || '[]';
+        let cacheRecentTitles: any = localStorage.getItem(LOCAL_RECENT_TITLES) || '[]';
 
-                // Get org games
-                if (
-                  !item.XCloudTitleId &&
-                  item.details &&
-                  item.details.programs &&
-                  item.details.programs.indexOf('BYOG') > -1
-                ) {
-                  _orgTitles.push(item);
-                }
-              });
+        try {
+          cacheTitles = JSON.parse(cacheTitles);
+          cacheNewTitles = JSON.parse(cacheNewTitles);
+          cacheOrgTitles = JSON.parse(cacheOrgTitles);
+          cacheRecentTitles = JSON.parse(cacheRecentTitles);
+          
+          if (cacheTitles.length || cacheNewTitles.length || cacheOrgTitles.length || cacheRecentTitles.length) {
+            setTitles(cacheTitles);
+            setOrgTitles(cacheOrgTitles);
+            setNewTitles(cacheNewTitles);
+            setRecentNewTitles(cacheRecentTitles);
+            setLoading(false);
 
-              setOrgTitles(_orgTitles);
+            fetchGames(true);
+          } else {
+            fetchGames();
+          }
+        } catch (e) {
 
-              // console.log("_titleMap:", _titleMap);
-
-              // Get new games
-              Ipc.send("xCloud", "getNewTitles").then((newTitleRes) => {
-                console.log("newTitleRes:", newTitleRes);
-                const _newTitles = [];
-                newTitleRes.forEach((item) => {
-                  if (item.id && _titleMap[item.id]) {
-                    _newTitles.push(_titleMap[item.id]);
-                  }
-                });
-                setNewTitles(_newTitles);
-
-                // Get recent games
-                Ipc.send("xCloud", "getRecentTitles").then((recentTitleRes) => {
-                  console.log("recentTitleRes:", recentTitleRes.results);
-                  const results = recentTitleRes.results || [];
-                  const _recentTitles = [];
-                  results.forEach((item) => {
-                    if (item.details && item.details.productId) {
-                      const productId = item.details.productId;
-                      const productIdUp = productId.toUpperCase();
-                      if (_titleMap[productId] || _titleMap[productIdUp]) {
-                        _recentTitles.push(
-                          _titleMap[productId] || _titleMap[productIdUp]
-                        );
-                      }
-                    }
-                  });
-                  console.log("_recentTitles:", _recentTitles);
-                  setRecentNewTitles(_recentTitles);
-                  setLoading(false);
-
-                  setTimeout(() => {
-                    focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-                  },  1000);
-                });
-              });
-            }
-          );
-        });
+          console.log('error:', e)
+          fetchGames();
+        }
       }
     });
 

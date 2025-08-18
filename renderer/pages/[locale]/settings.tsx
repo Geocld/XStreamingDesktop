@@ -180,6 +180,27 @@ function Settings() {
 
   const handleLogout = () => {
     Ipc.send("app", "clearData");
+    Ipc.send("app", "clearUserData");
+    handleClearLocalStorage();
+  };
+
+  const handleClearCache = () => {
+    Ipc.send("app", "clearUserData");
+    handleClearLocalStorage();
+  };
+
+  const handleClearLocalStorage = () => {
+    const LOCAL_TITLES = 'local-titles';
+    const LOCAL_NEW_TITLES = 'local-new-titles';
+    const LOCAL_ORG_TITLES = 'local-org-titles';
+    const LOCAL_RECENT_TITLES = 'local-recent-titles';
+    const LOCAL_CONSOLES = 'local-consoles';
+
+    localStorage.removeItem(LOCAL_TITLES);
+    localStorage.removeItem(LOCAL_NEW_TITLES);
+    localStorage.removeItem(LOCAL_ORG_TITLES);
+    localStorage.removeItem(LOCAL_RECENT_TITLES);
+    localStorage.removeItem(LOCAL_CONSOLES);
   };
 
   const handleExit = () => {
@@ -262,6 +283,7 @@ function Settings() {
                     key={item.name}
                     item={item}
                     onRestartWarn={() => setShowRestartModal(true)}
+                    onClearCache={() => handleClearCache()}
                   />
                 );
               })}
@@ -275,6 +297,7 @@ function Settings() {
                     key={item.name}
                     item={item}
                     onRestartWarn={() => setShowRestartModal(true)}
+                    onClearCache={() => handleClearCache()}
                   />
                 );
               })}
@@ -304,6 +327,7 @@ function Settings() {
                     key={item.name}
                     item={item}
                     onRestartWarn={() => setShowRestartModal(true)}
+                    onClearCache={() => handleClearCache()}
                   />
                 );
               })}
@@ -337,6 +361,7 @@ function Settings() {
                     key={item.name}
                     item={item}
                     onRestartWarn={() => setShowRestartModal(true)}
+                    onClearCache={() => handleClearCache()}
                   />
                 );
               })}
@@ -350,6 +375,7 @@ function Settings() {
                     key={item.name}
                     item={item}
                     onRestartWarn={() => setShowRestartModal(true)}
+                    onClearCache={() => handleClearCache()}
                   />
                 );
               })}
@@ -438,7 +464,10 @@ function Settings() {
 
             <Card className="setting-item">
               <CardBody>
-                <Button color="danger" onPress={handleLogout}>
+                <Button color="danger" onPress={() => {
+                  handleLogout();
+                  Ipc.send("app", "restart");
+                }}>
                   {t("Clear cache")}
                 </Button>
               </CardBody>

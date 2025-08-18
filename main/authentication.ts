@@ -92,7 +92,15 @@ export default class Authentication {
     ) {
       const {xHomeToken, xCloudToken} = _streamToken;
 
+      console.log('startSilentFlow xCloudToken:', xCloudToken)
+
       if (xHomeToken || xCloudToken) {
+        this._appLevel = 1;
+
+        if (xCloudToken) {
+          this._appLevel = 2;
+        }
+
         if (
           xHomeToken &&
           isStreamTokenValid(xHomeToken) &&
@@ -165,13 +173,12 @@ export default class Authentication {
                   });
               })
               .catch(e => {
-                console.log('[startSilentFlow()] refreshTokens error:', e);
                 // Clear tokenstore if auth fail
                 clearStreamToken();
                 clearWebToken();
                 this._tokenStore.clear();
                 dialog.showMessageBox({
-                  message: '[startSilentFlow() - 174] refreshTokens error:' + e.message,
+                  message: '[startSilentFlow() - 182] refreshTokens error:' + e.message,
                   type: "error",
                 });
               });
@@ -179,49 +186,91 @@ export default class Authentication {
         }
       }
     } else {
-      // Skip refreshTokens within 23 hours
-      console.log('getTokenUpdateTime:', this._tokenStore.getTokenUpdateTime())
-      if (
-        Date.now() - this._tokenStore.getTokenUpdateTime() <
-        23 * 60 * 60 * 1000
-      ) {
-        console.log('[startSilentFlow] skip refreshTokens');
-        this._xal.getStreamingToken(this._tokenStore).then(streamingTokens => {
-          // console.log('streamingTokens:', JSON.stringify(streamingTokens));
-          this._xal.getWebToken(this._tokenStore).then(webToken => {
-            saveStreamToken(streamingTokens);
-            saveWebToken(webToken);
-            this._application.authenticationCompleted(streamingTokens, webToken);
-          });
-        });
-      } else {
-        this._xal
-          .refreshTokens(this._tokenStore)
-          .then(() => {
-            console.log('[startSilentFlow()] Tokens have been refreshed');
-            this._xal
-              .getStreamingToken(this._tokenStore)
-              .then(streamingTokens => {
-                // log.info('streamingTokens:', streamingTokens);
-                this._xal.getWebToken(this._tokenStore).then(webToken => {
+      this._xal
+        .refreshTokens(this._tokenStore)
+        .then(() => {
+          this._application.log(
+            "authenticationV2",
+            "[startSilentFlow()] Tokens have been refreshed"
+          );
+
+          this.getStreamingToken(this._tokenStore)
+            .then((streamingTokens) => {
+              if (streamingTokens.xCloudToken !== null) {
+                this._application.log(
+                  "authenticationV2",
+                  "[startSilentFlow()] Retrieved both xHome and xCloud tokens"
+                );
+                this._appLevel = 2;
+              } else {
+                this._application.log(
+                  "authenticationV2",
+                  "[startSilentFlow()] Retrieved xHome token only"
+                );
+                this._appLevel = 1;
+              }
+
+              this._xal
+                .getWebToken(this._tokenStore)
+                .then((webToken) => {
+                  this._application.log(
+                    "authenticationV2",
+                    __filename + "[startSilentFlow()] Web token received"
+                  );
+
                   saveStreamToken(streamingTokens);
                   saveWebToken(webToken);
-                  this._application.authenticationCompleted(streamingTokens, webToken);
+
+                  this._application.authenticationCompleted(
+                    streamingTokens,
+                    webToken
+                  );
+                })
+                .catch((error) => {
+                  this._application.log(
+                    "authenticationV2",
+                    __filename +
+                      "[startSilentFlow()] Failed to retrieve web tokens:",
+                    error
+                  );
+                  clearStreamToken();
+                  clearWebToken();
+                  this._tokenStore.clear();
+                  dialog.showMessageBox({
+                    message:
+                      "Error: Failed to retrieve web tokens:" +
+                      JSON.stringify(error),
+                    type: "error",
+                  });
                 });
+            })
+            .catch((err) => {
+              this._application.log(
+                "authenticationV2",
+                "[startSilentFlow()] Failed to retrieve streaming tokens:",
+                err
+              );
+              clearStreamToken();
+              clearWebToken();
+              this._tokenStore.clear();
+              dialog.showMessageBox({
+                message:
+                  "Error: Failed to retrieve streaming tokens:" +
+                  JSON.stringify(err),
+                type: "error",
               });
-          })
-          .catch(e => {
-            console.log('[startSilentFlow()] refreshTokens error:', e);
-            // Clear tokenstore if auth fail
-            clearStreamToken();
-            clearWebToken();
-            this._tokenStore.clear();
-            dialog.showMessageBox({
-                  message: '[startSilentFlow() - 219] refreshTokens error:' + e.message,
-                  type: "error",
-                });
-          });
-      }
+            });
+        })
+        .catch(e => {
+          // Clear tokenstore if auth fail
+          clearStreamToken();
+          clearWebToken();
+          this._tokenStore.clear();
+          dialog.showMessageBox({
+                message: '[startSilentFlow() - 272] refreshTokens error:' + e.message,
+                type: "error",
+              });
+        });
     }
   }
 
@@ -361,7 +410,6 @@ export default class Authentication {
       "http://gssv.xboxlive.com/"
     );
 
-    console.log("this._xal._xhomeToken:", this._xal._xhomeToken);
     if (
       this._xal._xhomeToken === undefined ||
       this._xal._xhomeToken.getSecondsValid() <= 60
@@ -371,12 +419,13 @@ export default class Authentication {
         "xhome"
       );
     }
-
-    console.log("this._xal._xcloudToken:", this._xal._xcloudToken);
+    
     const settings: any = this._application._store.get(
       "settings",
       defaultSettings
     );
+
+    console.log('settings.force_region_i1111p:', settings.force_region_ip)
     if (
       !this._xal._xcloudToken ||
       this._xal._xcloudToken.getSecondsValid() <= 60
@@ -388,6 +437,10 @@ export default class Authentication {
           settings.force_region_ip
         );
       } catch (error) {
+        this._application.log(
+          "authenticationV2",
+          error
+        );
         try {
           this._xal._xcloudToken = await this._xal.getStreamToken(
             xstsToken,
@@ -395,6 +448,10 @@ export default class Authentication {
             settings.force_region_ip
           );
         } catch (error) {
+          this._application.log(
+            "authenticationV2",
+            error
+          );
           this._xal._xcloudToken = null;
         }
       }

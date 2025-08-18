@@ -1,5 +1,7 @@
 import IpcBase from "./base";
 import { session } from "electron";
+import { clearStreamToken } from '../helpers/streamTokenStore';
+import { clearWebToken } from '../helpers/webTokenStore';
 
 export default class IpcApp extends IpcBase {
   // _streamingSessions:any = {}
@@ -97,6 +99,21 @@ export default class IpcApp extends IpcBase {
             __filename +
               "[startIpcEvents()] Error: Failed to clear local storage!"
           );
+          reject(error);
+        });
+    });
+  }
+
+  clearUserData() {
+    return new Promise<boolean>((resolve, reject) => {
+      session.defaultSession
+        .clearStorageData()
+        .then(() => {
+          clearStreamToken();
+          clearWebToken();
+          resolve(true);
+        })
+        .catch((error) => {
           reject(error);
         });
     });

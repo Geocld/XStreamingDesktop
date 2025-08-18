@@ -23,6 +23,8 @@ import { FOCUS_ELEMS } from '../../common/constans';
 import getServer from '../../lib/get-server';
 import { getStaticPaths, makeStaticProperties } from "../../lib/get-static";
 
+const LOCAL_CONSOLES = 'local-consoles';
+
 function Home() {
   const { t, i18n: {language: locale} } = useTranslation('home');
 
@@ -165,29 +167,41 @@ function Home() {
 
     if (_isLogined === "1") {
       // Get Consoles
-      setLoadingText(t("Fetching consoles..."));
-      Ipc.send("streaming", "getConsoles").then((res) => {
-        console.log("consoles:", res);
+      let _consoles: any = localStorage.getItem(LOCAL_CONSOLES) || '[]'
 
-        if (!res.length) {
-          // Fetch consoles by lagecy API
-          Ipc.send("consoles", "get").then(res2 => {
-            setConsoles(res2);
-            setLoading(false);
+      try {
+        _consoles = JSON.parse(_consoles)
+      } catch {
+        _consoles = []
+      }
 
-            setTimeout(() => {
-              focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-            },  1000);
-          });
-        } else {
+      if (_consoles.length) {
+        setConsoles(_consoles);
+        setLoading(false);
+
+        setTimeout(() => {
+          focusable.current = document.querySelectorAll(FOCUS_ELEMS);
+        },  1000);
+
+        Ipc.send("consoles", "get").then(res => {
+          setConsoles(res);
+          localStorage.setItem(LOCAL_CONSOLES, JSON.stringify(res));
+
+          setTimeout(() => {
+            focusable.current = document.querySelectorAll(FOCUS_ELEMS);
+          },  1000);
+        });
+      } else {
+        setLoadingText(t("Fetching consoles..."));
+        Ipc.send("consoles", "get").then(res => {
           setConsoles(res);
           setLoading(false);
 
           setTimeout(() => {
             focusable.current = document.querySelectorAll(FOCUS_ELEMS);
           },  1000);
-        }
-      });
+        });
+      }
     } else {
       Ipc.send("app", "checkAuthentication").then((isLogin) => {
         if (isLogin) {
@@ -210,17 +224,46 @@ function Home() {
                 setIsLogined(true);
 
                 // Get Consoles
-                setLoadingText(t("Fetching consoles..."));
-                Ipc.send("streaming", "getConsoles").then((res) => {
-                  console.log("consoles:", res);
-                  setConsoles(res);
+                let _consoles: any = localStorage.getItem(LOCAL_CONSOLES) || '[]'
+
+                try {
+                  _consoles = JSON.parse(_consoles)
+                } catch {
+                  _consoles = []
+                }
+
+                if (_consoles.length) {
+                  setConsoles(_consoles);
                   setLoading(false);
+                  
+                  // Silent update
+                  Ipc.send("consoles", "get").then(res => {
+                    setConsoles(res);
+
+                    localStorage.setItem(LOCAL_CONSOLES, JSON.stringify(res));
+
+                    setTimeout(() => {
+                      focusable.current = document.querySelectorAll(FOCUS_ELEMS);
+                    },  1000);
+                  });
 
                   setTimeout(() => {
                     focusable.current = document.querySelectorAll(FOCUS_ELEMS);
                   },  1000);
+                } else {
+                  setLoadingText(t("Fetching consoles..."));
+                  Ipc.send("consoles", "get").then(res => {
+                    setConsoles(res);
+                    setLoading(false);
 
-                });
+                    localStorage.setItem(LOCAL_CONSOLES, JSON.stringify(res));
+
+                    setTimeout(() => {
+                      focusable.current = document.querySelectorAll(FOCUS_ELEMS);
+                    },  1000);
+                  });
+                }
+                
               }
             });
           }, 500);
@@ -262,14 +305,48 @@ function Home() {
             setLoading(false);
 
             // Get Consoles
-            setLoadingText(t("Fetching consoles..."));
-            Ipc.send("streaming", "getConsoles").then((res) => {
-              setConsoles(res);
+            let _consoles: any = localStorage.getItem(LOCAL_CONSOLES) || '[]'
+
+            try {
+              _consoles = JSON.parse(_consoles)
+            } catch {
+              _consoles = []
+            }
+
+            if (_consoles.length) {
+              setConsoles(_consoles);
+              
+              // Silent update
+              Ipc.send("consoles", "get").then(res => {
+                console.log("consoles:", res);
+                setConsoles(res);
+
+                localStorage.setItem(LOCAL_CONSOLES, JSON.stringify(res));
+
+                setTimeout(() => {
+                  focusable.current = document.querySelectorAll(FOCUS_ELEMS);
+                },  1000);
+              });
 
               setTimeout(() => {
-                focusable.current = document.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                focusable.current = document.querySelectorAll(FOCUS_ELEMS);
               },  1000);
-            });
+            } else {
+              setLoading(true);
+              setLoadingText(t("Fetching consoles..."));
+              Ipc.send("consoles", "get").then(res => {
+                console.log("consoles:", res);
+                setConsoles(res);
+                setLoading(false);
+
+                localStorage.setItem(LOCAL_CONSOLES, JSON.stringify(res));
+
+                setTimeout(() => {
+                  focusable.current = document.querySelectorAll(FOCUS_ELEMS);
+                },  1000);
+              });
+            }
+            
           }
         });
       }, 500);

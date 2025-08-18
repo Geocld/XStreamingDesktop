@@ -101,7 +101,7 @@ export default class TitleManager {
                 "settings",
                 defaultSettings
             );
-            const lang = settings.locale.indexOf('zh') > -1 ? 'zh-TW' : 'en-US';
+            const lang = settings.preferred_game_language.indexOf('zh') > -1 ? 'zh-TW' : 'en-US';
 
             // Get officialTitles
             this.getOfficialTitles().then((officialTitles: any) => {
@@ -119,7 +119,7 @@ export default class TitleManager {
                 }).then((result: any) => {
                     if (result && result.Products) {
                         const products = result.Products;
-                        const mergedTitles = [];
+                        let mergedTitles = [];
                         for (const key in products) {
                             if (v2TitleMap[key]) {
                             mergedTitles.push({
@@ -137,6 +137,9 @@ export default class TitleManager {
                         mergedTitles.sort((a, b) =>
                             a.ProductTitle.localeCompare(b.ProductTitle),
                         );
+                        mergedTitles = mergedTitles.filter(item => {
+                            return item.titleId || item.XCloudTitleId;
+                        });
                         resolve(mergedTitles);
                     } else {
                         resolve([]);
