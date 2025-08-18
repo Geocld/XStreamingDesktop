@@ -3,6 +3,19 @@ import { createWindow } from "./helpers";
 import Application from "./application";
 import { Xal, TokenStore } from "./xal";
 import AuthTokenStore from "./helpers/tokenstore";
+import StreamingToken from './xal/lib/tokens/streamingtoken';
+import {
+  getStreamToken,
+  saveStreamToken,
+  clearStreamToken,
+  isStreamTokenValid,
+} from './helpers/streamTokenStore';
+import {
+  getWebToken,
+  saveWebToken,
+  clearWebToken,
+  isWebTokenValid,
+} from './helpers/webTokenStore';
 import { defaultSettings } from "../renderer/context/userContext.defaults";
 
 export default class Authentication {
@@ -67,86 +80,149 @@ export default class Authentication {
       "[startSilentFlow()] Starting silent flow..."
     );
     this._isAuthenticating = true;
-    this._xal
-      .refreshTokens(this._tokenStore)
-      .then(() => {
-        this._application.log(
-          "authenticationV2",
-          "[startSilentFlow()] Tokens have been refreshed"
-        );
 
-        this.getStreamingToken(this._tokenStore)
-          .then((streamingTokens) => {
-            if (streamingTokens.xCloudToken !== null) {
-              this._application.log(
-                "authenticationV2",
-                "[startSilentFlow()] Retrieved both xHome and xCloud tokens"
-              );
-              this._appLevel = 2;
-            } else {
-              this._application.log(
-                "authenticationV2",
-                "[startSilentFlow()] Retrieved xHome token only"
-              );
-              this._appLevel = 1;
-            }
+    // Get stream token from cache
+    const _streamToken = getStreamToken();
+    const _webToken = getWebToken();
 
+    if (
+      _streamToken &&
+      (_streamToken.xHomeToken || _streamToken.xCloudToken) &&
+      _webToken
+    ) {
+      const {xHomeToken, xCloudToken} = _streamToken;
+
+      if (xHomeToken || xCloudToken) {
+        if (
+          xHomeToken &&
+          isStreamTokenValid(xHomeToken) &&
+          isWebTokenValid(_webToken)
+        ) {
+          // Use cache directly
+          this._application.authenticationCompleted(
+            {
+              xHomeToken: xHomeToken
+                ? new StreamingToken(xHomeToken.data)
+                : xHomeToken,
+              xCloudToken: xCloudToken
+                ? new StreamingToken(xCloudToken.data)
+                : xCloudToken,
+            },
+            _webToken,
+          );
+        } else if (
+          xCloudToken &&
+          isStreamTokenValid(xCloudToken) &&
+          isWebTokenValid(_webToken)
+        ) {
+          // Use cache directly
+          this._application.authenticationCompleted(
+            {
+              xHomeToken: xHomeToken
+                ? new StreamingToken(xHomeToken.data)
+                : xHomeToken,
+              xCloudToken: xCloudToken
+                ? new StreamingToken(xCloudToken.data)
+                : xCloudToken,
+            },
+            _webToken,
+          );
+        } else {
+          // Skip refreshTokens within 23 hours
+          if (
+            Date.now() - this._tokenStore.getTokenUpdateTime() <
+            23 * 60 * 60 * 1000
+          ) {
+            console.log('[startSilentFlow] skip refreshTokens - branch1');
+
+            // Get new streaming token
             this._xal
-              .getWebToken(this._tokenStore)
-              .then((webToken) => {
-                this._application.log(
-                  "authenticationV2",
-                  __filename + "[startSilentFlow()] Web token received"
+              .getStreamingToken(this._tokenStore)
+              .then(streamingTokens => {
+                // console.log('streamingTokens:', JSON.stringify(streamingTokens));
+                this._xal.getWebToken(this._tokenStore).then(webToken => {
+                  saveStreamToken(streamingTokens);
+                  saveWebToken(webToken);
+                  this._application.authenticationCompleted(streamingTokens, webToken);
+                });
+              });
+          } else {
+            this._xal
+              .refreshTokens(this._tokenStore)
+              .then(() => {
+                console.log(
+                  '[startSilentFlow()] Tokens have been refreshed - branch1',
                 );
-
-                this._application.authenticationCompleted(
-                  streamingTokens,
-                  webToken
-                );
+                this._xal
+                  .getStreamingToken(this._tokenStore)
+                  .then(streamingTokens => {
+                    // log.info('streamingTokens:', streamingTokens);
+                    this._xal.getWebToken(this._tokenStore).then(webToken => {
+                      saveStreamToken(streamingTokens);
+                      saveWebToken(webToken);
+                      this._application.authenticationCompleted(streamingTokens, webToken);
+                    });
+                  });
               })
-              .catch((error) => {
-                this._application.log(
-                  "authenticationV2",
-                  __filename +
-                    "[startSilentFlow()] Failed to retrieve web tokens:",
-                  error
-                );
+              .catch(e => {
+                console.log('[startSilentFlow()] refreshTokens error:', e);
+                // Clear tokenstore if auth fail
+                clearStreamToken();
+                clearWebToken();
+                this._tokenStore.clear();
                 dialog.showMessageBox({
-                  message:
-                    "Error: Failed to retrieve web tokens:" +
-                    JSON.stringify(error),
+                  message: '[startSilentFlow() - 174] refreshTokens error:' + e.message,
                   type: "error",
                 });
               });
-          })
-          .catch((err) => {
-            this._application.log(
-              "authenticationV2",
-              "[startSilentFlow()] Failed to retrieve streaming tokens:",
-              err
-            );
-            dialog.showMessageBox({
-              message:
-                "Error: Failed to retrieve streaming tokens:" +
-                JSON.stringify(err),
-              type: "error",
-            });
+          }
+        }
+      }
+    } else {
+      // Skip refreshTokens within 23 hours
+      console.log('getTokenUpdateTime:', this._tokenStore.getTokenUpdateTime())
+      if (
+        Date.now() - this._tokenStore.getTokenUpdateTime() <
+        23 * 60 * 60 * 1000
+      ) {
+        console.log('[startSilentFlow] skip refreshTokens');
+        this._xal.getStreamingToken(this._tokenStore).then(streamingTokens => {
+          // console.log('streamingTokens:', JSON.stringify(streamingTokens));
+          this._xal.getWebToken(this._tokenStore).then(webToken => {
+            saveStreamToken(streamingTokens);
+            saveWebToken(webToken);
+            this._application.authenticationCompleted(streamingTokens, webToken);
           });
-      })
-      .catch((err) => {
-        this._application.log(
-          "authenticationV2",
-          "[startSilentFlow()] Error refreshing tokens:",
-          err
-        );
-        dialog.showMessageBox({
-          message:
-            "[startSilentFlow()] Error refreshing tokens:" +
-            JSON.stringify(err),
-          type: "error",
         });
-        this._tokenStore.clear();
-      });
+      } else {
+        this._xal
+          .refreshTokens(this._tokenStore)
+          .then(() => {
+            console.log('[startSilentFlow()] Tokens have been refreshed');
+            this._xal
+              .getStreamingToken(this._tokenStore)
+              .then(streamingTokens => {
+                // log.info('streamingTokens:', streamingTokens);
+                this._xal.getWebToken(this._tokenStore).then(webToken => {
+                  saveStreamToken(streamingTokens);
+                  saveWebToken(webToken);
+                  this._application.authenticationCompleted(streamingTokens, webToken);
+                });
+              });
+          })
+          .catch(e => {
+            console.log('[startSilentFlow()] refreshTokens error:', e);
+            // Clear tokenstore if auth fail
+            clearStreamToken();
+            clearWebToken();
+            this._tokenStore.clear();
+            dialog.showMessageBox({
+                  message: '[startSilentFlow() - 219] refreshTokens error:' + e.message,
+                  type: "error",
+                });
+          });
+      }
+    }
   }
 
   startAuthflow() {

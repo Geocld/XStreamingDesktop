@@ -10,6 +10,7 @@ export default class TokenStore {
     _userToken:UserToken | undefined
     _sisuToken:SisuToken | undefined
     _jwtKeys:any
+    _tokenUpdateTime: number
 
     // Sub-Tokens
     load(filepath:string, silent = false) {
@@ -28,7 +29,7 @@ export default class TokenStore {
     }
 
     loadJson(json:string) {
-        const jsonData:{ userToken:any, sisuToken:any, jwtKeys:any } = JSON.parse(json)
+        const jsonData:{ userToken:any, sisuToken:any, jwtKeys:any, tokenUpdateTime: any } = JSON.parse(json)
 
         if(jsonData.userToken){
             this._userToken = new UserToken(jsonData.userToken)
@@ -40,6 +41,10 @@ export default class TokenStore {
 
         if(jsonData.jwtKeys){
             this._jwtKeys = jsonData.jwtKeys
+        }
+
+        if(jsonData.tokenUpdateTime){
+            this._tokenUpdateTime = jsonData.tokenUpdateTime
         }
 
         return true

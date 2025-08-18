@@ -539,8 +539,13 @@ export default class Xal {
         if(this._xcloudToken === undefined || this._xcloudToken.getSecondsValid() <= 60){
             try {
                 this._xcloudToken = await this.getStreamToken(xstsToken, 'xgpuweb')
-            } catch(error){
-                this._xcloudToken = await this.getStreamToken(xstsToken, 'xgpuwebf2p')
+            } catch(error) {
+                console.error('[getStreamingToken] xgpuweb error:', error);
+                try {
+                    this._xcloudToken = await this.getStreamToken(xstsToken, 'xgpuwebf2p')
+                } catch (e) {
+                    console.error('[getStreamingToken] xgpuwebf2p error:', e);
+                }
             }
         }
 
