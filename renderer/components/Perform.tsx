@@ -53,6 +53,9 @@ function Perform({ xPlayer, connectState }) {
                 {t("RTT")}: {performance.rtt || "--"} | &nbsp;
               </span>
               <span className="text-xs">
+                {t("JIT")}: {performance.jit || "--"} | &nbsp;
+              </span>
+              <span className="text-xs">
                 {t("FPS")}: {performance.fps || "--"} | &nbsp;
               </span>
               <span className="text-xs">
@@ -76,6 +79,9 @@ function Perform({ xPlayer, connectState }) {
             </div>
             <div className="px-1 text-sm">
               {t("RTT")}: {performance.rtt || "--"}
+            </div>
+            <div className="px-1 text-sm">
+              {t("JIT")}: {performance.jit || "--"}
             </div>
             <div className="px-1 text-sm">
               {t("FPS")}: {performance.fps || "--"}

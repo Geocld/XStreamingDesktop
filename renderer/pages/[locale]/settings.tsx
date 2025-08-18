@@ -275,7 +275,7 @@ function Settings() {
         <Tabs aria-label="Options" onSelectionChange={() => {
           resetNavigationElems()
         }}>
-          <Tab key="Language" title={t("Language")}>
+          <Tab key="Base" title={t("Base")}>
             {settings.language &&
               settings.language.map((item) => {
                 return (

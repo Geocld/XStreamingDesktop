@@ -39,7 +39,7 @@
     "uplot": "^1.6.30",
     "uuid-1345": "^1.0.2",
     "xbox-webapi": "^1.4.1",
-    "xstreaming-player": "0.2.20",
+    "xstreaming-player": "0.2.21",
     "xvfb-maybe": "^0.2.1"
   },
   "devDependencies": {

@@ -7999,10 +7999,10 @@ xmlbuilder@>=11.0.1, xmlbuilder@^15.1.1:
   resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-15.1.1.tgz#9dcdce49eea66d8d10b42cae94a79c3c8d0c2ec5"
   integrity sha512-yMqGBqtXyeN1e3TGYvgNgDVZ3j84W4cwkOXQswghol6APgZWaff9lnbvN7MHYJOiXsvGPXtjTYJEiC9J2wv9Eg==
 
-xstreaming-player@0.2.20:
-  version "0.2.20"
-  resolved "https://registry.yarnpkg.com/xstreaming-player/-/xstreaming-player-0.2.20.tgz#fb1ae344d907b46bd8df52850fbec14d6e47716e"
-  integrity sha512-kHMXXguc9QZOJIKBDMZFysmVJA20U+1XZ9lz4+aQC2GlAUz1Ii3d09ebazUupPmRk7BELmVC+ysjJFdvAG7ExQ==
+xstreaming-player@0.2.21:
+  version "0.2.21"
+  resolved "https://registry.yarnpkg.com/xstreaming-player/-/xstreaming-player-0.2.21.tgz#af97b0ddbd7fd2b535f80dd34c785b26db95bb73"
+  integrity sha512-zNl0bjJZH0IHZgUX8Q+2F0Fnis4sOxnPJi2d+03a7vQJqs5bcd4Tputl9Y49HHHgnRpe+kMjGCRCvYURmSYOyA==
 
 xvfb-maybe@^0.2.1:
   version "0.2.1"
