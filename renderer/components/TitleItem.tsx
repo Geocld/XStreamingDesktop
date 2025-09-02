@@ -25,6 +25,7 @@ function TitleItem(props) {
                 titleItem.Image_Tile && (<Image
                   alt="Card background"
                   className="object-cover rounded-xl"
+                  loading={'lazy'}
                   src={"https:" + titleItem.Image_Tile.URL}
                   width={270}
                 />)
@@ -52,7 +53,7 @@ function TitleItem(props) {
             </div>
           </CardBody>
           <CardFooter className="pt-0 px-4 flex-col items-start">
-            <h4 className="font-bold">{titleItem.ProductTitle}</h4>
+            <p className="text-sm font-bold">{titleItem.ProductTitle}</p>
           </CardFooter>
         </Card>
       ) : null}

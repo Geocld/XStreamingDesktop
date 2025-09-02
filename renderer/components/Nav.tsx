@@ -148,7 +148,7 @@ const Nav = ({ current, isLogined }) => {
                 <DropdownItem key="logout" color="danger" onClick={handleLouout}>
                 {t('Logout')}
                 </DropdownItem>
-                <DropdownItem key="exit" color="danger" onClick={handleExit}>
+                <DropdownItem key="exit" className="text-danger" color="danger" onClick={handleExit}>
                 {t('Exit')}
                 </DropdownItem>
               </DropdownMenu>

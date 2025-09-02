@@ -32,12 +32,23 @@ export default class IpcxCloud extends IpcBase {
 
   getRecentTitles() {
     const streamingTokens = this._application.streamingTokens;
-    const _xCloudApi = new xCloudApi(
+
+    let _xCloudApi = new xCloudApi(
       this._application,
-      streamingTokens.xCloudToken.getDefaultRegion().baseUri.substring(8),
-      streamingTokens.xCloudToken.data.gsToken,
-      "cloud"
+      'ckr.core.gssv-play-prod.xboxlive.com',
+      '',
+      'cloud'
     );
+
+    if (streamingTokens.xCloudToken) {
+      _xCloudApi = new xCloudApi(
+        this._application,
+        streamingTokens.xCloudToken.getDefaultRegion().baseUri.substring(8),
+        streamingTokens.xCloudToken.data.gsToken,
+        'cloud'
+      );
+    }
+    
     return _xCloudApi.getRecentTitles();
   }
 

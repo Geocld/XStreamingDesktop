@@ -6,7 +6,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@heroui/react";
-// import Ipc from "../lib/ipc";
+import Ipc from "../lib/ipc";
 import { useSettings } from "../context/userContext";
 
 const CONNECTED = 'connected';
@@ -52,9 +52,9 @@ function ActionBar(props) {
     props.onLongPressNexus && props.onLongPressNexus();
   };
 
-  // const handleToggleFullscreen = () => {
-  //   Ipc.send('app', 'toggleFullscreen')
-  // }
+  const handleToggleFullscreen = () => {
+    Ipc.send('app', 'toggleFullscreen')
+  }
 
   return (
     <div id="actionBar">
@@ -121,9 +121,9 @@ function ActionBar(props) {
             )
           }
           
-          {/* <DropdownItem key="fullscreen" onClick={handleToggleFullscreen}>
+          <DropdownItem key="fullscreen" onClick={handleToggleFullscreen}>
             {t("Toggle fullscreen")}
-          </DropdownItem> */}
+          </DropdownItem>
 
           {
             (props.connectState === CONNECTED && settings.power_on && props.type !== 'cloud') && (

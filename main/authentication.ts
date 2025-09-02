@@ -166,6 +166,11 @@ export default class Authentication {
                   .then(streamingTokens => {
                     // log.info('streamingTokens:', streamingTokens);
                     this._xal.getWebToken(this._tokenStore).then(webToken => {
+                      if (streamingTokens.xCloudToken !== null) {
+                        this._appLevel = 2;
+                      } else {
+                        this._appLevel = 1;
+                      }
                       saveStreamToken(streamingTokens);
                       saveWebToken(webToken);
                       this._application.authenticationCompleted(streamingTokens, webToken);
@@ -267,7 +272,7 @@ export default class Authentication {
           clearWebToken();
           this._tokenStore.clear();
           dialog.showMessageBox({
-                message: '[startSilentFlow() - 272] refreshTokens error:' + e.message,
+                message: '[startSilentFlow() - 275] refreshTokens error:' + e.message,
                 type: "error",
               });
         });

@@ -194,10 +194,17 @@ function Xcloud() {
                 setTimeout(() => {
                   focusable.current = document.querySelectorAll(FOCUS_ELEMS);
                 },  1000);
+              }).catch(e => {
+                console.log(e);
               });
+            }).catch(e => {
+              console.log(e);
             });
-          }
-        );
+          }).then(e => {
+            console.log(e);
+          });
+      }).catch(e => {
+        console.log(e)
       });
     };
 

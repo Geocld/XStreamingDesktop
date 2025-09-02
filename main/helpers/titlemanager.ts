@@ -77,14 +77,14 @@ export default class TitleManager {
                 }
                 resolve(officialTitles);
             })
-            .catch(e => {
+            .catch(() => {
                 resolve([]);
             });
         });
     }
 
     getGamePassProducts(titles) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             const productIdQueue = [];
             const v2TitleMap = {};
             if (!Array.isArray(titles)) {
@@ -108,17 +108,27 @@ export default class TitleManager {
                 const mergeProductIds = [
                     ...new Set([...productIdQueue, ...officialTitles]),
                 ];
-    
-                this._http.post('catalog.gamepass.com', `/v3/products?market=US&language=${lang}&hydration=RemoteLowJade0`, { // RemoteLowJade0
-                    'Products': mergeProductIds,
-                }, {
-                    'ms-cv': 0,
-                    'calling-app-name': 'Xbox Cloud Gaming Web',
-                    'calling-app-version': '24.17.63',
-    
-                }).then((result: any) => {
-                    if (result && result.Products) {
-                        const products = result.Products;
+
+                axios
+                    .post(
+                        `https://catalog.gamepass.com/v3/products?market=US&language=${lang}&hydration=RemoteLowJade0`,
+                        {
+                        Products: mergeProductIds,
+                        },
+                        {
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                            'ms-cv': 0,
+                            'calling-app-name': 'Xbox Cloud Gaming Web',
+                            'calling-app-version': '24.17.63',
+                        },
+                        },
+                    )
+                    .then(res => {
+                        console.log('POST catalog.gamepass.com/v3/products success')
+                        if (res.data && res.data.Products) {
+                        const products = res.data.Products;
                         let mergedTitles = [];
                         for (const key in products) {
                             if (v2TitleMap[key]) {
@@ -141,14 +151,16 @@ export default class TitleManager {
                             return item.titleId || item.XCloudTitleId;
                         });
                         resolve(mergedTitles);
-                    } else {
+                        } else {
                         resolve([]);
-                    }
-                }).catch(e => {
-                    console.log('getGamePassProducts error:', e);
-                    reject(e);
+                        }
+                    })
+                    .catch(e => {
+                        console.log('getGamePassProducts error:', e);
+                        // reject(e);
+                        resolve([])
+                    });
                 });
-            });
         })
     }
 

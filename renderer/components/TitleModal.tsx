@@ -62,8 +62,10 @@ function TitleModal(props) {
             <div className="flex">
               <div className="w-1/3">
                 <Image
-                  className="object-cover rounded-xl"
+                  // className="object-contain rounded-lg"
+                  // className="object-cover rounded-lg"
                   isZoomed
+                  loading={'lazy'}
                   src={'https:' + titleItem.Image_Poster.URL}
                 />
               </div>
