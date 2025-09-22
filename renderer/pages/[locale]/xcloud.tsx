@@ -46,50 +46,52 @@ function Xcloud() {
       document.documentElement.style.fontSize = localFontSize + 'px';
     }
 
+    const clearAllFocus = () => {
+      if (focusable.current) {
+        Array.from(focusable.current).forEach(elem => {
+          (elem as HTMLElement).style.outline = 'none';
+        });
+      }
+    };
+
     function nextItem(index) {
       index++;
       currentIndex.current = index % focusable.current.length;
       const elem = focusable.current[currentIndex.current];
-      const keyboardEvent = new KeyboardEvent('keydown', {
-        key: 'Tab',
-        code: 'Tab',
-        keyCode: 9,
-        charCode: 9,
-        view: window,
-        bubbles: true
-      });
 
-      document.dispatchEvent(keyboardEvent);
-      elem.focus();
+      clearAllFocus();
+
+      if (elem) {
+        elem.style.outline = '2px solid #FFB900';
+        elem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
     }
 
     function prevItem(index) {
+      clearAllFocus();
+
       if (index === 0) {
         currentIndex.current = focusable.current.length - 1
       } else {
         index -= 1;
         currentIndex.current = index % focusable.current.length;
       }
-      
+
       const elem = focusable.current[currentIndex.current];
-      const keyboardEvent = new KeyboardEvent('keydown', {
-        key: 'Tab',
-        code: 'Tab',
-        keyCode: 9,
-        charCode: 9,
-        view: window,
-        bubbles: true,
-        shiftKey: true
-      });
-      document.dispatchEvent(keyboardEvent);
-      elem && elem.focus();
+
+      if (elem) {
+        elem.style.outline = '2px solid #FFB900';
+        elem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
     }
 
     function clickItem() {
       setTimeout(() => {
         const elem = focusable.current[currentIndex.current];
-        elem && elem.blur();
-        elem && elem.click();
+        if (elem) {
+          elem.style.outline = 'none';
+          elem.click();
+        }
       }, 300);
     }
 
@@ -233,6 +235,10 @@ function Xcloud() {
             setNewTitles(cacheNewTitles);
             setRecentNewTitles(cacheRecentTitles);
             setLoading(false);
+
+            setTimeout(() => {
+              focusable.current = document.querySelectorAll(FOCUS_ELEMS);
+            },  1000);
 
             fetchGames(true);
           } else {
