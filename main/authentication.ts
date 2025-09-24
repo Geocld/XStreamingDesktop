@@ -137,6 +137,7 @@ export default class Authentication {
           );
         } else {
           // Skip refreshTokens within 23 hours
+          console.log('Skip refreshTokens within 23 hours')
           if (
             Date.now() - this._tokenStore.getTokenUpdateTime() <
             23 * 60 * 60 * 1000
@@ -144,11 +145,15 @@ export default class Authentication {
             console.log('[startSilentFlow] skip refreshTokens - branch1');
 
             // Get new streaming token
-            this._xal
-              .getStreamingToken(this._tokenStore)
+            this.getStreamingToken(this._tokenStore)
               .then(streamingTokens => {
                 // console.log('streamingTokens:', JSON.stringify(streamingTokens));
                 this._xal.getWebToken(this._tokenStore).then(webToken => {
+                  if (streamingTokens.xCloudToken !== null) {
+                    this._appLevel = 2;
+                  } else {
+                    this._appLevel = 1;
+                  }
                   saveStreamToken(streamingTokens);
                   saveWebToken(webToken);
                   this._application.authenticationCompleted(streamingTokens, webToken);
@@ -161,8 +166,7 @@ export default class Authentication {
                 console.log(
                   '[startSilentFlow()] Tokens have been refreshed - branch1',
                 );
-                this._xal
-                  .getStreamingToken(this._tokenStore)
+                this.getStreamingToken(this._tokenStore)
                   .then(streamingTokens => {
                     // log.info('streamingTokens:', streamingTokens);
                     this._xal.getWebToken(this._tokenStore).then(webToken => {
@@ -405,7 +409,6 @@ export default class Authentication {
   }
 
   async getStreamingToken(tokenStore: TokenStore) {
-    console.log("getStreamingToken");
     const sisuToken = tokenStore.getSisuToken();
     if (sisuToken === undefined)
       throw new Error("Sisu token is missing. Please authenticate first");
