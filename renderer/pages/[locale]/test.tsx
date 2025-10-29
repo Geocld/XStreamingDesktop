@@ -3,6 +3,8 @@ import { Button } from "@heroui/react";
 import { useTranslation } from "next-i18next";
 import Nav from "../../components/Nav";
 
+import Ipc from "../../lib/ipc";
+
 import { getStaticPaths, makeStaticProperties } from "../../lib/get-static";
 
 function GamepadTester() {
@@ -16,6 +18,12 @@ function GamepadTester() {
     if (_isLogined === "1") {
       setIsLogined(true);
     }
+
+    setInterval(() => {
+      Ipc.send("app", "hidController").then(res => {
+        console.log('controller states:', res.states)
+      })
+    }, 2000);
 
     const fudgeFactor = 2; // because of bug in Chrome related to svg text alignment font sizes can not be < 1
     const runningElem = document.querySelector("#running");

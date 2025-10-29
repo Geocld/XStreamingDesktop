@@ -3,6 +3,22 @@ import { session } from "electron";
 import { clearStreamToken } from '../helpers/streamTokenStore';
 import { clearWebToken } from '../helpers/webTokenStore';
 
+// const HID = require('node-hid')
+
+// const devices = HID.devices()
+// const xbox = devices.find(d => d.vendorId === 0x045e)
+
+// const device = new HID.HID(xbox.path);
+
+const states = {
+  a: 0
+}
+
+// device.on('data', data => {
+//   states.a = data[2]
+//   console.log('data:', data[2], states)
+// });
+
 export default class IpcApp extends IpcBase {
   // _streamingSessions:any = {}
 
@@ -162,6 +178,14 @@ export default class IpcApp extends IpcBase {
     return new Promise((resolve) => {
       this._application._mainWindow.setFullScreen(false);
       resolve({})
+    });
+  }
+
+  hidController() {
+    return new Promise((resolve) => {
+      resolve({
+        states
+      })
     });
   }
 }
