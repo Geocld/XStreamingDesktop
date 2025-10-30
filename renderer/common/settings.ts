@@ -87,6 +87,17 @@ const getSettingsMetas = (t) => {
           {value: '20', label: t('Super Big')},
         ],
       },
+      {
+        name: 'background_keepalive',
+        type: 'radio',
+        title: t('Background keepalive'),
+        description: t('background_keepalive_desc'),
+        needRestart: true,
+        data: [
+          {value: false, label: t('Disable')},
+          {value: true, label: t('Enable')},
+        ],
+      },
     ],
     streaming: [
       {

@@ -26,6 +26,8 @@ function Settings() {
   const router = useRouter();
   const { theme } = useTheme();
 
+  console.log('locale:', locale);
+
   const [showAlert, setShowAlert] = useState(false);
   const [showRestartModal, setShowRestartModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);

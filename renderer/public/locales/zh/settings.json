@@ -113,5 +113,7 @@
   "Username": "用户名",
   "Password": "密码",
   "Save server": "保存服务器",
-  "Saved": "保存成功"
+  "Saved": "保存成功",
+  "Background keepalive": "后台保持活跃",
+  "background_keepalive_desc": "应用在后台时，是否保持手柄输入活跃"
 }

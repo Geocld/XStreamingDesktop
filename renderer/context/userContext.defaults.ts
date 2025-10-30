@@ -32,6 +32,7 @@ export const defaultSettings = {
   server_url: '',
   server_username: '',
   server_credential: '',
+  background_keepalive: false,
   input_mousekeyboard_maping: {
     ArrowLeft: 'DPadLeft',
     ArrowUp: 'DPadUp',

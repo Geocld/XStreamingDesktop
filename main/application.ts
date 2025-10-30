@@ -271,7 +271,7 @@ export default class Application {
     );
 
     const settings: any = this._store.get('settings', defaultSettings)
-    console.log('settings:', settings)
+    console.log('application.ts settings:', settings)
 
     const windowOptions: any = {
       title: "XStreaming",
@@ -287,6 +287,10 @@ export default class Application {
       height: 800,
       ...windowOptions,
     });
+
+    if (settings.background_keepalive) {
+      this._mainWindow.setBackgroundThrottling(false);
+    }
 
     this._mainWindow.on("show", () => {
       this.log(

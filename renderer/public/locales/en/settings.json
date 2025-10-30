@@ -128,5 +128,7 @@
   "Username": "Username",
   "Password": "Password",
   "Save server": "Save server",
-  "Saved": "Saved"
+  "Saved": "Saved",
+  "Background keepalive": "Background keepalive",
+  "background_keepalive_desc": "Whether keepalive input when app is in background"
 }
