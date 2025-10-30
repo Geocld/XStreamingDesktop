@@ -289,7 +289,7 @@ export default class Application {
     });
 
     if (settings.background_keepalive) {
-      this._mainWindow.setBackgroundThrottling(false);
+      this._mainWindow.webContents.setBackgroundThrottling(false);
     }
 
     this._mainWindow.on("show", () => {
