@@ -64,5 +64,7 @@ export const defaultSettings = {
     contrast: 100,
     brightness: 100,
   },
+  fsr: false,
+  fsr_sharpness: 2,
   debug: false,
 };

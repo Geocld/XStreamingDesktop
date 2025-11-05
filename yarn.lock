@@ -7637,6 +7637,11 @@ thenify-all@^1.0.0:
   dependencies:
     any-promise "^1.0.0"
 
+three@0.150.1:
+  version "0.150.1"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.150.1.tgz#870d324a4d2daf1c7d55be97f3f73d83783e28be"
+  integrity sha512-5C1MqKUWaHYo13BX0Q64qcdwImgnnjSOFgBscOzAo8MYCzEtqfQqorEKMcajnA3FHy1yVlIe9AmaMQ0OQracNA==
+
 tmp-promise@^3.0.2:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/tmp-promise/-/tmp-promise-3.0.3.tgz#60a1a1cc98c988674fcbfd23b6e3367bdeac4ce7"
@@ -8019,10 +8024,12 @@ xmlbuilder@>=11.0.1, xmlbuilder@^15.1.1:
   resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-15.1.1.tgz#9dcdce49eea66d8d10b42cae94a79c3c8d0c2ec5"
   integrity sha512-yMqGBqtXyeN1e3TGYvgNgDVZ3j84W4cwkOXQswghol6APgZWaff9lnbvN7MHYJOiXsvGPXtjTYJEiC9J2wv9Eg==
 
-xstreaming-player@0.2.21:
-  version "0.2.21"
-  resolved "https://registry.yarnpkg.com/xstreaming-player/-/xstreaming-player-0.2.21.tgz#af97b0ddbd7fd2b535f80dd34c785b26db95bb73"
-  integrity sha512-zNl0bjJZH0IHZgUX8Q+2F0Fnis4sOxnPJi2d+03a7vQJqs5bcd4Tputl9Y49HHHgnRpe+kMjGCRCvYURmSYOyA==
+xstreaming-player@0.2.22:
+  version "0.2.22"
+  resolved "https://registry.yarnpkg.com/xstreaming-player/-/xstreaming-player-0.2.22.tgz#9de1d4b90c643f8d87035322c8baa9637a5749eb"
+  integrity sha512-w1fKaocn6L9OzxYMz3gG1uz8BEJta3HO3cZxPNQEOepWmDxugLmP+fii5l2zqKY/Hk12c6vsVACNEMqfL4D0hQ==
+  dependencies:
+    three "0.150.1"
 
 xvfb-maybe@^0.2.1:
   version "0.2.1"

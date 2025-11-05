@@ -3,6 +3,7 @@ import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import xStreamingPlayer from "xstreaming-player";
+import { addToast } from "@heroui/react";
 import ActionBar from "../../components/ActionBar";
 import Display from "../../components/Display";
 import Audio from "../../components/Audio";
@@ -147,6 +148,9 @@ function Stream() {
       // Set deadzone
       xPlayer.setGamepadDeadZone(settings.dead_zone);
 
+      // Set fsr sharpness
+      xPlayer.setFsrSharpness(settings.fsr_sharpness);
+
       // Set gamepad maping
       if (settings.gamepad_maping) {
         xPlayer.setGamepadMaping(settings.gamepad_maping)
@@ -285,6 +289,22 @@ function Stream() {
         if (event.state === "connected") {
           setLoadingText(t("Connected"));
 
+          if (settings.fsr) {
+            setTimeout(() => {
+              xPlayer && xPlayer.startFSR(() => {
+                addToast({
+                    title: t('FSR started'),
+                    color: 'success'
+                  });
+              });
+
+              const videoHolder = document.getElementById('videoHolder');
+              const canvasContainer = document.getElementById('canvas-container');
+              videoHolder.style.visibility = 'hidden';
+              canvasContainer.style.visibility = 'visible';
+            }, 3000)
+          }
+
           setTimeout(() => {
             setLoading(false);
 
@@ -312,38 +332,40 @@ function Stream() {
             }
 
             // Refresh video player
-            setTimeout(() => {
-              const _displayOptions = window.localStorage.getItem(DISPLAY_KEY);
+            if (!settings.fsr) {
+              setTimeout(() => {
+                const _displayOptions = window.localStorage.getItem(DISPLAY_KEY);
 
-              let displayOptions: any = DEFAULT_OPTIONS;
-              if (_displayOptions) {
-                try {
-                  displayOptions = JSON.parse(_displayOptions);
-                } catch {
-                  displayOptions = DEFAULT_OPTIONS;
+                let displayOptions: any = DEFAULT_OPTIONS;
+                if (_displayOptions) {
+                  try {
+                    displayOptions = JSON.parse(_displayOptions);
+                  } catch {
+                    displayOptions = DEFAULT_OPTIONS;
+                  }
                 }
-              }
 
-              const videoStyle = document.getElementById("video-css");
-              console.log('Refresh video player:', displayOptions)
-              const filters = getVideoPlayerFilterStyle(displayOptions);
-              let videoCss = "";
-              if (filters) {
-                videoCss += `filter: ${filters} !important;`;
-              }
-              let css = "";
-              if (videoCss) {
-                css = `#videoHolder video { ${videoCss} }`;
-              }
+                const videoStyle = document.getElementById("video-css");
+                console.log('Refresh video player:', displayOptions)
+                const filters = getVideoPlayerFilterStyle(displayOptions);
+                let videoCss = "";
+                if (filters) {
+                  videoCss += `filter: ${filters} !important;`;
+                }
+                let css = "";
+                if (videoCss) {
+                  css = `#videoHolder video { ${videoCss} }`;
+                }
 
-              videoStyle!.textContent = css;
-            }, 1000);
+                videoStyle!.textContent = css;
+              }, 1000);
+            }
 
-            // const xboxTitleId = window._xboxTitleId || ''
-            // // inputConfigs
-            // Ipc.send("streaming", "inputConfigs", {
-            //   xboxTitleId,
-            // })
+            const xboxTitleId = window._xboxTitleId || ''
+            // inputConfigs
+            Ipc.send("streaming", "inputConfigs", {
+              xboxTitleId,
+            })
           }, 500);
         } else if (event.state === "closed") {
           console.log(":: We are disconnected!");
@@ -603,6 +625,11 @@ function Stream() {
     setLoadingText(t("Disconnecting..."));
     xPlayer && xPlayer.close();
 
+    const videoHolder = document.getElementById("videoHolder");
+    const canvasContainer = document.getElementById("canvas-container");
+    videoHolder.style.visibility = 'visible';
+    canvasContainer.style.visibility = 'hidden';
+
     if (streamStateInterval.current) {
       clearInterval(streamStateInterval.current);
     }
@@ -771,6 +798,11 @@ function Stream() {
       <div id="videoHolder" style={videoHolderStyle}>
         {/* <video src="https://www.w3schools.com/html/mov_bbb.mp4" autoPlay muted loop playsInline></video> */}
       </div>
+      
+      <div id="canvas-container">
+        <canvas id="canvas"></canvas>
+      </div>
+      
 
       <svg id="video-filters" style={{ display: "none" }}>
         <defs>

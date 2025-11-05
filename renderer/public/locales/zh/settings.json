@@ -115,5 +115,10 @@
   "Save server": "保存服务器",
   "Saved": "保存成功",
   "Background keepalive": "后台保持活跃",
-  "background_keepalive_desc": "应用在后台时，是否保持手柄输入活跃"
+  "background_keepalive_desc": "应用在后台时，是否保持手柄输入活跃(Windows无法使用该功能)",
+  "FSR": "FSR",
+  "FSR started": "FSR 已启动",
+  "FSR_desc": "启用FSR(FidelityFX Super Resolution)实现超分辨率，可以在不增加带宽的情况下提升画面清晰度，但会增加CPU/GPU负载",
+  "fsr_sharpness_title": "FSR锐度",
+  "fsr_sharpness_desc": "设置FSR锐度"
 }

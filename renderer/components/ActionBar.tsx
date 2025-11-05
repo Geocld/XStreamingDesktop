@@ -74,7 +74,7 @@ function ActionBar(props) {
           }
           
           {
-            props.connectState === CONNECTED && (
+            (props.connectState === CONNECTED && !settings.fsr) && (
               <DropdownItem key="display" onClick={handleDisplay}>
                 {t("Display settings")}
               </DropdownItem>

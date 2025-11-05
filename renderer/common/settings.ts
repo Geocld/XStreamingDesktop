@@ -98,6 +98,27 @@ const getSettingsMetas = (t) => {
           {value: true, label: t('Enable')},
         ],
       },
+      {
+        name: 'fsr',
+        type: 'radio',
+        title: t('FSR'),
+        description: t('FSR_desc'),
+        needRestart: false,
+        data: [
+          {value: false, label: t('Disable')},
+          {value: true, label: t('Enable')},
+        ],
+      },
+      {
+        name: 'fsr_sharpness',
+        type: 'slider',
+        min: 0,
+        max: 10,
+        step: 1,
+        title: t('fsr_sharpness_title'),
+        description: t('fsr_sharpness_desc'),
+        data: [],
+      },
     ],
     streaming: [
       {

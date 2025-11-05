@@ -52,6 +52,17 @@ div#videoHolder video {
   z-index: 98;
 }
 
+div#canvas-container {
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 div#videoHolder.size_stretch video {
   object-fit: fill;
 }
