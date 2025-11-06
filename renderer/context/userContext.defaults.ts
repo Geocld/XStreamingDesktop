@@ -64,6 +64,7 @@ export const defaultSettings = {
     contrast: 100,
     brightness: 100,
   },
+  use_vulkan: false,
   fsr: false,
   fsr_sharpness: 2,
   debug: false,

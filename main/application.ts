@@ -45,28 +45,28 @@ export default class Application {
     );
     this._log = Debug("xstreaming");
 
-    // ElectronApp.commandLine.appendSwitch('use-vulkan')
-    // // ElectronApp.commandLine.appendSwitch('use-angle', 'vulkan')
-    // ElectronApp.commandLine.appendSwitch('enable-features', 'Vulkan,VulkanFromANGLE,DefaultANGLEVulkan,VaapiIgnoreDriverChecks,VaapiVideoDecoder,PlatformHEVCDecoderSupport,CanvasOopRasterization')
-    // // ElectronApp.commandLine.appendSwitch('disable-features', 'UseChromeOSDirectVideoDecoder');
-    // ElectronApp.commandLine.appendSwitch('enable-gpu-rasterization')
-    // ElectronApp.commandLine.appendSwitch('enable-oop-rasterization')
-    // ElectronApp.commandLine.appendSwitch('enable-accelerated-video-decode')
-    // ElectronApp.commandLine.appendSwitch('ozone-platform-hint', 'x11')
-    // ElectronApp.commandLine.appendSwitch('ignore-gpu-blocklist')
-    // ElectronApp.commandLine.appendSwitch('no-sandbox');
-    // ElectronApp.commandLine.appendSwitch('enable-zero-copy');
+    const settings: any = this._store.get('settings', defaultSettings)
 
-    ElectronApp.commandLine.appendSwitch('ignore-gpu-blacklist')
-    ElectronApp.commandLine.appendSwitch('enable-gpu-rasterization')
-    ElectronApp.commandLine.appendSwitch('enable-oop-rasterization')
-    ElectronApp.commandLine.appendSwitch('enable-accelerated-video-decode')
-    ElectronApp.commandLine.appendSwitch('ozone-platform-hint', 'x11')
+    if (settings.use_vulkan) {
+      ElectronApp.commandLine.appendSwitch('use-vulkan')
+      ElectronApp.commandLine.appendSwitch('enable-features', 'Vulkan,VulkanFromANGLE,DefaultANGLEVulkan,VaapiIgnoreDriverChecks,VaapiVideoDecoder,PlatformHEVCDecoderSupport,CanvasOopRasterization')
+      ElectronApp.commandLine.appendSwitch('enable-gpu-rasterization')
+      ElectronApp.commandLine.appendSwitch('enable-oop-rasterization')
+      ElectronApp.commandLine.appendSwitch('enable-accelerated-video-decode')
+      ElectronApp.commandLine.appendSwitch('ozone-platform-hint', 'x11')
+      ElectronApp.commandLine.appendSwitch('ignore-gpu-blocklist')
+      ElectronApp.commandLine.appendSwitch('no-sandbox');
+      ElectronApp.commandLine.appendSwitch('enable-zero-copy');
+    } else {
+      ElectronApp.commandLine.appendSwitch('ignore-gpu-blacklist')
+      ElectronApp.commandLine.appendSwitch('enable-gpu-rasterization')
+      ElectronApp.commandLine.appendSwitch('enable-oop-rasterization')
+      ElectronApp.commandLine.appendSwitch('enable-accelerated-video-decode')
+      ElectronApp.commandLine.appendSwitch('ozone-platform-hint', 'x11')
+    }
 
     this.readStartupFlags();
     this.loadApplicationDefaults();
-
-    // ElectronApp.removeAsDefaultProtocolClient('ms-xal-public-beta-000000004c20a908')
 
     this._ipc = new Ipc(this);
     this._authentication = new Authentication(this);
@@ -294,7 +294,7 @@ export default class Application {
       ...windowOptions,
     });
 
-    this._mainWindow.openDevTools();
+    // this._mainWindow.openDevTools();
 
     if (settings.background_keepalive) {
       this._mainWindow.webContents.setBackgroundThrottling(false);

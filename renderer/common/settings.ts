@@ -99,6 +99,17 @@ const getSettingsMetas = (t) => {
         ],
       },
       {
+        name: 'use_vulkan',
+        type: 'radio',
+        title: t('value_vulkan_title'),
+        description: t('value_vulkan_desc'),
+        needRestart: true,
+        data: [
+          {value: false, label: t('Disable')},
+          {value: true, label: t('Enable')},
+        ],
+      },
+      {
         name: 'fsr',
         type: 'radio',
         title: t('FSR'),

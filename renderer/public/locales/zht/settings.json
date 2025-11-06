@@ -116,6 +116,8 @@
   "Saved": "儲存成功",
   "Background keepalive": "後台保持活躍",
   "background_keepalive_desc": "應用在後台時，是否保持手柄輸入活躍(Windows無法使用該功能)",
+  "value_vulkan_title": "使用Vulkan渲染",
+  "value_vulkan_desc": "啟用Vulkan渲染，可以提升部分設備的渲染性能，但可能會導致不穩定(比如黑屏等)",
   "FSR": "FSR",
   "FSR started": "FSR 已启动",
   "FSR_desc": "啟用FSR(FidelityFX Super Resolution)實現超分辨率，可以在不增加帶寬的情況下提升畫面清晰度，但會增加CPU/GPU負載",

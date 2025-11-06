@@ -131,6 +131,8 @@
   "Saved": "Saved",
   "Background keepalive": "Background keepalive",
   "background_keepalive_desc": "Whether keepalive input when app is in background(This feature is not available on Windows)",
+  "value_vulkan_title": "Use Vulkan Rendering",
+  "value_vulkan_desc": "Enabling Vulkan rendering can improve rendering performance on some devices, but may lead to instability (such as black screen, etc.)",
   "FSR": "FSR",
   "FSR started": "FSR started",
   "FSR_desc": "Enable FSR (FidelityFX Super Resolution) to achieve super-resolution, which can improve image clarity without increasing bandwidth, but will increase CPU/GPU load",
