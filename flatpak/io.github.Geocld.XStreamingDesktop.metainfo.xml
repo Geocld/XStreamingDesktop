@@ -34,6 +34,15 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.9.1" date="2025-11-06">
+      <description>
+          <ul>
+            <li>Changes:</li>
+            <li>Fixed steamdeck black screen when FSR open.</li>
+            <li>Add『Use vulkan』option.</li>
+          </ul>
+      </description>
+    </release>
     <release version="1.9.0" date="2025-11-05">
       <description>
           <ul>
