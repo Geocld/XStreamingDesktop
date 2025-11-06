@@ -45,17 +45,23 @@ export default class Application {
     );
     this._log = Debug("xstreaming");
 
-    ElectronApp.commandLine.appendSwitch('use-vulkan')
-    // ElectronApp.commandLine.appendSwitch('use-angle', 'vulkan')
-    ElectronApp.commandLine.appendSwitch('enable-features', 'Vulkan,VulkanFromANGLE,DefaultANGLEVulkan,VaapiIgnoreDriverChecks,VaapiVideoDecoder,PlatformHEVCDecoderSupport,CanvasOopRasterization')
-    // ElectronApp.commandLine.appendSwitch('disable-features', 'UseChromeOSDirectVideoDecoder');
+    // ElectronApp.commandLine.appendSwitch('use-vulkan')
+    // // ElectronApp.commandLine.appendSwitch('use-angle', 'vulkan')
+    // ElectronApp.commandLine.appendSwitch('enable-features', 'Vulkan,VulkanFromANGLE,DefaultANGLEVulkan,VaapiIgnoreDriverChecks,VaapiVideoDecoder,PlatformHEVCDecoderSupport,CanvasOopRasterization')
+    // // ElectronApp.commandLine.appendSwitch('disable-features', 'UseChromeOSDirectVideoDecoder');
+    // ElectronApp.commandLine.appendSwitch('enable-gpu-rasterization')
+    // ElectronApp.commandLine.appendSwitch('enable-oop-rasterization')
+    // ElectronApp.commandLine.appendSwitch('enable-accelerated-video-decode')
+    // ElectronApp.commandLine.appendSwitch('ozone-platform-hint', 'x11')
+    // ElectronApp.commandLine.appendSwitch('ignore-gpu-blocklist')
+    // ElectronApp.commandLine.appendSwitch('no-sandbox');
+    // ElectronApp.commandLine.appendSwitch('enable-zero-copy');
+
+    ElectronApp.commandLine.appendSwitch('ignore-gpu-blacklist')
     ElectronApp.commandLine.appendSwitch('enable-gpu-rasterization')
     ElectronApp.commandLine.appendSwitch('enable-oop-rasterization')
     ElectronApp.commandLine.appendSwitch('enable-accelerated-video-decode')
     ElectronApp.commandLine.appendSwitch('ozone-platform-hint', 'x11')
-    ElectronApp.commandLine.appendSwitch('ignore-gpu-blocklist')
-    ElectronApp.commandLine.appendSwitch('no-sandbox');
-    ElectronApp.commandLine.appendSwitch('enable-zero-copy');
 
     this.readStartupFlags();
     this.loadApplicationDefaults();
