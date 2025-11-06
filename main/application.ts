@@ -288,6 +288,8 @@ export default class Application {
       ...windowOptions,
     });
 
+    this._mainWindow.openDevTools();
+
     if (settings.background_keepalive) {
       this._mainWindow.webContents.setBackgroundThrottling(false);
     }
