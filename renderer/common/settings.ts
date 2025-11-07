@@ -120,16 +120,16 @@ const getSettingsMetas = (t) => {
           {value: true, label: t('Enable')},
         ],
       },
-      {
-        name: 'fsr_sharpness',
-        type: 'slider',
-        min: 0,
-        max: 10,
-        step: 1,
-        title: t('fsr_sharpness_title'),
-        description: t('fsr_sharpness_desc'),
-        data: [],
-      },
+      // {
+      //   name: 'fsr_sharpness',
+      //   type: 'slider',
+      //   min: 0,
+      //   max: 10,
+      //   step: 1,
+      //   title: t('fsr_sharpness_title'),
+      //   description: t('fsr_sharpness_desc'),
+      //   data: [],
+      // },
     ],
     streaming: [
       {
@@ -291,6 +291,16 @@ const getSettingsMetas = (t) => {
           {value: 'all', label: t('All')},
           {value: 'left', label: t('Left trigger')},
           {value: 'right', label: t('Right trigger')},
+        ],
+      },
+      {
+        name: 'gamepad_mix',
+        type: 'radio',
+        title: t('Gamepad_mix_title'),
+        description: t('Gamepad_mix_desc'),
+        data: [
+          {value: false, label: t('Disable')},
+          {value: true, label: t('Enable')},
         ],
       },
       {

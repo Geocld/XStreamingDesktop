@@ -98,6 +98,8 @@
   "brazilsouth": "Sul do Brasil",
   "australiasoutheast": "Sudeste da Austrália",
   "australiaeast": "Leste da Austrália",
+  "Gamepad_mix_title": "Gamepad Mixed Input",  
+  "Gamepad_mix_desc": "Enable this option if you want inputs from multiple gamepads to be merged",
   "Select gamepad": "Selecionar controle",
   "Select specified controller": "Selecionar controle especificado",
   "Clear cache": "Clear cache",

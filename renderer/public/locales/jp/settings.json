@@ -85,6 +85,8 @@
   "Power on when streaming": "Power on when streaming",
   "power_on_description":
       "Choose whether to power on the console when streaming. By default, the console remains in sleep mode, and the power light won't turn on during streaming. Enabling this option will fully power on the host and may wake up the monitor",
+  "Gamepad_mix_title": "Gamepad Mixed Input",  
+  "Gamepad_mix_desc": "Enable this option if you want inputs from multiple gamepads to be merged",
   "Select gamepad": "Select gamepad",
   "Select specified controller": "Select specified controller",
   "Exit": "Exit",

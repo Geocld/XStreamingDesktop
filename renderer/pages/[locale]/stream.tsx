@@ -6,6 +6,7 @@ import xStreamingPlayer from "xstreaming-player";
 import { addToast } from "@heroui/react";
 import ActionBar from "../../components/ActionBar";
 import Display from "../../components/Display";
+import FSRDisplay from "../../components/FSRDisplay";
 import Audio from "../../components/Audio";
 import FailedModal from "../../components/FailedModal";
 import Loading from "../../components/Loading";
@@ -15,7 +16,7 @@ import TextModal from "../../components/TextModal";
 import { useSettings } from "../../context/userContext";
 import { getStaticPaths, makeStaticProperties } from "../../lib/get-static";
 import Ipc from "../../lib/ipc";
-import { DISPLAY_KEY } from "../../common/constans";
+import { DISPLAY_KEY, FSR_DISPLAY_KEY } from "../../common/constans";
 
 const XCLOUD_PREFIX = "xcloud_";
 
@@ -24,6 +25,10 @@ const DEFAULT_OPTIONS = {
   saturation: 100,
   contrast: 100,
   brightness: 100,
+};
+
+const FSR_DEFAULT_OPTIONS = {
+  sharpness: 2,
 };
 
 function format(source: string, ...args: string[]): string {
@@ -47,6 +52,7 @@ function Stream() {
   const [showFailed, setShowFailed] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [showDisplay, setShowDisplay] = useState(false);
+  const [showFSRDisplay, setShowFSRDisplay] = useState(false);
   const [showAudio, setShowAudio] = useState(false);
   const [showTextModal, setShowTextModal] = useState(false);
   const [showActionbar, setShowActionbar] = useState(false);
@@ -138,6 +144,9 @@ function Stream() {
       // Set gamepad kernal
       xPlayer.setGamepadKernal("Web");
 
+      // Set gamepad mix
+      xPlayer.setGamepadMix(settings.gamepad_mix)
+
       // Set gamepad index
       xPlayer.setGamepadIndex(settings.gamepad_index);
 
@@ -149,7 +158,17 @@ function Stream() {
       xPlayer.setGamepadDeadZone(settings.dead_zone);
 
       // Set fsr sharpness
-      xPlayer.setFsrSharpness(settings.fsr_sharpness);
+      const _fsrDisplayOptions = window.localStorage.getItem(FSR_DISPLAY_KEY);
+      let fsrDisplayOptions = FSR_DEFAULT_OPTIONS
+
+      if (_fsrDisplayOptions) {
+        try {
+          fsrDisplayOptions = JSON.parse(_fsrDisplayOptions);
+        } catch {
+          fsrDisplayOptions = DEFAULT_OPTIONS;
+        }
+      }
+      xPlayer.setFsrSharpness(fsrDisplayOptions.sharpness);
 
       // Set gamepad maping
       if (settings.gamepad_maping) {
@@ -717,7 +736,13 @@ function Stream() {
             onTogglePerformance={() => {
               setShowPerformance(!showPerformance);
             }}
-            onDisplay={() => setShowDisplay(true)}
+            onDisplay={() => {
+              if (settings.fsr) {
+                setShowFSRDisplay(true)
+              } else {
+                setShowDisplay(true)
+              }
+            }}
             onAudio={() => setShowAudio(true)}
             onMic={handleToggleMic}
             onText={() => {
@@ -760,6 +785,18 @@ function Stream() {
           }}
         />
       )}
+
+      {
+        showFSRDisplay && (
+          <FSRDisplay
+            onClose={() => setShowFSRDisplay(false)}
+            onValueChange={(options) => {
+              const { sharpness } = options
+              xPlayer && xPlayer.setFsrSharpnessDynamic(sharpness)
+            }}
+          />
+        )
+      }
 
       {
         showTextModal && (

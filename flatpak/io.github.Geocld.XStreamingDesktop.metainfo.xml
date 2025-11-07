@@ -34,6 +34,15 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.9.2" date="2025-11-10">
+      <description>
+          <ul>
+            <li>Changes:</li>
+            <li>Controllers mix input.</li>
+            <li>FSR sharpness option for stream screen.</li>
+          </ul>
+      </description>
+    </release>
     <release version="1.9.1" date="2025-11-06">
       <description>
           <ul>

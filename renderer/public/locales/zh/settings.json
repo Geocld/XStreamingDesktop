@@ -84,6 +84,8 @@
   "Power on when streaming": "串流时开启主机电源",
   "power_on_description":
       "选择主机串流时是否开启，默认主机开启睡眠模式后串流时电源灯不会亮，开启此选项后主机会彻底开机，并可能唤醒显示器",
+  "Gamepad_mix_title": "手柄混合输入",
+  "Gamepad_mix_desc": "当你想多个手柄混合输入时，请开启该选项",
   "Select gamepad": "指定手柄",
   "Select specified controller": "选择指定手柄",
   "Exit": "退出",
