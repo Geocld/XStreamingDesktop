@@ -89,6 +89,9 @@ function Stream() {
     window.addEventListener("mousemove", mouseEvent);
     window.addEventListener("mousedown", mouseEvent);
 
+    window.addEventListener("touchstart", mouseEvent);
+    window.addEventListener("touchmove", mouseEvent);
+
     const escEvent = (event) => {
       if (event.key === 'Escape') {
         Ipc.send('app', 'exitFullscreen')
