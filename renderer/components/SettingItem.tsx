@@ -38,16 +38,32 @@ const SettingItem = (props) => {
         item.name === "signaling_cloud" ? "getXcloudToken" : "getXhomeToken";
       Ipc.send("xCloud", method).then((data) => {
         if (data) {
-          const regions: {name: string, isDefault: boolean}[] = data.offeringSettings.regions;
-          item.data = regions.map((region) => {
-            if (region.isDefault) {
-              setDefaultValue(region.name);
-            }
+          const regions: {name: string, isDefault: boolean}[] = data.offeringSettings.regions;          
+
+          item.data = regions.map(region => {
             return {
               value: region.name,
               label: t(region.name.toLowerCase(), {defaultValue: region.name})
             };
           });
+          
+
+          const storeRegion = localStorage.getItem(item.name) || '';
+          let finalRegion = '';
+          regions.forEach(region => {
+            if (region.name === storeRegion) {
+              finalRegion = region.name;
+            }
+          });
+
+          if (!finalRegion) {
+            regions.forEach(region => {
+              if (region.isDefault) {
+                finalRegion = region.name;
+              }
+            });
+          }
+          setDefaultValue(finalRegion);
         } else {
           item.data = [];
         }
@@ -65,7 +81,9 @@ const SettingItem = (props) => {
           key === "signaling_cloud"
             ? "setXcloudTokenDefault"
             : "setXhomeTokenDefault";
+
         Ipc.send("xCloud", method, value);
+        localStorage.setItem(key, value)
       } else if (key === 'theme') {
         localStorage.setItem('theme', value)
         props.onRestartWarn && props.onRestartWarn()

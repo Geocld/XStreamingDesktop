@@ -388,6 +388,8 @@ const getSettingsMetas = (t) => {
           {value: '210.131.113.123', label: t('Japan')},
           {value: '168.126.63.1', label: t('Korea')},
           {value: '4.2.2.2', label: t('United States')},
+          {value: '104.211.224.146', label: t('South India')},
+          {value: '104.211.96.159', label: t('Central India')},
         ],
       },
       {

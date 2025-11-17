@@ -201,6 +201,8 @@ function Settings() {
     localStorage.removeItem(LOCAL_ORG_TITLES);
     localStorage.removeItem(LOCAL_RECENT_TITLES);
     localStorage.removeItem(LOCAL_CONSOLES);
+    localStorage.removeItem('signaling_cloud');
+    localStorage.removeItem('signaling_home');
   };
 
   const handleExit = () => {

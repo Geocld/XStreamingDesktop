@@ -34,12 +34,14 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="1.9.2" date="2025-11-10">
+    <release version="1.9.2" date="2025-11-17">
       <description>
           <ul>
             <li>Changes:</li>
             <li>Controllers mix input.</li>
             <li>FSR sharpness option for stream screen.</li>
+            <li>Add India region to xCloud.</li>
+            <li>Support persistent storage for signaling server</li>
           </ul>
       </description>
     </release>
