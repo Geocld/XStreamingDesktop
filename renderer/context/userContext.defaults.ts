@@ -41,19 +41,32 @@ export const defaultSettings = {
     ArrowDown: 'DPadDown',
 
     Enter: 'A',
-    a: 'A',
+    k: 'A',
 
     Backspace: 'B',
-    b: 'B',
+    l: 'B',
 
-    x: 'X',
-    y: 'Y',
+    j: 'X',
+    i: 'Y',
 
-    '[': 'LeftShoulder',
-    ']': 'RightShoulder',
+    '2': 'LeftShoulder',
+    '3': 'RightShoulder',
 
-    '-': 'LeftTrigger',
-    '=': 'RightTrigger',
+    '1': 'LeftTrigger',
+    '4': 'RightTrigger',
+
+    '5': 'LeftThumb',
+    '6': 'RightThumb',
+
+    'a': 'LeftThumbXAxisPlus',
+    'd': 'LeftThumbXAxisMinus',
+    'w': 'LeftThumbYAxisPlus',
+    's': 'LeftThumbYAxisMinus',
+
+    'f': 'RightThumbXAxisPlus',
+    'h': 'RightThumbXAxisMinus',
+    't': 'RightThumbYAxisPlus',
+    'g': 'RightThumbYAxisMinus',
 
     v: 'View',
     m: 'Menu',

@@ -20,14 +20,13 @@ function TitleModal(props) {
   const titleItem = props.title || {};
 
   const handleClose = () => {
-    console.log("handleClose");
     props.onClose && props.onClose();
   };
 
   const handleStartGame = () => {
     // console.log("titleItem:", titleItem);
     const titleId = titleItem.titleId || titleItem.XCloudTitleId;
-    console.log("titleId:", titleId)
+    // console.log("titleId:", titleId)
     router.push({
       pathname: `/${locale}/stream`,
       query: { serverid: XCLOUD_PREFIX + titleId }
@@ -49,7 +48,7 @@ function TitleModal(props) {
   return (
     <Modal
       isOpen={true}
-      size="full"
+      size="5xl"
       scrollBehavior="inside"
       onClose={handleClose}
     >

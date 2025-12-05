@@ -354,8 +354,6 @@ export default class Xal {
                 const payload = {
                     Properties: {
                         SandboxId: 'RETAIL',
-                        DeviceToken: sisuToken.data.DeviceToken,
-                        TitleToken: sisuToken.data.TitleToken.Token,
                         UserTokens: [sisuToken.data.UserToken.Token]
                     },
                     RelyingParty: relyingParty,
