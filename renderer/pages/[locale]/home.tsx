@@ -59,6 +59,7 @@ function Home() {
   }[]>([]);
 
   const authInterval = useRef(null);
+  const autoStreamTriggered = useRef(false);
 
   const currentIndex = useRef(0);
   const focusable = useRef<any>([]);
@@ -283,6 +284,36 @@ function Home() {
       timer && clearInterval(timer);
     };
   }, [t, setTheme]);
+
+  useEffect(() => {
+    if (!isLogined || consoles.length === 0 || autoStreamTriggered.current) {
+      return;
+    }
+
+    autoStreamTriggered.current = true;
+
+    Ipc.send("app", "getStartupFlags").then((flags: any) => {
+      if (flags && flags.autoStream) {
+        console.log("Auto-stream flag detected:", flags.autoStream);
+        const console_ = consoles.find(c => c.name === flags.autoStream);
+        
+        if (console_) {
+          console.log("Found matching console, starting auto-stream:", flags.autoStream);
+          setTimeout(() => {
+            if (console_.powerState === "On") {
+              startSession(console_.serverId);
+            } else {
+              powerOnAndStartSession(console_.serverId);
+            }
+            Ipc.send("app", "resetAutostream");
+          }, 500);
+        } else {
+          console.log("No matching console found for auto-stream:", flags.autoStream);
+          Ipc.send("app", "resetAutostream");
+        }
+      }
+    });
+  }, [isLogined, consoles]);
 
   const handleLogin = () => {
     setLoading(true);

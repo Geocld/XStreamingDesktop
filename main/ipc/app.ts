@@ -188,4 +188,17 @@ export default class IpcApp extends IpcBase {
       })
     });
   }
+
+  getStartupFlags() {
+    return new Promise((resolve) => {
+      resolve(this._application.getStartupFlags());
+    });
+  }
+
+  resetAutostream() {
+    return new Promise((resolve) => {
+      this._application.resetAutostream();
+      resolve({});
+    });
+  }
 }
