@@ -36,13 +36,10 @@ function TitleModal(props) {
   let isByorg = false;
   if (
     titleItem &&
-    !titleItem.XCloudTitleId &&
     titleItem.details &&
-    titleItem.details.programs
+    !titleItem.details.hasEntitlement
   ) {
-    if (titleItem.details.programs.indexOf('BYOG') > -1) {
-      isByorg = true;
-    }
+    isByorg = true;
   }
 
   return (

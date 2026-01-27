@@ -23,7 +23,6 @@ function Xcloud() {
   const [titles, setTitles] = useState([]);
   const [newTitles, setNewTitles] = useState([]);
   const [recentTitles, setRecentNewTitles] = useState([]);
-  const [orgTitles, setOrgTitles] = useState([]);
   const currentTitles = useRef([]);
   const [keyword, setKeyword] = useState("");
 
@@ -32,7 +31,6 @@ function Xcloud() {
 
   const LOCAL_TITLES = 'local-titles';
   const LOCAL_NEW_TITLES = 'local-new-titles';
-  const LOCAL_ORG_TITLES = 'local-org-titles';
   const LOCAL_RECENT_TITLES = 'local-recent-titles';
 
   useEffect(() => {
@@ -135,23 +133,9 @@ function Xcloud() {
             localStorage.setItem(LOCAL_TITLES, JSON.stringify(_titles));
 
             const _titleMap = {};
-            const _orgTitles = [];
-            _titles.forEach((item) => {
+            _titles.forEach(item => {
               _titleMap[item.productId] = item;
-
-              // Get org games
-              if (
-                !item.XCloudTitleId &&
-                item.details &&
-                item.details.programs &&
-                item.details.programs.indexOf('BYOG') > -1
-              ) {
-                _orgTitles.push(item);
-              }
             });
-
-            setOrgTitles(_orgTitles);
-            localStorage.setItem(LOCAL_ORG_TITLES, JSON.stringify(_orgTitles));
 
             // console.log("_titleMap:", _titleMap);
 
@@ -220,18 +204,15 @@ function Xcloud() {
         // Get xcloud data from cache
         let cacheTitles: any = localStorage.getItem(LOCAL_TITLES) || '[]';
         let cacheNewTitles: any = localStorage.getItem(LOCAL_NEW_TITLES) || '[]';
-        let cacheOrgTitles: any = localStorage.getItem(LOCAL_ORG_TITLES) || '[]';
         let cacheRecentTitles: any = localStorage.getItem(LOCAL_RECENT_TITLES) || '[]';
 
         try {
           cacheTitles = JSON.parse(cacheTitles);
           cacheNewTitles = JSON.parse(cacheNewTitles);
-          cacheOrgTitles = JSON.parse(cacheOrgTitles);
           cacheRecentTitles = JSON.parse(cacheRecentTitles);
           
-          if (cacheTitles.length || cacheNewTitles.length || cacheOrgTitles.length || cacheRecentTitles.length) {
+          if (cacheTitles.length || cacheNewTitles.length || cacheRecentTitles.length) {
             setTitles(cacheTitles);
-            setOrgTitles(cacheOrgTitles);
             setNewTitles(cacheNewTitles);
             setRecentNewTitles(cacheRecentTitles);
             setLoading(false);
@@ -290,9 +271,6 @@ function Xcloud() {
     case "Newest":
       currentTitles.current = newTitles;
       break;
-    case "Own":
-      currentTitles.current = orgTitles;
-      break;
     case "All":
       currentTitles.current = titles;
       break;
@@ -330,7 +308,6 @@ function Xcloud() {
                 <Tabs aria-label="Options" onSelectionChange={handleTabChange}>
                   <Tab key="Recently" title={t("Recently")}></Tab>
                   <Tab key="Newest" title={t("Newest")}></Tab>
-                  <Tab key="Own" title={t("Own")}></Tab>
                   <Tab key="All" title={t("All")}></Tab>
                 </Tabs>
               </div>

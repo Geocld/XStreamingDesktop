@@ -30,6 +30,7 @@ export default class xCloudApi {
   _exchangeCounter = 0;
   _exchangeUrl = "";
   _currentGame = "";
+  isStoped = false;
 
   constructor(
     application: Application,
@@ -201,10 +202,12 @@ export default class xCloudApi {
   }
 
   stopStream(sessionId) {
+    this.isStoped = true;
     return this.get("/v5/sessions/" + this._type + "/" + sessionId, "DELETE");
   }
 
   startStream(target: string) {
+    this.isStoped = false;
     const settings: any = this._application._store.get(
       "settings",
       defaultSettings
@@ -325,10 +328,30 @@ export default class xCloudApi {
       )
         .then(() => {
           this.get("/v5/sessions/" + this._type + "/" + sessionId + "/sdp")
-            .then((sdpResult: exchangeResult) => {
-              const exchangeSdp = JSON.parse(sdpResult.exchangeResponse);
-
-              resolve(exchangeSdp);
+            .then((sdpResult: any) => {
+              if (sdpResult && sdpResult.exchangeResponse) {
+                const exchangeSdp = JSON.parse(sdpResult.exchangeResponse);
+                resolve(exchangeSdp);
+              } else {
+                const checkInterval = setInterval(() => {
+                  if (this.isStoped) {
+                    clearInterval(checkInterval);
+                    return;
+                  }
+                  this.get("/v5/sessions/" + this._type + "/" + sessionId + "/sdp")
+                    .then((sdpResult2: any) => {
+                      if (sdpResult2 && sdpResult2.exchangeResponse) {
+                        const exchangeSdp = JSON.parse(sdpResult2.exchangeResponse);
+                        clearInterval(checkInterval);
+                        resolve(exchangeSdp);
+                      }
+                    }).catch(e => {
+                      clearInterval(checkInterval);
+                      reject(e);
+                    })
+                }, 1000);
+              }
+              
             })
             .catch((error) => {
               reject(error);

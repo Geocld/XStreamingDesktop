@@ -383,11 +383,11 @@ function Stream() {
               }, 1000);
             }
 
-            const xboxTitleId = window._xboxTitleId || ''
-            // inputConfigs
-            Ipc.send("streaming", "inputConfigs", {
-              xboxTitleId,
-            })
+            // const xboxTitleId = window._xboxTitleId || ''
+            // // inputConfigs
+            // Ipc.send("streaming", "inputConfigs", {
+            //   xboxTitleId,
+            // })
           }, 500);
         } else if (event.state === "closed") {
           console.log(":: We are disconnected!");

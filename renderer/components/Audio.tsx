@@ -28,7 +28,7 @@ function Audio(props) {
               label={t("Volume")}
               step={1}
               maxValue={10}
-              minValue={1}
+              minValue={0}
               value={props.volume}
               className="max-w-md"
               onChange={value => {
