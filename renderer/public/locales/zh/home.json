@@ -7,5 +7,7 @@
   "Loading...": "加载中...",
   "Fetching user info...": "正在获取用户信息...",
   "Fetching consoles...": "正在获取终端信息...",
-  "Checking login status...": "正在检查登录..."
+  "Checking login status...": "正在检查登录...",
+  "auto_connect_enabled": "快速连接已启用",
+  "enable_auto_connect": "启用快速连接"
 }

@@ -2,6 +2,7 @@ export const defaultSettings = {
   locale: "en",
   fullscreen: false,
   resolution: 720,
+  xhome_auto_connect_server_id: '',
   xhome_bitrate_mode: "Auto",
   xhome_bitrate: 20,
   xcloud_bitrate_mode: "Auto",

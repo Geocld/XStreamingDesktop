@@ -195,9 +195,9 @@ export default class IpcApp extends IpcBase {
     });
   }
 
-  resetAutostream() {
+  resetAutoConnect() {
     return new Promise((resolve) => {
-      this._application.resetAutostream();
+      this._application.resetAutoConnect();
       resolve({});
     });
   }

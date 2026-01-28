@@ -26,23 +26,23 @@ import { getStaticPaths, makeStaticProperties } from "../../lib/get-static";
 const LOCAL_CONSOLES = 'local-consoles';
 
 function Home() {
-  const { t, i18n: {language: locale} } = useTranslation('home');
+  const { t, i18n: { language: locale } } = useTranslation('home');
 
   const router = useRouter();
-  const { settings } = useSettings();
+  const { settings, setSettings } = useSettings();
   const { theme, setTheme } = useTheme();
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("");
   const [isLogined, setIsLogined] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [server, setServer]= useState<any>(null);
+  const [server, setServer] = useState<any>(null);
   const [consoles, setConsoles] = useState<{
     serverId: string,
     name: string,
     locale: string,
     region: string,
-    consoleType: "XboxSeriesX"|"XboxSeriesS"|"XboxOne"|"XboxOneS"|"XboxOneX",
-    powerState: "ConnectedStandby"|"On"|"Off",
+    consoleType: "XboxSeriesX" | "XboxSeriesS" | "XboxOne" | "XboxOneS" | "XboxOneX",
+    powerState: "ConnectedStandby" | "On" | "Off",
     digitalAssistantRemoteControlEnabled: boolean,
     remoteManagementEnabled: boolean,
     consoleStreamingEnabled: boolean,
@@ -59,7 +59,7 @@ function Home() {
   }[]>([]);
 
   const authInterval = useRef(null);
-  const autoStreamTriggered = useRef(false);
+  const autoConnectTriggered = useRef(false);
 
   const currentIndex = useRef(0);
   const focusable = useRef<any>([]);
@@ -74,7 +74,7 @@ function Home() {
     if (localFontSize && localFontSize !== '16') {
       document.documentElement.style.fontSize = localFontSize + 'px';
     }
-    
+
     setLoading(true);
     setLoadingText(t("Loading..."));
 
@@ -184,7 +184,7 @@ function Home() {
 
         setTimeout(() => {
           focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-        },  1000);
+        }, 1000);
 
         Ipc.send("consoles", "get").then(res => {
           setConsoles(res);
@@ -192,7 +192,7 @@ function Home() {
 
           setTimeout(() => {
             focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-          },  1000);
+          }, 1000);
         });
       } else {
         setLoadingText(t("Fetching consoles..."));
@@ -202,7 +202,7 @@ function Home() {
 
           setTimeout(() => {
             focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-          },  1000);
+          }, 1000);
         });
       }
     } else {
@@ -238,7 +238,7 @@ function Home() {
                 if (_consoles.length) {
                   setConsoles(_consoles);
                   setLoading(false);
-                  
+
                   // Silent update
                   Ipc.send("consoles", "get").then(res => {
                     setConsoles(res);
@@ -247,12 +247,12 @@ function Home() {
 
                     setTimeout(() => {
                       focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-                    },  1000);
+                    }, 1000);
                   });
 
                   setTimeout(() => {
                     focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-                  },  1000);
+                  }, 1000);
                 } else {
                   setLoadingText(t("Fetching consoles..."));
                   Ipc.send("consoles", "get").then(res => {
@@ -263,10 +263,10 @@ function Home() {
 
                     setTimeout(() => {
                       focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-                    },  1000);
+                    }, 1000);
                   });
                 }
-                
+
               }
             });
           }, 500);
@@ -286,30 +286,30 @@ function Home() {
   }, [t, setTheme]);
 
   useEffect(() => {
-    if (!isLogined || consoles.length === 0 || autoStreamTriggered.current) {
+    if (!isLogined || consoles.length === 0 || autoConnectTriggered.current) {
       return;
     }
 
-    autoStreamTriggered.current = true;
+    autoConnectTriggered.current = true;
 
     Ipc.send("app", "getStartupFlags").then((flags: any) => {
-      if (flags && flags.autoStream) {
-        console.log("Auto-stream flag detected:", flags.autoStream);
-        const console_ = consoles.find(c => c.name === flags.autoStream);
-        
+      if ((flags && flags.autoConnect)) {
+        console.log("Auto-connect flag detected:", flags.autoConnect);
+        const console_ = consoles.find(c => c.name === flags.autoConnect || c.serverId === flags.autoConnect);
+
         if (console_) {
-          console.log("Found matching console, starting auto-stream:", flags.autoStream);
+          console.log("Found matching console, starting auto connect:", flags.autoConnect);
           setTimeout(() => {
             if (console_.powerState === "On") {
               startSession(console_.serverId);
             } else {
               powerOnAndStartSession(console_.serverId);
             }
-            Ipc.send("app", "resetAutostream");
+            Ipc.send("app", "resetAutoConnect");
           }, 500);
         } else {
-          console.log("No matching console found for auto-stream:", flags.autoStream);
-          Ipc.send("app", "resetAutostream");
+          console.log("No matching console found for auto connect:", flags.autoConnect);
+          Ipc.send("app", "resetAutoConnect");
         }
       }
     });
@@ -348,22 +348,22 @@ function Home() {
 
             if (_consoles.length) {
               setConsoles(_consoles);
-              
+
               // Silent update
               Ipc.send("consoles", "get").then(res => {
                 console.log("consoles:", res);
                 setConsoles(res);
 
                 localStorage.setItem(LOCAL_CONSOLES, JSON.stringify(res));
-
+                
                 setTimeout(() => {
                   focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-                },  1000);
+                }, 1000);
               });
 
               setTimeout(() => {
                 focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-              },  1000);
+              }, 1000);
             } else {
               setLoading(true);
               setLoadingText(t("Fetching consoles..."));
@@ -376,14 +376,28 @@ function Home() {
 
                 setTimeout(() => {
                   focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-                },  1000);
+                }, 1000);
               });
             }
-            
+
           }
         });
       }, 500);
     });
+  };
+
+  const toggleAutoConnect = (serverId: string) => {
+    if (settings.xhome_auto_connect_server_id === serverId) {
+      setSettings({
+        ...settings,
+        xhome_auto_connect_server_id: ''
+      });
+    } else {
+      setSettings({
+        ...settings,
+        xhome_auto_connect_server_id: serverId
+      });
+    }
   };
 
   const powerOnAndStartSession = (sessionId: string) => {
@@ -402,7 +416,7 @@ function Home() {
   const startSession = (sessionId: string) => {
     console.log("sessionId:", sessionId);
     const query: any = { serverid: sessionId };
-    
+
     const { server_url, server_username, server_credential } = settings;
 
     // Custom server
@@ -436,24 +450,24 @@ function Home() {
           {consoles.map((console) => {
             let consoleName: string
             switch (console.consoleType) {
-            case "XboxOne":
-              consoleName = "Xbox One"
-              break;
-            case "XboxOneS":
-              consoleName = "Xbox One S"
-              break;
-            case "XboxOneX":
-              consoleName = "Xbox One X"
-              break;
-            case "XboxSeriesS":
-              consoleName = "Xbox Series S"
-              break;
-            case "XboxSeriesX":
-              consoleName = "Xbox Series X"
-              break;
-            default:
-              consoleName = console.consoleType
-              break;
+              case "XboxOne":
+                consoleName = "Xbox One"
+                break;
+              case "XboxOneS":
+                consoleName = "Xbox One S"
+                break;
+              case "XboxOneX":
+                consoleName = "Xbox One X"
+                break;
+              case "XboxSeriesS":
+                consoleName = "Xbox Series S"
+                break;
+              case "XboxSeriesX":
+                consoleName = "Xbox Series X"
+                break;
+              default:
+                consoleName = console.consoleType
+                break;
             }
             let consoleImg = '/images/xss.svg'
             if (theme === 'xbox-light') {
@@ -465,6 +479,9 @@ function Home() {
             } else if (console.consoleType === 'XboxSeriesS') {
               consoleImg = '/images/series-s.png'
             }
+            
+            const isAutoConnectEnabled = settings.xhome_auto_connect_server_id === console.serverId;
+            
             return (
               <Card key={console.serverId}>
                 <CardBody>
@@ -495,28 +512,38 @@ function Home() {
                 </CardBody>
                 <Divider />
                 <CardFooter>
-                  {
-                    settings.power_on && console.powerState === 'ConnectedStandby' ? (
-                      <Button
-                        color="primary"
-                        size="sm"
-                        fullWidth
-                        onPress={() => powerOnAndStartSession(console.serverId)}
-                      >
-                        {t('Power on and start stream')}
-                      </Button>
-                    ) : (
-                      <Button
-                        color="primary"
-                        size="sm"
-                        fullWidth
-                        onPress={() => startSession(console.serverId)}
-                      >
-                        {t('Start stream')}
-                      </Button>
-                    )
-                  }
-
+                  <div className="flex flex-col gap-2 w-full">
+                    {
+                      settings.power_on && console.powerState === 'ConnectedStandby' ? (
+                        <Button
+                          color="primary"
+                          size="sm"
+                          fullWidth
+                          onPress={() => powerOnAndStartSession(console.serverId)}
+                        >
+                          {t('Power on and start stream')}
+                        </Button>
+                      ) : (
+                        <Button
+                          color="primary"
+                          size="sm"
+                          fullWidth
+                          onPress={() => startSession(console.serverId)}
+                        >
+                          {t('Start stream')}
+                        </Button>
+                      )
+                    }
+                    
+                    <Button
+                      color={isAutoConnectEnabled ? "secondary" : "default"}
+                      size="sm"
+                      fullWidth
+                      onPress={() => toggleAutoConnect(console.serverId)}
+                    >
+                      {isAutoConnectEnabled ? t('auto_connect_enabled') : t('enable_auto_connect')}
+                    </Button>
+                  </div>
                 </CardFooter>
               </Card>
             );

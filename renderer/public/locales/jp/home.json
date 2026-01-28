@@ -7,5 +7,7 @@
   "Loading...": "Loading...",
   "Fetching user info...": "Fetching user info...",
   "Fetching consoles...": "Fetching consoles...",
-  "Checking login status...": "Checking login status..."
+  "Checking login status...": "Checking login status...",
+  "auto_connect_enabled": "Auto-connect enabled",
+  "enable_auto_connect": "Enable auto-connect"
 }
