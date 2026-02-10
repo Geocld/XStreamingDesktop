@@ -3,12 +3,23 @@ import https from 'https'
 
 export default class Http {
 
+    private _headers:Record<string, string> = {}
+
+    setDefaultHeaders(headers:Record<string, string>){
+        this._headers = headers
+    }
+
+    getDefaultHeaders(){
+        return this._headers
+    }
+
     getRequest(host, path, headers) {
         return new Promise<HttpResponse>((resolve, reject) => {
 
             const hostHeaders = {
                 // 'Content-Type': 'application/json',
                 ...headers,
+                ...this._headers,
             }
 
             const options = {
@@ -34,18 +45,18 @@ export default class Http {
                             resolve(new HttpResponse(JSON.parse(responseData.toString()), res.headers))
                         }
                     } else {
-                        reject({
+                        reject(new Error('Error fetching '+host+path+'. Details:'+ JSON.stringify({
                             statuscode: res.statusCode,
                             headers: res.headers,
                             body: responseData.toString(),
                             message: 'Error fetching '+host+path
-                        })
+                        }, null, 2)))
                     }
                 })
             })
             
             req.on('error', (error) => {
-                reject(error)
+                reject(new Error('Unhandled error:'+ JSON.stringify(error)))
             })
 
             req.end()
@@ -59,6 +70,7 @@ export default class Http {
             const hostHeaders = {
                 // 'Content-Type': 'application/json',
                 ...headers,
+                ...this._headers,
             }
 
             if(typeof data === 'object'){
@@ -90,12 +102,12 @@ export default class Http {
                             resolve(new HttpResponse(JSON.parse(responseData.toString()), res.headers))
                         }
                     } else {
-                        reject({
+                        reject(new Error('Error fetching '+host+path+'. Details:'+ JSON.stringify({
                             statuscode: res.statusCode,
                             headers: res.headers,
                             body: responseData.toString(),
                             message: 'Error fetching '+host+path
-                        })
+                        }, null, 2)))
                     }
                 })
             })
