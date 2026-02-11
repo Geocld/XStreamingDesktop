@@ -433,7 +433,7 @@ export default class Authentication {
       defaultSettings
     );
 
-    console.log('settings.force_region_i1111p:', settings.force_region_ip)
+    console.log('settings.force_region_ip:', settings.force_region_ip)
     if (
       !this._xal._xcloudToken ||
       this._xal._xcloudToken.getSecondsValid() <= 60

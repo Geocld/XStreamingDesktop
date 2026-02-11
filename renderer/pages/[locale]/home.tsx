@@ -11,6 +11,7 @@ import { useTheme } from "next-themes";
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from "react";
 import AuthModal from "../../components/AuthModal";
+import MsalModal from "../../components/MsalModal";
 import Layout from "../../components/Layout";
 import Loading from "../../components/Loading";
 import Nav from "../../components/Nav";
@@ -35,6 +36,8 @@ function Home() {
   const [loadingText, setLoadingText] = useState("");
   const [isLogined, setIsLogined] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showMsalModal, setShowMsalModal] = useState(false);
+  const [msalData, setMsalData] = useState<any>(null);
   const [server, setServer]= useState<any>(null);
   const [consoles, setConsoles] = useState<{
     serverId: string,
@@ -318,72 +321,147 @@ function Home() {
   const handleLogin = () => {
     setLoading(true);
     setLoadingText(t("Loading..."));
-    Ipc.send("app", "login").then(() => {
-      setShowLoginModal(false);
-      // Check login state
-      authInterval.current = setInterval(() => {
-        console.log("Requesting AuthState...");
-        Ipc.send("app", "getAuthState").then((args) => {
-          console.log("Received AuthState:", args);
+    setShowLoginModal(false);
+    if (settings.use_msal) {
+      Ipc.send("app", "msalLogin").then(data => {
+        setMsalData(data);
+        setLoading(false);
+        setShowMsalModal(true);
+      });
+    } else {
+      Ipc.send("app", "login").then(() => {
+        // Check login state
+        authInterval.current = setInterval(() => {
+          console.log("Requesting AuthState...");
+          Ipc.send("app", "getAuthState").then((args) => {
+            console.log("Received AuthState:", args);
 
-          if (args.isAuthenticating === true) {
-            setLoading(true);
-          } else if (
-            args.isAuthenticated === true &&
-            args.user.signedIn === true
-          ) {
-            clearInterval(authInterval.current);
-            setIsLogined(true);
-            window.sessionStorage.setItem("isLogined", "1");
-            setLoading(false);
+            if (args.isAuthenticating === true) {
+              setLoading(true);
+            } else if (
+              args.isAuthenticated === true &&
+              args.user.signedIn === true
+            ) {
+              clearInterval(authInterval.current);
+              setIsLogined(true);
+              window.sessionStorage.setItem("isLogined", "1");
+              setLoading(false);
 
-            // Get Consoles
-            let _consoles: any = localStorage.getItem(LOCAL_CONSOLES) || '[]'
+              // Get Consoles
+              let _consoles: any = localStorage.getItem(LOCAL_CONSOLES) || '[]'
 
-            try {
-              _consoles = JSON.parse(_consoles)
-            } catch {
-              _consoles = []
-            }
+              try {
+                _consoles = JSON.parse(_consoles)
+              } catch {
+                _consoles = []
+              }
 
-            if (_consoles.length) {
-              setConsoles(_consoles);
-              
-              // Silent update
-              Ipc.send("consoles", "get").then(res => {
-                console.log("consoles:", res);
-                setConsoles(res);
+              if (_consoles.length) {
+                setConsoles(_consoles);
+                
+                // Silent update
+                Ipc.send("consoles", "get").then(res => {
+                  console.log("consoles:", res);
+                  setConsoles(res);
 
-                localStorage.setItem(LOCAL_CONSOLES, JSON.stringify(res));
+                  localStorage.setItem(LOCAL_CONSOLES, JSON.stringify(res));
+
+                  setTimeout(() => {
+                    focusable.current = document.querySelectorAll(FOCUS_ELEMS);
+                  },  1000);
+                });
 
                 setTimeout(() => {
                   focusable.current = document.querySelectorAll(FOCUS_ELEMS);
                 },  1000);
-              });
+              } else {
+                setLoading(true);
+                setLoadingText(t("Fetching consoles..."));
+                Ipc.send("consoles", "get").then(res => {
+                  console.log("consoles:", res);
+                  setConsoles(res);
+                  setLoading(false);
+
+                  localStorage.setItem(LOCAL_CONSOLES, JSON.stringify(res));
+
+                  setTimeout(() => {
+                    focusable.current = document.querySelectorAll(FOCUS_ELEMS);
+                  },  1000);
+                });
+              }
+              
+            }
+          });
+        }, 500);
+      });
+    }
+  };
+
+  const handleMsalComplete = () => {
+    setShowMsalModal(false);
+    // Check login state
+    authInterval.current = setInterval(() => {
+      console.log("Requesting AuthState...");
+      Ipc.send("app", "getAuthState").then((args) => {
+        console.log("Received AuthState:", args);
+
+        if (args.isAuthenticating === true) {
+          setLoading(true);
+        } else if (
+          args.isAuthenticated === true &&
+          args.user.signedIn === true
+        ) {
+          clearInterval(authInterval.current);
+          setIsLogined(true);
+          window.sessionStorage.setItem("isLogined", "1");
+          setLoading(false);
+
+          // Get Consoles
+          let _consoles: any = localStorage.getItem(LOCAL_CONSOLES) || '[]'
+
+          try {
+            _consoles = JSON.parse(_consoles)
+          } catch {
+            _consoles = []
+          }
+
+          if (_consoles.length) {
+            setConsoles(_consoles);
+            
+            // Silent update
+            Ipc.send("consoles", "get").then(res => {
+              console.log("consoles:", res);
+              setConsoles(res);
+
+              localStorage.setItem(LOCAL_CONSOLES, JSON.stringify(res));
 
               setTimeout(() => {
                 focusable.current = document.querySelectorAll(FOCUS_ELEMS);
               },  1000);
-            } else {
-              setLoading(true);
-              setLoadingText(t("Fetching consoles..."));
-              Ipc.send("consoles", "get").then(res => {
-                console.log("consoles:", res);
-                setConsoles(res);
-                setLoading(false);
+            });
 
-                localStorage.setItem(LOCAL_CONSOLES, JSON.stringify(res));
+            setTimeout(() => {
+              focusable.current = document.querySelectorAll(FOCUS_ELEMS);
+            },  1000);
+          } else {
+            setLoading(true);
+            setLoadingText(t("Fetching consoles..."));
+            Ipc.send("consoles", "get").then(res => {
+              console.log("consoles:", res);
+              setConsoles(res);
+              setLoading(false);
 
-                setTimeout(() => {
-                  focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-                },  1000);
-              });
-            }
-            
+              localStorage.setItem(LOCAL_CONSOLES, JSON.stringify(res));
+
+              setTimeout(() => {
+                focusable.current = document.querySelectorAll(FOCUS_ELEMS);
+              },  1000);
+            });
           }
-        });
-      }, 500);
-    });
+          
+        }
+      });
+    }, 500);
   };
 
   const powerOnAndStartSession = (sessionId: string) => {
@@ -423,6 +501,10 @@ function Home() {
     });
   };
 
+  const handleRefreshMsalData = () => {
+    Ipc.send("app", "restart");
+  }
+
   return (
     <>
       <Nav current={t("Consoles")} isLogined={isLogined} />
@@ -430,47 +512,61 @@ function Home() {
       {loading && <Loading loadingText={loadingText} />}
 
       <AuthModal show={showLoginModal} onConfirm={handleLogin} />
+      {msalData && (
+        <MsalModal
+          verificationUri={msalData.verification_uri}
+          userCode={msalData.user_code}
+          expiresIn={msalData.expires_in}
+          show={showMsalModal}
+          onConfirm={handleMsalComplete}
+          onRefresh={handleRefreshMsalData}
+        />
+      )}
 
       <Layout>
         <div className="gap-4 grid grid-cols-3">
           {consoles.map((console) => {
-            let consoleName: string
+            let consoleName: string;
             switch (console.consoleType) {
-            case "XboxOne":
-              consoleName = "Xbox One"
-              break;
-            case "XboxOneS":
-              consoleName = "Xbox One S"
-              break;
-            case "XboxOneX":
-              consoleName = "Xbox One X"
-              break;
-            case "XboxSeriesS":
-              consoleName = "Xbox Series S"
-              break;
-            case "XboxSeriesX":
-              consoleName = "Xbox Series X"
-              break;
-            default:
-              consoleName = console.consoleType
-              break;
+              case "XboxOne":
+                consoleName = "Xbox One";
+                break;
+              case "XboxOneS":
+                consoleName = "Xbox One S";
+                break;
+              case "XboxOneX":
+                consoleName = "Xbox One X";
+                break;
+              case "XboxSeriesS":
+                consoleName = "Xbox Series S";
+                break;
+              case "XboxSeriesX":
+                consoleName = "Xbox Series X";
+                break;
+              default:
+                consoleName = console.consoleType;
+                break;
             }
-            let consoleImg = '/images/xss.svg'
-            if (theme === 'xbox-light') {
-              consoleImg = '/images/xss-light.svg'
+            let consoleImg = "/images/xss.svg";
+            if (theme === "xbox-light") {
+              consoleImg = "/images/xss-light.svg";
             }
 
-            if (console.consoleType === 'XboxSeriesX') {
-              consoleImg = '/images/series-x.png'
-            } else if (console.consoleType === 'XboxSeriesS') {
-              consoleImg = '/images/series-s.png'
+            if (console.consoleType === "XboxSeriesX") {
+              consoleImg = "/images/series-x.png";
+            } else if (console.consoleType === "XboxSeriesS") {
+              consoleImg = "/images/series-s.png";
             }
             return (
               <Card key={console.serverId}>
                 <CardBody>
                   <p className="text-center">{console.name}</p>
-                  <p className="text-center text-sm text-gray-400">{consoleName}</p>
-                  <p className="text-center text-xs text-gray-500">({console.serverId})</p>
+                  <p className="text-center text-sm text-gray-400">
+                    {consoleName}
+                  </p>
+                  <p className="text-center text-xs text-gray-500">
+                    ({console.serverId})
+                  </p>
                   <div className="flex justify-center items-center">
                     <Image
                       src={consoleImg}
@@ -489,34 +585,34 @@ function Home() {
                         {t("Standby")}
                       </Chip>
                     ) : (
-                      <Chip size="sm" radius="none">{console.powerState}</Chip>
+                      <Chip size="sm" radius="none">
+                        {console.powerState}
+                      </Chip>
                     )}
                   </div>
                 </CardBody>
                 <Divider />
                 <CardFooter>
-                  {
-                    settings.power_on && console.powerState === 'ConnectedStandby' ? (
-                      <Button
-                        color="primary"
-                        size="sm"
-                        fullWidth
-                        onPress={() => powerOnAndStartSession(console.serverId)}
-                      >
-                        {t('Power on and start stream')}
-                      </Button>
-                    ) : (
-                      <Button
-                        color="primary"
-                        size="sm"
-                        fullWidth
-                        onPress={() => startSession(console.serverId)}
-                      >
-                        {t('Start stream')}
-                      </Button>
-                    )
-                  }
-
+                  {settings.power_on &&
+                  console.powerState === "ConnectedStandby" ? (
+                    <Button
+                      color="primary"
+                      size="sm"
+                      fullWidth
+                      onPress={() => powerOnAndStartSession(console.serverId)}
+                    >
+                      {t("Power on and start stream")}
+                    </Button>
+                  ) : (
+                    <Button
+                      color="primary"
+                      size="sm"
+                      fullWidth
+                      onPress={() => startSession(console.serverId)}
+                    >
+                      {t("Start stream")}
+                    </Button>
+                  )}
                 </CardFooter>
               </Card>
             );

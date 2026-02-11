@@ -19,3 +19,10 @@
 	color: #107C10;
 	font-weight: bold;
 }
+
+.user-select-none {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}

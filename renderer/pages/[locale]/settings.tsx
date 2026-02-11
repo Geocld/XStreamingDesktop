@@ -184,7 +184,10 @@ function Settings() {
     handleClearLocalStorage();
   };
 
-  const handleClearCache = () => {
+  const handleClearCache = (isClearAll = false) => {
+    if (isClearAll) {
+      Ipc.send("app", "clearData");
+    }
     Ipc.send("app", "clearUserData");
     handleClearLocalStorage();
   };

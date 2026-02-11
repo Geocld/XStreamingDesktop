@@ -141,5 +141,7 @@
   "FSR started": "FSR started",
   "FSR_desc": "Enable FSR (FidelityFX Super Resolution) to achieve super-resolution, which can improve image clarity without increasing bandwidth, but will increase CPU/GPU load",
   "fsr_sharpness_title": "FSR Sharpness",
-  "fsr_sharpness_desc": "Set FSR sharpness"
+  "fsr_sharpness_desc": "Set FSR sharpness",
+  "MSAL": "Device Authorization Login",
+  "MSALDesc": "Enable device authorization login. If you encounter issues with regular login, please try enabling this option"
 }
