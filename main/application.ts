@@ -15,7 +15,7 @@ import pkg from "../package.json";
 
 interface startupFlags {
   fullscreen: boolean;
-  autoStream: string;
+  autoConnect: string;
 }
 
 export default class Application {
@@ -23,7 +23,7 @@ export default class Application {
   public _store = new Store();
   private _startupFlags: startupFlags = {
     fullscreen: false,
-    autoStream: "",
+    autoConnect: "",
   };
 
   public _isProduction: boolean = process.env.NODE_ENV === "production";
@@ -68,7 +68,7 @@ export default class Application {
       ElectronApp.commandLine.appendSwitch('ozone-platform-hint', 'x11')
     }
 
-    this.readStartupFlags();
+    this.readStartupFlags(settings);
     this.loadApplicationDefaults();
 
     this._ipc = new Ipc(this);
@@ -86,11 +86,11 @@ export default class Application {
     return this._startupFlags;
   }
 
-  resetAutostream() {
-    this._startupFlags.autoStream = "";
+  resetAutoConnect() {
+    this._startupFlags.autoConnect = "";
   }
 
-  readStartupFlags() {
+  readStartupFlags(settings: any) {
     this.log(
       "application",
       __filename + "[readStartupFlags()] Program args detected:",
@@ -102,21 +102,26 @@ export default class Application {
         this.log(
           "application",
           __filename +
-            "[readStartupFlags()] --fullscreen switch found. Setting fullscreen to true"
+          "[readStartupFlags()] --fullscreen switch found. Setting fullscreen to true"
         );
         this._startupFlags.fullscreen = true;
       }
 
-      if (process.argv[arg].includes("--connect=")) {
-        const key = process.argv[arg].substring(10);
+      if (process.argv[arg].includes("--auto-connect=") || settings.xhome_auto_connect_server_id) {
 
+        let key = '';
+        if (process.argv[arg].includes("--auto-connect=")) {
+          key = process.argv[arg]?.substring(15);
+        } else {
+          key = settings.xhome_auto_connect_server_id;
+        }
         this.log(
           "application",
           __filename +
-            "[readStartupFlags()] --connect switch found. Setting autoStream to",
+          "[readStartupFlags()] --auto-connect switch found. Setting autoConnect to",
           key
         );
-        this._startupFlags.autoStream = key;
+        this._startupFlags.autoConnect = key;
       }
     }
 
@@ -156,7 +161,7 @@ export default class Application {
         this.log(
           "electron",
           __filename +
-            "[loadApplicationDefaults()] Electron has been fully loaded. Ready to open windows"
+          "[loadApplicationDefaults()] Electron has been fully loaded. Ready to open windows"
         );
 
         this.openMainWindow();
@@ -166,7 +171,7 @@ export default class Application {
         this.log(
           "electron",
           __filename +
-            "[loadApplicationDefaults()] Electron has failed to load:",
+          "[loadApplicationDefaults()] Electron has failed to load:",
           error
         );
       });
@@ -176,13 +181,13 @@ export default class Application {
         this.log(
           "electron",
           __filename +
-            "[loadApplicationDefaults()] Electron detected that all windows are closed. Running in background..."
+          "[loadApplicationDefaults()] Electron detected that all windows are closed. Running in background..."
         );
       } else {
         this.log(
           "electron",
           __filename +
-            "[loadApplicationDefaults()] Electron detected that all windows are closed. Quitting app..."
+          "[loadApplicationDefaults()] Electron detected that all windows are closed. Quitting app..."
         );
         ElectronApp.quit();
       }
@@ -266,7 +271,7 @@ export default class Application {
         this.log(
           "electron",
           __filename +
-            "[authenticationCompleted()] Failed to retrieve user profile:",
+          "[authenticationCompleted()] Failed to retrieve user profile:",
           error
         );
         dialog.showMessageBox({
@@ -331,7 +336,7 @@ export default class Application {
       }
     });
 
-    
+
     const locale = settings.locale || 'en'
 
     if (this._isProduction === true && this._isCi === false) {

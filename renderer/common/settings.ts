@@ -374,7 +374,7 @@ const getSettingsMetas = (t) => {
       {
         name: 'signaling_home',
         type: 'select',
-        title: t('Signal server') + '(xHome)',
+        title: t('Signal server') + ' (xHome)',
         description: t(
           'The signaling server is a server for stream negotiation. If the host cannot connect, please try modifying this option',
         ),
@@ -406,7 +406,7 @@ const getSettingsMetas = (t) => {
       {
         name: 'signaling_cloud',
         type: 'select',
-        title: t('Signal server') + '(xCloud)',
+        title: t('Signal server') + ' (xCloud)',
         description: t(
           'The signaling server is a server for stream negotiation. If the host cannot connect, please try modifying this option',
         ),

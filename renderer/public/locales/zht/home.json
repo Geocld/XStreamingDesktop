@@ -7,5 +7,7 @@
   "Loading...": "加載中...",
   "Fetching user info...": "正在獲取用戶信息...",
   "Fetching consoles...": "正在獲取終端信息...",
-  "Checking login status...": "正在檢查登入..."
+  "Checking login status...": "正在檢查登入...",
+  "auto_connect_enabled": "快速連接已啟用",
+  "enable_auto_connect": "啟用快速連接"
 }

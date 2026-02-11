@@ -3,6 +3,7 @@ export const defaultSettings = {
   use_msal: false,
   fullscreen: false,
   resolution: 720,
+  xhome_auto_connect_server_id: '',
   xhome_bitrate_mode: "Auto",
   xhome_bitrate: 20,
   xcloud_bitrate_mode: "Auto",

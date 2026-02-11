@@ -7,5 +7,7 @@
   "Loading...": "Carregando...",
   "Fetching user info...": "Obtenção de informações do usuário...",
   "Fetching consoles...": "Buscando consoles...",
-  "Checking login status...": "Verificando status do login..."
+  "Checking login status...": "Verificando status do login...",
+  "auto_connect_enabled": "Conexão automática ativada",
+  "enable_auto_connect": "Ativar conexão automática"
 }

@@ -21,6 +21,7 @@ const SettingItem = (props) => {
   const { t } = useTranslation('settings');
 
   const [defaultValue, setDefaultValue] = useState(settings[item.name]);
+  const [regionData, setRegionData] = useState(item.data || []);
 
   useEffect(() => {
     if (item.name === 'theme') {
@@ -29,24 +30,27 @@ const SettingItem = (props) => {
     } else if (item.name === 'fontSize') {
       const localTheme = localStorage.getItem('fontSize') || '18'
       setDefaultValue(localTheme)
-    } else {
+    } else if (item.name !== "signaling_cloud" && item.name !== "signaling_home") {
       setDefaultValue(settings[item.name])
     }
+  }, [item.name, settings]);
 
+  useEffect(() => {
     if (item.name === "signaling_cloud" || item.name === "signaling_home") {
       const method =
         item.name === "signaling_cloud" ? "getXcloudToken" : "getXhomeToken";
       Ipc.send("xCloud", method).then((data) => {
         if (data) {
-          const regions: {name: string, isDefault: boolean}[] = data.offeringSettings.regions;          
+          const regions: { name: string, isDefault: boolean }[] = data.offeringSettings.regions;
 
-          item.data = regions.map(region => {
+          const mappedRegions = regions.map(region => {
             return {
               value: region.name,
-              label: t(region.name.toLowerCase(), {defaultValue: region.name})
+              label: t(region.name.toLowerCase(), { defaultValue: region.name })
             };
           });
-          
+
+          setRegionData(mappedRegions);
 
           const storeRegion = localStorage.getItem(item.name) || '';
           let finalRegion = '';
@@ -65,12 +69,12 @@ const SettingItem = (props) => {
           }
           setDefaultValue(finalRegion);
         } else {
-          item.data = [];
+          setRegionData([]);
         }
         // console.log('item:', item)
       });
     }
-  }, [item, settings, t]);
+  }, [item.name, t, setSettings, settings]);
 
   const handleChangeSetting = (value) => {
     console.log("handleChangeSetting:", value);
@@ -112,6 +116,8 @@ const SettingItem = (props) => {
     setDefaultValue(value);
   };
 
+  const displayData = (item.name === "signaling_cloud" || item.name === "signaling_home") ? regionData : (item.data || []);
+
   return (
     <div className="setting-item">
       <Card>
@@ -129,7 +135,7 @@ const SettingItem = (props) => {
                 handleChangeSetting(value);
               }}
             >
-              {item.data.map((i) => {
+              {displayData.map((i) => {
                 return (
                   <AutocompleteItem key={i.value}>{i.label}</AutocompleteItem>
                 );
@@ -145,7 +151,7 @@ const SettingItem = (props) => {
                 handleChangeSetting(value);
               }}
             >
-              {item.data.map((i) => {
+              {displayData.map((i) => {
                 return (
                   <Radio value={i.value} key={i.value}>
                     {i.label}
