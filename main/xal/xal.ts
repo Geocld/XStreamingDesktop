@@ -491,7 +491,7 @@ export default class Xal {
 
             return { userToken, deviceToken, sisuToken }
         } catch (error) {
-            throw new TokenRefreshError('Failed to refresh tokens: ' + JSON.stringify(error))
+            throw new TokenRefreshError('Failed to refresh tokens: ' + JSON.stringify(error.message))
         }
     }
 

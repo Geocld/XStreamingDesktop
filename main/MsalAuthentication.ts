@@ -173,7 +173,12 @@ export default class Authentication {
       "[getMsalDeviceCode()] Starting get device code",
     );
 
-    const forceRegionIp = this._application._store.get("force_region_ip", "");
+    const settings: any = this._application._store.get(
+      "settings",
+      defaultSettings
+    );
+
+    const forceRegionIp = settings.force_region_ip;
     if (
       forceRegionIp &&
       typeof forceRegionIp === "string" &&
@@ -227,7 +232,12 @@ export default class Authentication {
       "[startAuthflow()] Starting authentication flow",
     );
 
-    const forceRegionIp = this._application._store.get("force_region_ip", "");
+    const settings: any = this._application._store.get(
+      "settings",
+      defaultSettings
+    );
+
+    const forceRegionIp = settings.force_region_ip;
     if (
       forceRegionIp &&
       typeof forceRegionIp === "string" &&

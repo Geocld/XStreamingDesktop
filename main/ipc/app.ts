@@ -112,6 +112,8 @@ export default class IpcApp extends IpcBase {
           this._application._msalAuthentication._tokenStore.clear();
           this._application._store.delete("user");
           this._application._store.delete("auth");
+          clearStreamToken();
+          clearWebToken();
 
           this._application.log(
             "authentication",
