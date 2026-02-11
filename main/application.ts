@@ -4,6 +4,7 @@ import Store from "electron-store";
 import Debug from "debug";
 import { createWindow, xboxWorker } from "./helpers";
 import Authentication from "./authentication";
+import MsalAuthentication from "./MsalAuthentication";
 import Ipc from "./ipc";
 import { defaultSettings } from '../renderer/context/userContext.defaults'
 
@@ -33,7 +34,9 @@ export default class Application {
 
   public _mainWindow;
   public _ipc: Ipc;
+
   public _authentication: Authentication;
+  public _msalAuthentication: MsalAuthentication;
 
   public streamingTokens: any
 
@@ -70,6 +73,7 @@ export default class Application {
 
     this._ipc = new Ipc(this);
     this._authentication = new Authentication(this);
+    this._msalAuthentication = new MsalAuthentication(this);
 
     this._ipc.startUp();
   }
@@ -223,6 +227,9 @@ export default class Application {
 
     this._authentication._isAuthenticating = false;
     this._authentication._isAuthenticated = true;
+
+    this._msalAuthentication._isAuthenticating = false;
+    this._msalAuthentication._isAuthenticated = true;
 
     this._webApi
       .getProvider("profile")

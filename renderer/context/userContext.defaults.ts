@@ -1,5 +1,6 @@
 export const defaultSettings = {
   locale: "en",
+  use_msal: false,
   fullscreen: false,
   resolution: 720,
   xhome_auto_connect_server_id: '',

@@ -23,5 +23,16 @@
   "Unlocked": "已解鎖",
   "Lock": "未解鎖",
   "curVerson": "当前版本",
-  "latestVerson": "最新版本"
+  "latestVerson": "最新版本",
+  "AuthCode": "授權碼",
+  "Copied": "已複製",
+  "Copy": "複製",
+  "AuthCodeExpired": "授權碼已過期",
+  "Refresh": "重新整理",
+  "Complete": "完成",
+  "MsalModalTitle": "裝置授權登入",
+  "MsalModalDesc": "請使用瀏覽器開啟下方連結或掃描二維碼完成授權登入",
+  "MsalAuthTips1": "使用手機掃描二維碼或點擊連結",
+  "MsalAuthTips2": "在開啟的頁面中輸入裝置碼",
+  "MsalAuthTips3": "完成授權後點擊下方「完成」按鈕"
 }

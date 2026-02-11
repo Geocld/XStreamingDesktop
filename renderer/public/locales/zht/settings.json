@@ -126,5 +126,7 @@
   "FSR started": "FSR 已启动",
   "FSR_desc": "啟用FSR(FidelityFX Super Resolution)實現超分辨率，可以在不增加帶寬的情況下提升畫面清晰度，但會增加CPU/GPU負載",
   "fsr_sharpness_title": "FSR銳度",
-  "fsr_sharpness_desc": "設置FSR銳度"
+  "fsr_sharpness_desc": "設置FSR銳度",
+  "MSAL": "裝置授權登入",
+  "MSALDesc": "開啟裝置授權登入，如一般登入遇到問題，請嘗試啟用此選項"
 }

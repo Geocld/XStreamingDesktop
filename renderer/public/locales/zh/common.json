@@ -24,5 +24,16 @@
   "Lock": "未解锁",
   "newVersion": "新版本",
   "curVerson": "当前版本",
-  "latestVerson": "最新版本"
+  "latestVerson": "最新版本",
+  "AuthCode": "授权码",
+  "Copied": "已复制",
+  "Copy": "复制",
+  "AuthCodeExpired": "授权码已过期",
+  "Refresh": "刷新",
+  "Complete": "完成",
+  "MsalModalTitle": "设备授权登录",
+  "MsalModalDesc": "请使用浏览器打开下方链接或扫描二维码完成授权登录",
+  "MsalAuthTips1": "使用手机扫描二维码或点击链接",
+  "MsalAuthTips2": "在打开的页面中输入设备码",
+  "MsalAuthTips3": "完成授权后点击下方「完成」按钮"
 }

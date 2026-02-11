@@ -3,17 +3,28 @@ const getSettingsMetas = (t) => {
   const settings = {
     language: [
       {
+        name: 'use_msal',
+        type: 'radio',
+        title: t('MSAL'),
+        description: t('MSALDesc'),
+        needRestart: true,
+        needclearAll: true,
+        data: [
+          {value: true, label: t('Enable')},
+          {value: false, label: t('Disable')},
+        ],
+      },
+      {
         name: 'locale',
         type: 'select',
         title: t('App language'),
-        needRestart: true,
         description: t('Set language of XStreaming'),
+        needRestart: true,
         data: [
           {value: 'en', label: 'English'},
           {value: 'pt', label: 'Português do Brasil'},
           {value: 'zh', label: '简体中文'},
           {value: 'zht', label: '繁體中文'},
-          {value: 'jp', label: '日本語'},
         ],
       },
       {

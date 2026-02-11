@@ -35,4 +35,11 @@ export default class AuthTokenStore extends TokenStore {
         this._sisuToken = undefined
         this._jwtKeys = undefined
     }
+
+    removeAll() {
+        this._userToken = undefined
+        this._sisuToken = undefined
+
+        this._store.delete('user.tokenstore')
+    }
 }

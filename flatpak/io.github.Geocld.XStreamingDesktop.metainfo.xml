@@ -34,6 +34,14 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.9.5" date="2026-02-11">
+      <description>
+          <ul>
+            <li>Add auto-connect for consoles.</li>
+            <li>Add MSAL authentication for some users who meed login issues.</li>
+          </ul>
+      </description>
+    </release>
     <release version="1.9.4" date="2026-01-27">
       <description>
           <ul>

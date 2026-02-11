@@ -88,7 +88,7 @@ export default class Msal {
 
             }).catch((error) => {
                 if (Date.now() - startTime >= timeout) {
-                    reject(new Error('doPollForDeviceCodeAuth timeout'));
+                    // reject(new Error('doPollForDeviceCodeAuth timeout'));
                     return;
                 }
                 setTimeout(() => {

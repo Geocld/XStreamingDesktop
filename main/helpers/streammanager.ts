@@ -1,5 +1,6 @@
 import Application from '../application'
 import xCloudApi, { playResult } from './xcloudapi'
+import { defaultSettings } from "../../renderer/context/userContext.defaults"
 
 interface streamSession {
     id: string;
@@ -185,18 +186,38 @@ export default class StreamManager {
                 } else if(result.state === 'ReadyToConnect'){
                     // Do MSAL Auth
                     // @TODO: Refresh token if expired?
-                    this._application._authentication._xal.getMsalToken(this._application._authentication._tokenStore).then((msalToken) => {
-                        this.getApi(this.getSession(sessionId).type).sendMSALAuth(sessionId, msalToken.data.lpt).then(() => {
-                            this.monitorSession(sessionId)
+                    const settings: any = this._application._store.get(
+                        "settings",
+                        defaultSettings
+                    );
+                    if(settings.use_msal) {
+                        this._application._msalAuthentication._msal.getMsalToken().then((msalToken) => {
+                            this.getApi(this.getSession(sessionId).type).sendMSALAuth(sessionId, msalToken.data.lpt).then(() => {
+                                this.monitorSession(sessionId)
 
+                            }).catch((error) => {
+                                console.log('MSAL AUTH Error:', error)
+                                alert('MSAL AUTH Error:'+ error)
+                            })
                         }).catch((error) => {
                             console.log('MSAL AUTH Error:', error)
                             alert('MSAL AUTH Error:'+ error)
                         })
-                    }).catch((error) => {
-                        console.log('MSAL AUTH Error:', error)
-                        alert('MSAL AUTH Error:'+ error)
-                    })
+                    } else {
+                        this._application._authentication._xal.getMsalToken(this._application._authentication._tokenStore).then((msalToken) => {
+                            this.getApi(this.getSession(sessionId).type).sendMSALAuth(sessionId, msalToken.data.lpt).then(() => {
+                                this.monitorSession(sessionId)
+
+                            }).catch((error) => {
+                                console.log('MSAL AUTH Error:', error)
+                                alert('MSAL AUTH Error:'+ error)
+                            })
+                        }).catch((error) => {
+                            console.log('MSAL AUTH Error:', error)
+                            alert('MSAL AUTH Error:'+ error)
+                        })
+                    }
+                    
 
                 } else if(result.state === 'WaitingForResources'){
                     // Do Queue logic

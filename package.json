@@ -2,7 +2,7 @@
   "private": true,
   "name": "xstreaming",
   "description": "xstreaming",
-  "version": "1.9.4",
+  "version": "1.9.5",
   "author": "Geocld <lijiahao5372@gmail.com>",
   "main": "app/background.js",
   "scripts": {
@@ -34,6 +34,7 @@
     "next-i18next": "^15.3.1",
     "next-themes": "^0.3.0",
     "node-hid": "^3.2.0",
+    "qrcode.react": "^4.2.0",
     "react-i18next": "^15.0.1",
     "react-query": "^3.39.3",
     "semver": "^7.6.3",

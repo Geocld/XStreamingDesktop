@@ -2,22 +2,7 @@ import IpcBase from "./base";
 import { session } from "electron";
 import { clearStreamToken } from '../helpers/streamTokenStore';
 import { clearWebToken } from '../helpers/webTokenStore';
-
-// const HID = require('node-hid')
-
-// const devices = HID.devices()
-// const xbox = devices.find(d => d.vendorId === 0x045e)
-
-// const device = new HID.HID(xbox.path);
-
-const states = {
-  a: 0
-}
-
-// device.on('data', data => {
-//   states.a = data[2]
-//   console.log('data:', data[2], states)
-// });
+import { defaultSettings } from "../../renderer/context/userContext.defaults";
 
 export default class IpcApp extends IpcBase {
   // _streamingSessions:any = {}
@@ -30,10 +15,21 @@ export default class IpcApp extends IpcBase {
     });
   }
 
+  getSettings() {
+    const settings: any = this._application._store.get(
+      "settings",
+      defaultSettings
+    );
+    return settings;
+  }
+
   getUserState() {
     const gamertag = this._application._store.get("user.gamertag");
     const gamerpic = this._application._store.get("user.gamerpic");
     const gamerscore = this._application._store.get("user.gamerscore");
+
+    const settings = this.getSettings();
+    const authentication = settings.use_msal ? this._application._msalAuthentication : this._application._authentication;
 
     return {
       signedIn: gamertag ? true : false,
@@ -41,15 +37,17 @@ export default class IpcApp extends IpcBase {
       gamertag: gamertag ? gamertag : "",
       gamerpic: gamerpic ? gamerpic : "",
       gamerscore: gamerscore ? gamerscore : "",
-      level: this._application._authentication._appLevel,
+      level: authentication._appLevel,
     };
   }
 
   getAuthState() {
     return new Promise((resolve) => {
+      const settings = this.getSettings();
+      const authentication = settings.use_msal ? this._application._msalAuthentication : this._application._authentication;
       resolve({
-        isAuthenticating: this._application._authentication._isAuthenticating,
-        isAuthenticated: this._application._authentication._isAuthenticated,
+        isAuthenticating: authentication._isAuthenticating,
+        isAuthenticated: authentication._isAuthenticated,
         user: this.getUserState(),
       });
     });
@@ -57,25 +55,38 @@ export default class IpcApp extends IpcBase {
 
   getAppLevel() {
     return new Promise((resolve) => {
-        resolve(this._application._authentication._appLevel);
+      const settings = this.getSettings();
+      const authentication = settings.use_msal ? this._application._msalAuthentication : this._application._authentication;
+      resolve(authentication._appLevel);
     });
   }
 
   checkAuthentication() {
     return new Promise((resolve) => {
-      resolve(this._application._authentication.checkAuthentication());
+      const settings = this.getSettings();
+      const authentication = settings.use_msal ? this._application._msalAuthentication : this._application._authentication;
+      resolve(authentication.checkAuthentication());
     });
   }
 
   login() {
-    return new Promise<boolean>((resolve) => {
+    return new Promise<boolean>(resolve => {
       this._application._authentication.startAuthflow();
       resolve(true);
     });
   }
 
+  msalLogin() {
+    return new Promise(resolve => {
+      this._application._msalAuthentication.getMsalDeviceCode().then(data => {
+        this._application._msalAuthentication.doPollForDeviceCodeAuth(data.device_code)
+        resolve(data)
+      })
+    });
+  }
+
   quit() {
-    return new Promise<boolean>((resolve) => {
+    return new Promise<boolean>(resolve => {
       resolve(true);
       setTimeout(() => {
         this._application.quit();
@@ -84,7 +95,7 @@ export default class IpcApp extends IpcBase {
   }
 
   restart() {
-    return new Promise<boolean>((resolve) => {
+    return new Promise<boolean>(resolve => {
       resolve(true);
       setTimeout(() => {
         this._application.restart();
@@ -98,6 +109,7 @@ export default class IpcApp extends IpcBase {
         .clearStorageData()
         .then(() => {
           this._application._authentication._tokenStore.clear();
+          this._application._msalAuthentication._tokenStore.clear();
           this._application._store.delete("user");
           this._application._store.delete("auth");
 
@@ -178,14 +190,6 @@ export default class IpcApp extends IpcBase {
     return new Promise((resolve) => {
       this._application._mainWindow.setFullScreen(false);
       resolve({})
-    });
-  }
-
-  hidController() {
-    return new Promise((resolve) => {
-      resolve({
-        states
-      })
     });
   }
 
