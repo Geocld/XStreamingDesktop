@@ -1,4 +1,4 @@
-import { app as ElectronApp, BrowserWindow, dialog } from "electron";
+import { app as ElectronApp, BrowserWindow, dialog, powerSaveBlocker } from "electron";
 import serve from "electron-serve";
 import Store from "electron-store";
 import Debug from "debug";
@@ -76,6 +76,10 @@ export default class Application {
     this._msalAuthentication = new MsalAuthentication(this);
 
     this._ipc.startUp();
+
+    // Prevent display from sleeping
+    const id = powerSaveBlocker.start('prevent-display-sleep')
+    console.log('Prevent sleep state:' + powerSaveBlocker.isStarted(id))
   }
 
   log(namespace = "application", ...args) {
