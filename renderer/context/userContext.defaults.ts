@@ -11,6 +11,8 @@ export const defaultSettings = {
   audio_bitrate_mode: "Auto",
   audio_bitrate: 20,
   enable_audio_control: false,
+  enable_audio_rumble: false,
+  audio_rumble_threshold: 0.15,
   preferred_game_language: "en-US",
   force_region_ip: "",
   codec: "",

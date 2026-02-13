@@ -217,16 +217,6 @@ const getSettingsMetas = (t) => {
         )
       },
       {
-        name: 'enable_audio_control',
-        type: 'radio',
-        title: t('Audio_volume_title'),
-        description: t('Audio_volume_desc'),
-        data: [
-          {value: false, label: t('Disable')},
-          {value: true, label: t('Enable')},
-        ],
-      },
-      {
         name: 'performance_style',
         type: 'radio',
         title: t('Performance show style'),
@@ -348,6 +338,38 @@ const getSettingsMetas = (t) => {
           {value: 17.86, label: '17.86HZ'},
           {value: 16.67, label: '16.67HZ'},
         ],
+      },
+    ],
+    audio: [
+      {
+        name: 'enable_audio_control',
+        type: 'radio',
+        title: t('Audio_volume_title'),
+        description: t('Audio_volume_desc'),
+        data: [
+          {value: false, label: t('Disable')},
+          {value: true, label: t('Enable')},
+        ],
+      },
+      {
+        name: 'enable_audio_rumble',
+        type: 'radio',
+        title: t('Audio_rumble_title'),
+        description: t('Audio_rumble_desc'),
+        data: [
+          {value: false, label: t('Disable')},
+          {value: true, label: t('Enable')},
+        ],
+      },
+      {
+        name: 'audio_rumble_threshold',
+        type: 'slider',
+        min: 0.01,
+        max: 0.5,
+        step: 0.01,
+        title: t('Audio_rumble_threshold_title'),
+        description: t('Audio_rumble_threshold_desc'),
+        data: [],
       },
     ],
     xhome: [

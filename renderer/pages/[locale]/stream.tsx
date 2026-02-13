@@ -224,6 +224,11 @@ function Stream() {
         xPlayer.setAudioControl(true)
       }
 
+      // Set audio runble
+      if (settings.enable_audio_rumble) {
+        xPlayer.setAudioRumble(settings.enable_audio_rumble, settings.audio_rumble_threshold)
+      }
+
       // Set polling rate
       if (settings.polling_rate) {
         xPlayer.setPollRate(settings.polling_rate)

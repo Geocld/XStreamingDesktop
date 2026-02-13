@@ -2,7 +2,7 @@
   "private": true,
   "name": "xstreaming",
   "description": "xstreaming",
-  "version": "1.9.5",
+  "version": "1.9.6",
   "author": "Geocld <lijiahao5372@gmail.com>",
   "main": "app/background.js",
   "scripts": {
@@ -42,7 +42,7 @@
     "uplot": "^1.6.30",
     "uuid-1345": "^1.0.2",
     "xbox-webapi": "^1.4.1",
-    "xstreaming-player": "0.2.25",
+    "xstreaming-player": "0.2.27",
     "xvfb-maybe": "^0.2.1"
   },
   "devDependencies": {

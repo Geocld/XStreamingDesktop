@@ -26,6 +26,8 @@ function Settings() {
   const router = useRouter();
   const { theme } = useTheme();
 
+  console.log('locale:', locale)
+
   const [showAlert, setShowAlert] = useState(false);
   const [showRestartModal, setShowRestartModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -356,6 +358,20 @@ function Settings() {
                 </Button>
               </CardBody>
             </Card>
+          </Tab>
+
+          <Tab key="Audio" title={t("Audio")}>
+            {settings.audio &&
+              settings.audio.map((item) => {
+                return (
+                  <SettingItem
+                    key={item.name}
+                    item={item}
+                    onRestartWarn={() => setShowRestartModal(true)}
+                    onClearCache={() => handleClearCache()}
+                  />
+                );
+              })}
           </Tab>
 
           <Tab key="XHome" title={t("Xhome")}>
