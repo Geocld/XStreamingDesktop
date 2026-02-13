@@ -34,6 +34,14 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.9.6" date="2026-02-13">
+      <description>
+          <ul>
+            <li>Optimize screen sleep when streaming.</li>
+            <li>Added audio vibration (experimental).</li>
+          </ul>
+      </description>
+    </release>
     <release version="1.9.5" date="2026-02-11">
       <description>
           <ul>
