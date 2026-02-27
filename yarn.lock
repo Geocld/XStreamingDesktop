@@ -8029,10 +8029,10 @@ xmlbuilder@>=11.0.1, xmlbuilder@^15.1.1:
   resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-15.1.1.tgz#9dcdce49eea66d8d10b42cae94a79c3c8d0c2ec5"
   integrity sha512-yMqGBqtXyeN1e3TGYvgNgDVZ3j84W4cwkOXQswghol6APgZWaff9lnbvN7MHYJOiXsvGPXtjTYJEiC9J2wv9Eg==
 
-xstreaming-player@0.2.27:
-  version "0.2.27"
-  resolved "https://registry.yarnpkg.com/xstreaming-player/-/xstreaming-player-0.2.27.tgz#342da14f482619e4b99d2d5bf4744e432c068693"
-  integrity sha512-vH+ctzkV9ZLypv/6g5y0f+NMh8vgZvRR6wUTRWIAqf9xl9gk+kjNM/jniXHx+kgGshPNtVHwLaf6CFNQoHLX9A==
+xstreaming-player@0.2.28:
+  version "0.2.28"
+  resolved "https://registry.yarnpkg.com/xstreaming-player/-/xstreaming-player-0.2.28.tgz#41c51141428135045692bb4ecd79f5470c60f4d1"
+  integrity sha512-M7T1w5U/5wBymk0HmMeMv0LMz7Y0skLhwO84XY5YCewgis31X3npBtKlcJA6aQ76XAFsNmT9wSAjqbQenK00kg==
   dependencies:
     three "0.150.1"
 
