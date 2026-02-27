@@ -96,6 +96,14 @@ const Nav = ({ current, isLogined }) => {
                   <div className="px-1 py-2">
                     <div className="text-small">{t('curVerson')}: <span className="text-yellow-500 pl-1">v{newVersions.version}</span></div>
                     <div className="text-small">{t('latestVerson')}: <span className="text-green-500 pl-1">v{newVersions.latestVer}</span></div>
+                    <div className="text-center">
+                      <Button color="success" size="sm" variant="light" onPress={() => {
+                        window.open(newVersions.url, '_blank')
+                      }}>
+                        {t('Download')}
+                      </Button>
+                    </div>
+                    
                   </div>
                 </PopoverContent>
               </Popover>

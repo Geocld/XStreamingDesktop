@@ -234,6 +234,11 @@ function Stream() {
         xPlayer.setPollRate(settings.polling_rate)
       }
 
+      // Set co-op mode
+      if (settings.coop) {
+        xPlayer.setCoOpMode(true)
+      }
+
       xPlayer.setConnectFailHandler(() => {
         // Not connected
         setShowWarning(false);

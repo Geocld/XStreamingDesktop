@@ -133,5 +133,7 @@
   "fsr_sharpness_title": "FSR锐度",
   "fsr_sharpness_desc": "设置FSR锐度",
   "MSAL": "设备授权登录",
-  "MSALDesc": "启用设备授权登录，如常规登录遇到问题，请尝试开启该选项"
+  "MSALDesc": "启用设备授权登录，如常规登录遇到问题，请尝试开启该选项",
+  "coop_title": "本地双人模式",
+  "coop_desc": "启用本地双人模式，请连接两个控制器"
 }

@@ -30,6 +30,7 @@
   "AuthCodeExpired": "授權碼已過期",
   "Refresh": "重新整理",
   "Complete": "完成",
+  "Download": "下載",
   "MsalModalTitle": "裝置授權登入",
   "MsalModalDesc": "請使用瀏覽器開啟下方連結或掃描二維碼完成授權登入",
   "MsalAuthTips1": "使用手機掃描二維碼或點擊連結",

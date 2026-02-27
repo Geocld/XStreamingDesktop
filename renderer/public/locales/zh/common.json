@@ -31,6 +31,7 @@
   "AuthCodeExpired": "授权码已过期",
   "Refresh": "刷新",
   "Complete": "完成",
+  "Download": "下载",
   "MsalModalTitle": "设备授权登录",
   "MsalModalDesc": "请使用浏览器打开下方链接或扫描二维码完成授权登录",
   "MsalAuthTips1": "使用手机扫描二维码或点击链接",

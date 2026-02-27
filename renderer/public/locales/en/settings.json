@@ -147,5 +147,7 @@
   "fsr_sharpness_title": "FSR Sharpness",
   "fsr_sharpness_desc": "Set FSR sharpness",
   "MSAL": "Device Authorization Login",
-  "MSALDesc": "Enable device authorization login. If you encounter issues with regular login, please try enabling this option"
+  "MSALDesc": "Enable device authorization login. If you encounter issues with regular login, please try enabling this option",
+  "Cooperative Mode": "Local Two-Player Mode",
+  "Enable cooperative mode for multiplayer gaming": "Enable local two-player mode, please connect two controllers"
 }

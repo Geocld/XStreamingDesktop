@@ -249,6 +249,16 @@ const getSettingsMetas = (t) => {
     ],
     gamepad: [
       {
+        name: 'coop',
+        type: 'radio',
+        title: t('coop_title'),
+        description: t('coop_desc'),
+        data: [
+          {value: false, label: t('Disable')},
+          {value: true, label: t('Enable')},
+        ],
+      },
+      {
         name: 'dead_zone',
         type: 'slider',
         min: 0.1,

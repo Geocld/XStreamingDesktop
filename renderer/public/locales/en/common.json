@@ -34,5 +34,6 @@
   "MsalModalDesc": "Please open the link below in your browser or scan the QR code to complete the authorization login",
   "MsalAuthTips1": "Use your mobile phone to scan the QR code or click the link",
   "MsalAuthTips2": "Enter the device code on the opened page",
-  "MsalAuthTips3": "Click the \"Complete\" button below after authorization is finished"
+  "MsalAuthTips3": "Click the \"Complete\" button below after authorization is finished",
+  "Download": "Download"
 }

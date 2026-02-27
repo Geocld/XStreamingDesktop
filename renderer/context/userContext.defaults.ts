@@ -17,6 +17,7 @@ export const defaultSettings = {
   force_region_ip: "",
   codec: "",
   polling_rate: 250,
+  coop: false,
   vibration: true,
   vibration_mode: "Native",
   gamepad_kernal: "Native",

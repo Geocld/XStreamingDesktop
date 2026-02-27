@@ -43,7 +43,7 @@ function AchivementModal(props) {
   return (
     <Modal
       isOpen={true}
-      size="full"
+      size="5xl"
       scrollBehavior="inside"
       onClose={handleClose}
     >
@@ -84,6 +84,7 @@ function AchivementModal(props) {
                           alt={item.name}
                           width={300}
                           height={100}
+                          draggable="false"
                         />
                         {
                           item.progressState !== 'Achieved' && (
@@ -93,6 +94,7 @@ function AchivementModal(props) {
                                 alt="lock"
                                 width={50}
                                 height={50}
+                                draggable="false"
                               />
                             </div>
                           )

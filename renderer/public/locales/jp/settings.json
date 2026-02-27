@@ -129,5 +129,7 @@
   "fsr_sharpness_title": "FSR Sharpness",
   "fsr_sharpness_desc": "Set FSR sharpness",
   "MSAL": "Device Authorization Login",
-  "MSALDesc": "Enable device authorization login, allowing authentication via an external browser without entering account credentials in XStreaming"
+  "MSALDesc": "Enable device authorization login, allowing authentication via an external browser without entering account credentials in XStreaming",
+  "coop_title": "Local Two-Player Mode",
+  "coop_desc": "Enable local two-player mode, please connect two controllers"
 }

@@ -62,6 +62,7 @@ function TitleModal(props) {
                   // className="object-cover rounded-lg"
                   isZoomed
                   loading={'lazy'}
+                  draggable="false"
                   src={'https:' + titleItem.Image_Poster.URL}
                 />
               </div>

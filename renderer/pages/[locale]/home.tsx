@@ -588,6 +588,7 @@ function Home() {
                     <Image
                       src={consoleImg}
                       alt="xss"
+                      draggable="false"
                       width={130}
                       height={130}
                     />
