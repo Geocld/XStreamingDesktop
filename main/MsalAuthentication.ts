@@ -3,6 +3,12 @@ import Application from "./application";
 import { Msal } from "./xal";
 import AuthTokenStore from "./helpers/tokenstore";
 import { defaultSettings } from "../renderer/context/userContext.defaults";
+import {
+  clearStreamToken,
+} from './helpers/streamTokenStore';
+import {
+  clearWebToken,
+} from './helpers/webTokenStore';
 
 export default class Authentication {
   _application: Application;
@@ -142,6 +148,10 @@ export default class Authentication {
               __filename + "[getTokens()] Failed to retrieve web tokens:",
               error,
             );
+            clearStreamToken();
+            clearWebToken();
+            this._tokenStore.clear();
+            this._tokenStore.removeAll();
             dialog.showMessageBox({
               message:
                 "failedToRetrieveWebTokens" +
@@ -157,6 +167,10 @@ export default class Authentication {
           "[startSilentFlow()] Failed to retrieve streaming tokens:",
           err,
         );
+        clearStreamToken();
+        clearWebToken();
+        this._tokenStore.clear();
+        this._tokenStore.removeAll();
         dialog.showMessageBox({
           message:
             "failedToRetrieveStreamingTokens" +
@@ -217,6 +231,10 @@ export default class Authentication {
           "[doPollForDeviceCodeAuth()] Error during devicecode polling auth:",
           error,
         );
+        clearStreamToken();
+        clearWebToken();
+        this._tokenStore.clear();
+        this._tokenStore.removeAll();
         dialog.showErrorBox(
           "Error",
           "Failed to perform MSAL authentixation: " + JSON.stringify(error),
@@ -287,6 +305,10 @@ export default class Authentication {
               "[startAuthflow()] Error during devicecode polling auth:",
               error,
             );
+            clearStreamToken();
+            clearWebToken();
+            this._tokenStore.clear();
+            this._tokenStore.removeAll();
             dialog.showErrorBox(
               "Error",
               "Failed to perform MSAL authentixation: " + JSON.stringify(error),
@@ -301,6 +323,10 @@ export default class Authentication {
           "[startAuthflow()] Error during devicecode auth:",
           error,
         );
+        clearStreamToken();
+        clearWebToken();
+        this._tokenStore.clear();
+        this._tokenStore.removeAll();
         dialog.showErrorBox(
           "Error",
           "errorAuthentificationUser" +

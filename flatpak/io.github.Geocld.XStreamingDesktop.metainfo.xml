@@ -34,6 +34,13 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.9.7" date="2026-02-27">
+      <description>
+          <ul>
+            <li>Co-op supported.</li>
+          </ul>
+      </description>
+    </release>
     <release version="1.9.6" date="2026-02-13">
       <description>
           <ul>
