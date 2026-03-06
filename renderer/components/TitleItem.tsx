@@ -21,36 +21,39 @@ function TitleItem(props) {
   return (
     <Card
       isPressable
-      className="group relative w-full aspect-square rounded-2xl overflow-hidden border border-white/5 bg-[#16161F] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] hover:border-primary/50"
+      className="group relative w-full aspect-[2/3] rounded-xl overflow-hidden bg-[#0A0A0B] transition-all duration-300 hover:scale-[1.04] hover:shadow-[0_0_30px_rgba(26,201,84,0.3)] hover:ring-2 hover:ring-primary shadow-lg border border-white/5"
       onClick={handleClick}
     >
-      {titleItem.Image_Tile && (
+      {titleItem.Image_Poster && (
         <Image
           removeWrapper
           alt={titleItem.ProductTitle}
-          className="z-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="z-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           loading="lazy"
-          src={"https:" + titleItem.Image_Tile.URL}
+          src={"https:" + titleItem.Image_Poster.URL}
         />
       )}
 
-      {/* Badges */}
-      <div className="absolute top-2 right-2 z-20 flex flex-col gap-1.5 opacity-90 transition-opacity duration-300 group-hover:opacity-100">
-        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-black/40 backdrop-blur-md border border-white/10 shadow-sm">
-          <Image src={"/images/icons/gamepad.svg"} alt="gamepad" width={14} height={14} className="brightness-200" />
+      {/* Badges - Sleek Glassmorphism */}
+      <div className="absolute top-2 right-2 z-20 flex flex-col gap-2 opacity-80 transition-opacity duration-300 group-hover:opacity-100">
+        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 backdrop-blur-md border border-white/10 shadow-sm">
+          <Image src={"/images/icons/gamepad.svg"} alt="gamepad" width={16} height={16} className="brightness-200 invert" />
         </div>
         {isSupportMKB && (
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-blue-600/40 backdrop-blur-md border border-blue-400/30 shadow-sm">
-            <Image src={"/images/icons/keyboard-mouse.svg"} alt="mkb" width={14} height={14} className="brightness-200" />
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 backdrop-blur-md border border-white/10 shadow-sm">
+            <Image src={"/images/icons/keyboard-mouse.svg"} alt="mkb" width={16} height={16} className="brightness-200 invert" />
           </div>
         )}
       </div>
 
       {/* Bottom Gradient and Title */}
-      <div className="absolute inset-x-0 bottom-0 z-10 p-3 pt-12 bg-gradient-to-t from-black/95 via-black/60 to-transparent flex flex-col justify-end pointer-events-none">
-        <h3 className="text-xs sm:text-sm font-semibold text-white/95 leading-tight drop-shadow-md line-clamp-2">
+      <div className="absolute inset-x-0 bottom-0 z-10 p-4 pt-16 bg-gradient-to-t from-black/95 via-black/80 to-transparent flex flex-col justify-end pointer-events-none transition-all duration-300">
+        <h3 className="text-sm font-bold text-white/95 leading-tight drop-shadow-md line-clamp-2 pb-1">
           {titleItem.ProductTitle}
         </h3>
+        {titleItem.PublisherName && (
+          <p className="text-[10px] text-white/60 font-medium uppercase tracking-wider line-clamp-1">{titleItem.PublisherName}</p>
+        )}
       </div>
     </Card>
   );

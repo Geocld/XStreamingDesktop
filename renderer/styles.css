@@ -19,7 +19,7 @@ body {
 }
 
 *:focus {
-  outline: 'none'
+  outline: none;
 }
 
 div#app_body {
@@ -65,10 +65,35 @@ div#canvas-container {
   justify-content: center;
 }
 
+
 div#videoHolder.size_stretch video {
   object-fit: fill;
 }
 
 div#videoHolder.size_zoom video {
   object-fit: cover;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  background-clip: padding-box;
+  border: 2px solid transparent;
+  min-height: 60px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+  background-clip: padding-box;
+  border: 2px solid transparent;
+  min-height: 60px;
 }
