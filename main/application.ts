@@ -310,6 +310,22 @@ export default class Application {
       ...windowOptions,
     });
 
+    this._mainWindow.webContents.on('before-input-event', (event, input) => {
+      if (input.type === 'keyDown') {
+        const isFullScreen = this._mainWindow.isFullScreen();
+
+        if (input.key === 'F11' || (input.alt && input.key === 'Enter')) {
+          this._mainWindow.setFullScreen(!isFullScreen);
+          event.preventDefault();
+        }
+
+        if (input.key === 'Escape' && isFullScreen) {
+          this._mainWindow.setFullScreen(false);
+          event.preventDefault();
+        }
+      }
+    });
+
     // this._mainWindow.openDevTools();
 
     if (settings.background_keepalive) {

@@ -10,14 +10,17 @@ import {
   Dropdown,
   DropdownMenu,
   Avatar,
-  Popover, 
-  PopoverTrigger, 
-  PopoverContent, 
-  Button
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  Button,
+  Tabs,
+  Tab
 } from "@heroui/react";
 
 import { useTranslation } from "next-i18next";
 
+import { useRouter } from "next/router";
 import Ipc from "../lib/ipc";
 import updater from "../lib/updater";
 import pkg from '../../package.json';
@@ -25,32 +28,13 @@ import pkg from '../../package.json';
 const Nav = ({ current, isLogined }) => {
   console.log("isLogined:", isLogined);
 
-  const { t, i18n: {language: locale} } = useTranslation("common");
+  const { t, i18n: { language: locale } } = useTranslation("common");
   const [userState, setUserState] = useState(null);
   const [newVersions, setNewVersions] = useState(null);
 
-  const metas = [
-    {
-      name: t("Consoles"),
-      href: "/home",
-    },
-    {
-      name: t("Xcloud"),
-      href: "/xcloud",
-    },
-    {
-      name: t("Achivements"),
-      href: "/achivements",
-    },
-    {
-      name: t("Settings"),
-      href: "/settings",
-    },
-    // {
-    //   name: 'Stream',
-    //   href: "/stream?serverid=123",
-    // },
-  ];
+  const router = useRouter();
+
+  const isMainPage = current === t("Consoles") || current === t("Xcloud") || current === "Consoles" || current === "Xcloud";
 
   useEffect(() => {
     Ipc.send('app', 'getAuthState').then(res => {
@@ -80,62 +64,56 @@ const Nav = ({ current, isLogined }) => {
 
   return (
     <Navbar isBordered maxWidth="full" style={{ justifyContent: "flex-start", zIndex: 100 }}>
-      <NavbarBrand className="grow-0">
-        <p className="font-bold text-inherit pr-20">
-          XStreaming
-
-          {
-            newVersions ? (
-              <Popover color="default" placement="bottom">
-                <PopoverTrigger>
-                  <Button color="success" size="sm" variant="light">
-                    {t('newVersion')}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent>
-                  <div className="px-1 py-2">
-                    <div className="text-small">{t('curVerson')}: <span className="text-yellow-500 pl-1">v{newVersions.version}</span></div>
-                    <div className="text-small">{t('latestVerson')}: <span className="text-green-500 pl-1">v{newVersions.latestVer}</span></div>
-                    <div className="text-center">
-                      <Button color="success" size="sm" variant="light" onPress={() => {
-                        window.open(newVersions.url, '_blank')
-                      }}>
-                        {t('Download')}
-                      </Button>
-                    </div>
-                    
-                  </div>
-                </PopoverContent>
-              </Popover>
-            ) : (
-              <span className="text-small pl-2 text-gray-500">v{ pkg.version }</span>
-            )
-          }
-        </p>
-      </NavbarBrand>
-      <NavbarContent className="hidden sm:flex gap-4" justify="start">
-        {metas.map((meta) => {
-          if ((meta.href === "/xcloud" || meta.href === "/achivements") && !isLogined) {
-            return null;
-          } else {
-            return (
-              <NavbarItem isActive={current === meta} key={meta.name}>
-                <Link
-                  color={current === meta.name ? "primary" : "foreground"}
-                  href={`/${locale}${meta.href}`}
-                >
-                  {meta.name}
-                </Link>
-              </NavbarItem>
-            );
-          }
-        })}
+      <NavbarContent className="flex gap-4" justify="start">
+        {isMainPage ? (
+          <NavbarItem>
+            {isLogined && (
+              <Tabs
+                selectedKey={current === t("Xcloud") || current === "Xcloud" ? "xcloud" : "consoles"}
+                onSelectionChange={(key) => window.location.assign(`/${locale}/${key === "consoles" ? "home" : "xcloud"}`)}
+                radius="full"
+                size="md"
+                color="primary"
+                classNames={{
+                  tabList: "bg-white/5 border border-white/10 p-1",
+                  cursor: "bg-primary shadow-sm",
+                  tab: "px-6 h-8",
+                  tabContent: "group-data-[selected=true]:text-white text-white/50 font-bold"
+                }}
+              >
+                <Tab key="consoles" title={t("Consoles")} />
+                <Tab key="xcloud" title={t("Xcloud")} />
+              </Tabs>
+            )}
+          </NavbarItem>
+        ) : (
+          <NavbarItem className="flex items-center">
+            <Button
+              variant="flat"
+              color="default"
+              startContent={
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M19 12H5"></path>
+                  <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+              }
+              onPress={() => router.back()}
+              className="text-white/80 bg-white/5 hover:bg-white/15 border border-white/10"
+              radius="full"
+            >
+              {t('Back')}
+            </Button>
+            <span className="ml-4 font-bold text-lg text-white">
+              {current}
+            </span>
+          </NavbarItem>
+        )}
       </NavbarContent>
 
       {
         userState && (
           <NavbarContent as="div" justify="end">
-            <Dropdown placement="bottom-end">
+            <Dropdown placement="bottom-end" shouldBlockScroll={false}>
               <DropdownTrigger>
                 <Avatar
                   isBordered
@@ -148,23 +126,30 @@ const Nav = ({ current, isLogined }) => {
                 />
               </DropdownTrigger>
               <DropdownMenu aria-label="Profile Actions" variant="flat">
-                <DropdownItem key="profile" className="h-14 gap-2">
-                  <p className="text-lg">{userState.gamertag}</p>
-                  <p className="font-semibold">{t('Score')}: {userState.gamerscore}</p>
+                <DropdownItem key="profile" className="h-14 gap-2 text-center" textValue={userState.gamertag}>
+                  <p className="text-lg font-bold text-white/90">{userState.gamertag}</p>
+                  <p className="font-semibold text-primary">{t('Score')}: {userState.gamerscore}</p>
                 </DropdownItem>
-                <DropdownItem key="fullscreen" onClick={handleToggleScreen}>{t('Toggle fullscreen')}</DropdownItem>
-                <DropdownItem key="logout" color="danger" onClick={handleLouout}>
-                {t('Logout')}
+                <DropdownItem key="achievements" onPress={() => window.location.assign(`/${locale}/achivements`)}>
+                  {t('Achivements')}
                 </DropdownItem>
-                <DropdownItem key="exit" className="text-danger" color="danger" onClick={handleExit}>
-                {t('Exit')}
+                <DropdownItem key="settings" onPress={() => window.location.assign(`/${locale}/settings`)} showDivider>
+                  {t('Settings')}
+                </DropdownItem>
+
+                <DropdownItem key="fullscreen" onPress={handleToggleScreen}>{t('Toggle fullscreen')}</DropdownItem>
+                <DropdownItem key="logout" color="danger" onPress={handleLouout}>
+                  {t('Logout')}
+                </DropdownItem>
+                <DropdownItem key="exit" className="text-danger" color="danger" onPress={handleExit}>
+                  {t('Exit')}
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </NavbarContent>
         )
       }
-      
+
     </Navbar>
   );
 };

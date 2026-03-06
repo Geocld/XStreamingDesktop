@@ -15,7 +15,7 @@ const XCLOUD_PREFIX = "xcloud_";
 
 function TitleModal(props) {
   const router = useRouter();
-  const { t, i18n: {language: locale} } = useTranslation('cloud');
+  const { t, i18n: { language: locale } } = useTranslation('cloud');
 
   const titleItem = props.title || {};
 
@@ -67,18 +67,25 @@ function TitleModal(props) {
                 />
               </div>
 
-              <div className="w-2/3 pl-5">
-                <p>{titleItem.PublisherName}</p>
-                <p>{titleItem.ProductDescription || ""}</p>
+              <div className="w-2/3 pl-6 flex flex-col">
+                <div className="mb-4">
+                  <p className="text-sm font-semibold tracking-wider text-primary uppercase mb-1">{titleItem.PublisherName}</p>
+                </div>
+
+                <div className="text-sm text-white/80 leading-relaxed max-h-[250px] overflow-y-auto pr-2 mb-4 scrollbar-thin">
+                  {titleItem.ProductDescription || titleItem.Description || (titleItem.details && (titleItem.details as any).description) || "No description available for this title."}
+                </div>
+
                 {
                   isByorg && (
-                    <p className="text-red-500">{t('byorg')}</p>
+                    <p className="text-red-500 font-medium mb-4 bg-red-500/10 p-2 rounded border border-red-500/20">{t('byorg')}</p>
                   )
                 }
-                <div className="pt-5 flex gap-4">
-                  {titleItem.LocalizedCategories.map((item, idx) => {
+
+                <div className="flex flex-wrap gap-2 mt-auto">
+                  {titleItem.LocalizedCategories?.map((item, idx) => {
                     return (
-                      <Chip key={idx} color="success" variant="bordered">
+                      <Chip key={idx} color="default" variant="flat" className="bg-white/10 border-none text-white/90">
                         {item}
                       </Chip>
                     );

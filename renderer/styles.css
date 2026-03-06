@@ -12,27 +12,29 @@
 @import 'styles/map.css';
 
 body {
-    width: 100vw;
-    min-height: 100vh;
-  }
-  
-  *:focus {
-    outline: 'none'
-  }
-
-div#app_body {
-    /* position: fixed; */
-    /* padding-top: 70px; */
-    /* left: 0px; */
-    width: 70vw;
-    height: 100vh;
-    /* bottom: 0px; */
-    overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-div#app_body_container{
-    padding-top: 70px;
-    /* position: relative; */
+*:focus {
+  outline: 'none'
+}
+
+div#app_body {
+  /* position: fixed; */
+  /* padding-top: 70px; */
+  /* left: 0px; */
+  width: 70vw;
+  height: 100vh;
+  /* bottom: 0px; */
+  overflow-y: auto;
+}
+
+div#app_body_container {
+  padding-top: 70px;
+  /* position: relative; */
 }
 
 div#videoHolder {

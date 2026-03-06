@@ -1,4 +1,5 @@
-import { Card, CardBody, CardFooter, Image } from "@heroui/react";
+import React from "react";
+import { Card, Image } from "@heroui/react";
 
 function TitleItem(props) {
   const titleItem = props.title || { name: "" };
@@ -10,54 +11,48 @@ function TitleItem(props) {
   let isSupportMKB = false;
 
   if (titleItem.details && titleItem.details.supportedInputTypes) {
-    if (titleItem.details.supportedInputTypes.indexOf('MKB') > -1) {
+    if (titleItem.details.supportedInputTypes.indexOf("MKB") > -1) {
       isSupportMKB = true;
     }
   }
 
+  if (!titleItem.ProductTitle) return null;
+
   return (
-    <>
-      {titleItem ? (
-        <Card className="mb-5" shadow="sm" isPressable onClick={handleClick}>
-          <CardBody className="overflow-visible py-2">
-            <div className="relative">
-              {
-                titleItem.Image_Tile && (<Image
-                  alt="Card background"
-                  className="object-cover rounded-xl"
-                  loading={'lazy'}
-                  src={"https:" + titleItem.Image_Tile.URL}
-                  width={270}
-                />)
-              }
+    <Card
+      isPressable
+      className="group relative w-full aspect-square rounded-2xl overflow-hidden border border-white/5 bg-[#16161F] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] hover:border-primary/50"
+      onClick={handleClick}
+    >
+      {titleItem.Image_Tile && (
+        <Image
+          removeWrapper
+          alt={titleItem.ProductTitle}
+          className="z-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+          src={"https:" + titleItem.Image_Tile.URL}
+        />
+      )}
 
-              <div className="absolute bottom-0 right-0 flex flex-row justify-end z-40 space-x-2 px-2" style={{background: 'rgba(0, 0, 0, .7)'}}>
-                <Image
-                  src={'/images/icons/gamepad.svg'}
-                  alt="gamepad"
-                  width={20}
-                  height={20}
-                />
+      {/* Badges */}
+      <div className="absolute top-2 right-2 z-20 flex flex-col gap-1.5 opacity-90 transition-opacity duration-300 group-hover:opacity-100">
+        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-black/40 backdrop-blur-md border border-white/10 shadow-sm">
+          <Image src={"/images/icons/gamepad.svg"} alt="gamepad" width={14} height={14} className="brightness-200" />
+        </div>
+        {isSupportMKB && (
+          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-blue-600/40 backdrop-blur-md border border-blue-400/30 shadow-sm">
+            <Image src={"/images/icons/keyboard-mouse.svg"} alt="mkb" width={14} height={14} className="brightness-200" />
+          </div>
+        )}
+      </div>
 
-                {
-                  isSupportMKB && (
-                    <Image
-                      src={'/images/icons/keyboard-mouse.svg'}
-                      alt="gamepad"
-                      width={20}
-                      height={20}
-                    />
-                  )
-                }
-              </div>
-            </div>
-          </CardBody>
-          <CardFooter className="pt-0 px-4 flex-col items-start">
-            <p className="text-sm font-bold">{titleItem.ProductTitle}</p>
-          </CardFooter>
-        </Card>
-      ) : null}
-    </>
+      {/* Bottom Gradient and Title */}
+      <div className="absolute inset-x-0 bottom-0 z-10 p-3 pt-12 bg-gradient-to-t from-black/95 via-black/60 to-transparent flex flex-col justify-end pointer-events-none">
+        <h3 className="text-xs sm:text-sm font-semibold text-white/95 leading-tight drop-shadow-md line-clamp-2">
+          {titleItem.ProductTitle}
+        </h3>
+      </div>
+    </Card>
   );
 }
 
