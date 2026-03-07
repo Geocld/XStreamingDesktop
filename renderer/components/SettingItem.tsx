@@ -134,6 +134,17 @@ const SettingItem = (props) => {
               onSelectionChange={(value) => {
                 handleChangeSetting(value);
               }}
+              listboxProps={{
+                itemClasses: {
+                  base: "data-[hover=true]:bg-content2 data-[hover=true]:text-foreground text-default-700",
+                },
+                className: "max-h-[260px]" // show ~7 items
+              }}
+              popoverProps={{
+                classNames: {
+                  content: "bg-content1 border border-divider text-foreground shadow-lg"
+                }
+              }}
             >
               {displayData.map((i) => {
                 return (
