@@ -16,6 +16,7 @@ body {
   padding: 0;
   min-height: 100vh;
   overflow-x: hidden;
+  @apply bg-background text-foreground;
 }
 
 *:focus {
@@ -84,7 +85,7 @@ div#videoHolder.size_zoom video {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(128, 128, 128, 0.4);
   border-radius: 10px;
   background-clip: padding-box;
   border: 2px solid transparent;
@@ -92,7 +93,7 @@ div#videoHolder.size_zoom video {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(128, 128, 128, 0.7);
   background-clip: padding-box;
   border: 2px solid transparent;
   min-height: 60px;

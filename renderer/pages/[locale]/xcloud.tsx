@@ -313,10 +313,10 @@ function Xcloud() {
                   radius="full"
                   size="sm"
                   classNames={{
-                    tabList: "bg-[#1a1a1a] border border-white/10 p-0.5 shadow-inner",
-                    cursor: "bg-[#333333] shadow-sm rounded-full",
+                    tabList: "bg-content1 border border-divider p-0.5 shadow-inner",
+                    cursor: "bg-content3 shadow-sm rounded-full",
                     tab: "max-w-fit px-4 h-6",
-                    tabContent: "text-white/60 group-data-[selected=true]:text-white font-medium text-[11px] tracking-wide"
+                    tabContent: "text-default-500 group-data-[selected=true]:text-foreground font-medium text-[11px] tracking-wide"
                   }}
                 >
                   {[
@@ -339,8 +339,8 @@ function Xcloud() {
                   classNames={{
                     base: "w-full",
                     input: [
-                      "text-white/80",
-                      "placeholder:text-white/30",
+                      "text-foreground",
+                      "placeholder:text-default-400",
                       "text-[11px]",
                       "outline-none",
                       "focus:outline-none",
@@ -352,22 +352,22 @@ function Xcloud() {
                     ],
                     innerWrapper: "bg-transparent border-none shadow-none ring-0",
                     inputWrapper: [
-                      "bg-[#1a1a1a]",
+                      "bg-content1",
                       "border",
-                      "border-white/10",
+                      "border-divider",
                       "shadow-inner",
-                      "hover:bg-[#2a2a2a]",
-                      "group-data-[focused=true]:bg-[#1a1a1a]",
-                      "!group-data-[focused=true]:border-[#10b981]",
+                      "hover:bg-content2",
+                      "group-data-[focused=true]:bg-content1",
+                      "!group-data-[focused=true]:border-primary",
                       "group-data-[focused=true]:ring-1",
-                      "group-data-[focused=true]:ring-[#10b981]",
+                      "group-data-[focused=true]:ring-primary",
                       "h-8",
                       "min-h-[32px]",
                       "px-3"
                     ],
                   }}
                   startContent={
-                    <SearchIcon className="text-white/30 flex-shrink-0 w-3.5 h-3.5 mr-1" />
+                    <SearchIcon className="text-default-400 flex-shrink-0 w-3.5 h-3.5 mr-1" />
                   }
                   onValueChange={(value) => {
                     setKeyword(value);

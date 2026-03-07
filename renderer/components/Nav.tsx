@@ -63,7 +63,7 @@ const Nav = ({ current, isLogined }) => {
   }
 
   return (
-    <Navbar isBordered maxWidth="full" style={{ justifyContent: "flex-start", zIndex: 100 }}>
+    <Navbar maxWidth="full" className="bg-background border-b border-divider" style={{ justifyContent: "flex-start", zIndex: 100 }}>
       <NavbarContent className="flex gap-4" justify="start">
         {isMainPage ? (
           <NavbarItem>
@@ -75,10 +75,10 @@ const Nav = ({ current, isLogined }) => {
                 size="md"
                 color="primary"
                 classNames={{
-                  tabList: "bg-white/5 border border-white/10 p-1",
+                  tabList: "bg-content1 border border-divider p-1",
                   cursor: "bg-primary shadow-sm",
                   tab: "px-6 h-8",
-                  tabContent: "group-data-[selected=true]:text-white text-white/50 font-bold"
+                  tabContent: "group-data-[selected=true]:text-white text-default-500 font-bold"
                 }}
               >
                 <Tab key="consoles" title={t("Consoles")} />
@@ -98,12 +98,12 @@ const Nav = ({ current, isLogined }) => {
                 </svg>
               }
               onPress={() => router.back()}
-              className="text-white/80 bg-white/5 hover:bg-white/15 border border-white/10"
+              className="text-default-700 bg-content2 hover:bg-content3 border border-divider"
               radius="full"
             >
               {t('Back')}
             </Button>
-            <span className="ml-4 font-bold text-lg text-white">
+            <span className="ml-4 font-bold text-lg text-foreground">
               {current}
             </span>
           </NavbarItem>
@@ -113,7 +113,13 @@ const Nav = ({ current, isLogined }) => {
       {
         userState && (
           <NavbarContent as="div" justify="end">
-            <Dropdown placement="bottom-end" shouldBlockScroll={false}>
+            <Dropdown
+              placement="bottom-end"
+              shouldBlockScroll={false}
+              classNames={{
+                content: "bg-content1 border border-divider text-foreground"
+              }}
+            >
               <DropdownTrigger>
                 <Avatar
                   isBordered
@@ -125,9 +131,19 @@ const Nav = ({ current, isLogined }) => {
                   src={userState.gamerpic}
                 />
               </DropdownTrigger>
-              <DropdownMenu aria-label="Profile Actions" variant="flat">
+              <DropdownMenu
+                aria-label="Profile Actions"
+                variant="flat"
+                itemClasses={{
+                  base: [
+                    "data-[hover=true]:bg-content2",
+                    "data-[hover=true]:text-foreground",
+                    "text-default-600"
+                  ]
+                }}
+              >
                 <DropdownItem key="profile" className="h-14 gap-2 text-center" textValue={userState.gamertag}>
-                  <p className="text-lg font-bold text-white/90">{userState.gamertag}</p>
+                  <p className="text-lg font-bold text-foreground">{userState.gamertag}</p>
                   <p className="font-semibold text-primary">{t('Score')}: {userState.gamerscore}</p>
                 </DropdownItem>
                 <DropdownItem key="achievements" onPress={() => window.location.assign(`/${locale}/achivements`)}>
@@ -150,7 +166,7 @@ const Nav = ({ current, isLogined }) => {
         )
       }
 
-    </Navbar>
+    </Navbar >
   );
 };
 

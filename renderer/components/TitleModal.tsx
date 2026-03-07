@@ -48,6 +48,12 @@ function TitleModal(props) {
       size="5xl"
       scrollBehavior="inside"
       onClose={handleClose}
+      classNames={{
+        base: "bg-background border border-divider",
+        header: "border-b border-divider text-foreground",
+        footer: "border-t border-divider",
+        closeButton: "hover:bg-content2 active:bg-content1 text-default-500"
+      }}
     >
       <ModalContent>
         <>
@@ -72,7 +78,7 @@ function TitleModal(props) {
                   <p className="text-sm font-semibold tracking-wider text-primary uppercase mb-1">{titleItem.PublisherName}</p>
                 </div>
 
-                <div className="text-sm text-white/80 leading-relaxed max-h-[250px] overflow-y-auto pr-2 mb-4 scrollbar-thin">
+                <div className="text-sm text-default-600 leading-relaxed max-h-[250px] overflow-y-auto pr-2 mb-4">
                   {titleItem.ProductDescription || titleItem.Description || (titleItem.details && (titleItem.details as any).description) || "No description available for this title."}
                 </div>
 
@@ -85,7 +91,7 @@ function TitleModal(props) {
                 <div className="flex flex-wrap gap-2 mt-auto">
                   {titleItem.LocalizedCategories?.map((item, idx) => {
                     return (
-                      <Chip key={idx} color="default" variant="flat" className="bg-white/10 border-none text-white/90">
+                      <Chip key={idx} color="default" variant="flat" className="bg-content3 border-none text-foreground">
                         {item}
                       </Chip>
                     );
@@ -95,7 +101,7 @@ function TitleModal(props) {
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button color="danger" variant="light" onPress={handleClose}>
+            <Button className="bg-content1 text-default-600 border border-divider hover:bg-content2 hover:border-primary hover:text-foreground" onPress={handleClose}>
               {t('Close')}
             </Button>
             <Button color="primary" onPress={handleStartGame}>

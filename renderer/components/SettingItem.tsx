@@ -122,8 +122,8 @@ const SettingItem = (props) => {
     <div className="setting-item">
       <Card>
         <CardBody>
-          <div className={`setting-title ${theme === 'xbox-light' ? 'text-black' : 'text-white'}`}>{item.title}</div>
-          <div className={`setting-description ${theme === 'xbox-light' ? 'text-black' : 'text-gray'}`}>{item.description}</div>
+          <div className="setting-title text-foreground">{item.title}</div>
+          <div className="setting-description text-default-500">{item.description}</div>
           {item.type === "select" && defaultValue !== undefined && (
             <Autocomplete
               className="setting-select"
