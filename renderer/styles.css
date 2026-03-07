@@ -12,27 +12,30 @@
 @import 'styles/map.css';
 
 body {
-    width: 100vw;
-    min-height: 100vh;
-  }
-  
-  *:focus {
-    outline: 'none'
-  }
-
-div#app_body {
-    /* position: fixed; */
-    /* padding-top: 70px; */
-    /* left: 0px; */
-    width: 70vw;
-    height: 100vh;
-    /* bottom: 0px; */
-    overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  @apply bg-background text-foreground;
 }
 
-div#app_body_container{
-    padding-top: 70px;
-    /* position: relative; */
+*:focus {
+  outline: none;
+}
+
+div#app_body {
+  /* position: fixed; */
+  /* padding-top: 70px; */
+  /* left: 0px; */
+  width: 70vw;
+  height: 100vh;
+  /* bottom: 0px; */
+  overflow-y: auto;
+}
+
+div#app_body_container {
+  padding-top: 70px;
+  /* position: relative; */
 }
 
 div#videoHolder {
@@ -63,10 +66,35 @@ div#canvas-container {
   justify-content: center;
 }
 
+
 div#videoHolder.size_stretch video {
   object-fit: fill;
 }
 
 div#videoHolder.size_zoom video {
   object-fit: cover;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.4);
+  border-radius: 10px;
+  background-clip: padding-box;
+  border: 2px solid transparent;
+  min-height: 60px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 128, 128, 0.7);
+  background-clip: padding-box;
+  border: 2px solid transparent;
+  min-height: 60px;
 }

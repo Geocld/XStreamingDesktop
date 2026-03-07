@@ -21,7 +21,7 @@ import pkg from "../../../package.json";
 import { getStaticPaths, makeStaticProperties } from "../../lib/get-static";
 
 function Settings() {
-  const { t, i18n: {language: locale} } = useTranslation("settings");
+  const { t, i18n: { language: locale } } = useTranslation("settings");
   const { settings: localSettings, setSettings: setLocalSettings, resetSettings } = useSettings();
   const router = useRouter();
   const { theme } = useTheme();
@@ -66,7 +66,7 @@ function Settings() {
       setServerUrl(localSettings.server_url);
       setServerUsername(localSettings.server_username);
       setServerPwd(localSettings.server_credential);
-    },  1000);
+    }, 1000);
 
     function nextItem(index) {
       index++;
@@ -92,7 +92,7 @@ function Settings() {
         index -= 1;
         currentIndex.current = index % focusable.current.length;
       }
-      
+
       const elem = focusable.current[currentIndex.current];
       const keyboardEvent = new KeyboardEvent('keydown', {
         key: 'Tab',
@@ -150,7 +150,7 @@ function Settings() {
   const resetNavigationElems = () => {
     setTimeout(() => {
       focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-    },  800);
+    }, 800);
   };
 
   const handleResetSettings = () => {
@@ -309,21 +309,21 @@ function Settings() {
                 );
               })}
 
-              <div className="setting-item">
-                <Card>
-                  <CardBody>
-                    <div className={`setting-title ${theme === 'xbox-light' ? 'text-black' : 'text-white'}`}>{t('TURN server')}</div>
-                    <div className={`setting-description ${theme === 'xbox-light' ? 'text-black' : 'text-gray'}`}>{t('Custom TURN server')}</div>
-                    <Input className="mb-4" value={serverUrl} label="URL" type="text" labelPlacement="outside-top" size="sm" isClearable onValueChange={(text: string) => handleServerChange('url', text)}/>
-                    <Input className="mb-4" value={serverUsername} label={t('Username')} type="text" labelPlacement="outside-top" isClearable size="sm" onValueChange={(text: string) => handleServerChange('username', text)}/>
-                    <Input className="mb-4" value={serverPwd} label={t('Password')} type="text" labelPlacement="outside-top" size="sm" isClearable onValueChange={(text: string) => handleServerChange('password', text)}/>
+            <div className="setting-item">
+              <Card>
+                <CardBody>
+                  <div className="setting-title text-foreground">{t('TURN server')}</div>
+                  <div className="setting-description text-default-500">{t('Custom TURN server')}</div>
+                  <Input className="mb-4" value={serverUrl} label="URL" type="text" labelPlacement="outside-top" size="sm" isClearable onValueChange={(text: string) => handleServerChange('url', text)} />
+                  <Input className="mb-4" value={serverUsername} label={t('Username')} type="text" labelPlacement="outside-top" isClearable size="sm" onValueChange={(text: string) => handleServerChange('username', text)} />
+                  <Input className="mb-4" value={serverPwd} label={t('Password')} type="text" labelPlacement="outside-top" size="sm" isClearable onValueChange={(text: string) => handleServerChange('password', text)} />
 
-                    <Button color="primary" onPress={handleSaveServer}>
-                      {t('Save server')}
-                    </Button>
-                  </CardBody>
-                </Card>
-              </div>
+                  <Button color="primary" onPress={handleSaveServer}>
+                    {t('Save server')}
+                  </Button>
+                </CardBody>
+              </Card>
+            </div>
           </Tab>
 
           <Tab key="Gamepad" title={t("Gamepad")}>
@@ -436,7 +436,7 @@ function Settings() {
               </CardBody>
             </Card>
 
-            <KeyboardMap/>
+            <KeyboardMap />
 
             <Card className="setting-item">
               <CardBody>
@@ -501,7 +501,7 @@ function Settings() {
                 </Button>
               </CardBody>
             </Card>
-            
+
           </Tab>
         </Tabs>
       </Layout>
@@ -515,4 +515,4 @@ export default Settings;
 export const getStaticProps = makeStaticProperties(["common", "settings"]);
 
 // eslint-disable-next-line react-refresh/only-export-components
-export {getStaticPaths};
+export { getStaticPaths };

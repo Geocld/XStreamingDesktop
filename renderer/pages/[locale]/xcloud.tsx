@@ -179,7 +179,7 @@ function Xcloud() {
 
                 setTimeout(() => {
                   focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-                },  1000);
+                }, 1000);
               }).catch(e => {
                 console.log(e);
               });
@@ -210,7 +210,7 @@ function Xcloud() {
           cacheTitles = JSON.parse(cacheTitles);
           cacheNewTitles = JSON.parse(cacheNewTitles);
           cacheRecentTitles = JSON.parse(cacheRecentTitles);
-          
+
           if (cacheTitles.length || cacheNewTitles.length || cacheRecentTitles.length) {
             setTitles(cacheTitles);
             setNewTitles(cacheNewTitles);
@@ -219,7 +219,7 @@ function Xcloud() {
 
             setTimeout(() => {
               focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-            },  1000);
+            }, 1000);
 
             fetchGames(true);
           } else {
@@ -245,7 +245,7 @@ function Xcloud() {
     setTimeout(() => {
       const dialog = document.querySelector('[role="dialog"]');
       focusable.current = dialog.querySelectorAll(FOCUS_ELEMS);
-    },  800);
+    }, 800);
   };
 
   const handleTabChange = (tab: string) => {
@@ -294,51 +294,79 @@ function Xcloud() {
               setShowTitleDetail(false);
               setTimeout(() => {
                 focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-              },  500);
+              }, 500);
             }}
           />
         )}
 
         {isLimited ? (
-          <div>{t("NoXGP")}</div>
+          <div className="flex items-center justify-center h-full text-white/50">{t("NoXGP")}</div>
         ) : (
-          <>
-            <div className="flex justify-between">
-              <div className="flex-1">
-                <Tabs aria-label="Options" onSelectionChange={handleTabChange}>
-                  <Tab key="Recently" title={t("Recently")}></Tab>
-                  <Tab key="Newest" title={t("Newest")}></Tab>
-                  <Tab key="All" title={t("All")}></Tab>
+          <div className="flex flex-col w-full max-w-[1800px] mx-auto pb-10 -mt-5">
+            {/* Integrated Non-Sticky Filter Header */}
+            <div className="flex flex-col md:flex-row justify-between items-center gap-3 py-3 w-full border-none bg-transparent">
+              <div className="w-full md:w-auto">
+                {/* @ts-ignore - HeroUI outdated type definition for children JSX elements */}
+                <Tabs
+                  aria-label="Game Filters"
+                  onSelectionChange={handleTabChange as any}
+                  radius="full"
+                  size="sm"
+                  classNames={{
+                    tabList: "bg-content1 border border-divider p-0.5 shadow-inner",
+                    cursor: "bg-content3 shadow-sm rounded-full",
+                    tab: "max-w-fit px-4 h-6",
+                    tabContent: "text-default-500 group-data-[selected=true]:text-foreground font-medium text-[11px] tracking-wide"
+                  }}
+                >
+                  {[
+                    { id: "Recently", label: t("Recently") },
+                    { id: "Newest", label: t("Newest") },
+                    { id: "All", label: t("All") }
+                  ].map((item) => (
+                    <Tab key={item.id} title={item.label} />
+                  ))}
                 </Tabs>
               </div>
-              <div className="w-50">
+
+              <div className="w-full md:w-[240px]">
                 <Input
-                  label={t("Search")}
-                  size="sm"
                   isClearable
+                  placeholder={t("Search games...")}
+                  size="sm"
+                  variant="flat"
+                  radius="full"
                   classNames={{
-                    label: "text-black/50 dark:text-white/90",
+                    base: "w-full",
                     input: [
-                      "bg-transparent",
-                      "text-black/90 dark:text-white/90",
-                      "placeholder:text-default-700/50 dark:placeholder:text-white/60",
+                      "text-foreground",
+                      "placeholder:text-default-400",
+                      "text-[11px]",
+                      "outline-none",
+                      "focus:outline-none",
+                      "border-none",
+                      "ring-0",
+                      "focus:ring-0",
+                      "shadow-none",
+                      "bg-transparent"
                     ],
-                    innerWrapper: ["bg-transparent"],
+                    innerWrapper: "bg-transparent border-none shadow-none ring-0",
                     inputWrapper: [
-                      "shadow-xl",
-                      "bg-default-200/50",
-                      "dark:bg-default/60",
-                      "backdrop-blur-xl",
-                      "backdrop-saturate-200",
-                      "hover:bg-default-200/70",
-                      "dark:hover:bg-default/70",
-                      "group-data-[focus=true]:bg-default-200/50",
-                      "dark:group-data-[focus=true]:bg-default/60",
-                      "!cursor-text",
+                      "bg-content1",
+                      "border",
+                      "border-divider",
+                      "shadow-inner",
+                      "hover:bg-content2",
+                      "transition-all",
+                      "group-data-[focused=true]:bg-content1/80",
+                      "group-data-[focused=true]:border-primary",
+                      "h-8",
+                      "min-h-[32px]",
+                      "px-3"
                     ],
                   }}
                   startContent={
-                    <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
+                    <SearchIcon className="text-default-500 flex-shrink-0 w-3.5 h-3.5 mr-1" />
                   }
                   onValueChange={(value) => {
                     setKeyword(value);
@@ -348,10 +376,10 @@ function Xcloud() {
             </div>
 
             {!loading && currentTitles.current && (
-              <div className="gap-2 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 pt-10">
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(180px,1fr))] 2xl:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3 md:gap-4 content-start">
                 {currentTitles.current.map((title, idx) => {
                   if (keyword) {
-                    if (title.ProductTitle.toUpperCase().indexOf(keyword.toUpperCase()) > -1) {
+                    if (title.ProductTitle.toUpperCase().includes(keyword.toUpperCase())) {
                       return (
                         <TitleItem
                           title={title}
@@ -359,22 +387,20 @@ function Xcloud() {
                           onClick={handleViewTitleDetail}
                         />
                       );
-                    } else {
-                      return null;
                     }
-                  } else {
-                    return (
-                      <TitleItem
-                        title={title}
-                        key={idx}
-                        onClick={handleViewTitleDetail}
-                      />
-                    );
+                    return null;
                   }
+                  return (
+                    <TitleItem
+                      title={title}
+                      key={idx}
+                      onClick={handleViewTitleDetail}
+                    />
+                  );
                 })}
               </div>
             )}
-          </>
+          </div>
         )}
       </Layout>
     </>
@@ -387,4 +413,4 @@ export default Xcloud;
 export const getStaticProps = makeStaticProperties(["common", "cloud"]);
 
 // eslint-disable-next-line react-refresh/only-export-components
-export {getStaticPaths};
+export { getStaticPaths };
