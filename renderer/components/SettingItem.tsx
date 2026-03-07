@@ -137,8 +137,7 @@ const SettingItem = (props) => {
               listboxProps={{
                 itemClasses: {
                   base: "data-[hover=true]:bg-content2 data-[hover=true]:text-foreground text-default-700",
-                },
-                className: "max-h-[260px]" // show ~7 items
+                }
               }}
               popoverProps={{
                 classNames: {
