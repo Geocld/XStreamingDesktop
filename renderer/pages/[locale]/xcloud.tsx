@@ -357,17 +357,16 @@ function Xcloud() {
                       "border-divider",
                       "shadow-inner",
                       "hover:bg-content2",
-                      "group-data-[focused=true]:bg-content1",
-                      "!group-data-[focused=true]:border-primary",
-                      "group-data-[focused=true]:ring-1",
-                      "group-data-[focused=true]:ring-primary",
+                      "transition-all",
+                      "group-data-[focused=true]:bg-content1/80",
+                      "group-data-[focused=true]:border-primary",
                       "h-8",
                       "min-h-[32px]",
                       "px-3"
                     ],
                   }}
                   startContent={
-                    <SearchIcon className="text-default-400 flex-shrink-0 w-3.5 h-3.5 mr-1" />
+                    <SearchIcon className="text-default-500 flex-shrink-0 w-3.5 h-3.5 mr-1" />
                   }
                   onValueChange={(value) => {
                     setKeyword(value);
