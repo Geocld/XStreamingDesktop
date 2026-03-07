@@ -34,7 +34,6 @@ function TitleItem(props) {
         />
       )}
 
-      {/* Badges - Sleek Glassmorphism */}
       <div className="absolute top-2 right-2 z-20 flex flex-col gap-2 opacity-80 transition-opacity duration-300 group-hover:opacity-100">
         <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#107C10]/70 backdrop-blur-md shadow-sm">
           <Image src={"/images/icons/gamepad.svg"} alt="gamepad" width={16} height={16} />

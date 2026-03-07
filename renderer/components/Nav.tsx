@@ -131,28 +131,6 @@ const Nav = ({ current, isLogined }) => {
         userState && (
           <NavbarContent as="div" justify="end" className="gap-2">
 
-            {/* Fullscreen Quick Toggle */}
-            <Button
-              isIconOnly
-              variant="flat"
-              onPress={() => {
-                handleToggleScreen();
-              }}
-              className="bg-content1 border border-divider text-default-500 hover:text-foreground hover:bg-content2 shadow-sm"
-              aria-label={t('Toggle fullscreen')}
-            >
-              {/* Dynamic SVG based on Fullscreen context */}
-              {document.fullscreenElement ? (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M8 3v3h-3m18 0h-3v-3m0 18v-3h3M3 16h3v3"></path>
-                </svg>
-              ) : (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-                </svg>
-              )}
-            </Button>
-
             <Dropdown
               placement="bottom-end"
               shouldBlockScroll={false}
@@ -175,12 +153,8 @@ const Nav = ({ current, isLogined }) => {
                   />
                   <div className="flex flex-col items-start justify-center ml-1 pr-2">
                     <span className="text-xs font-bold text-foreground leading-none">{userState.gamertag}</span>
-                    <span className="flex items-center text-[10px] font-semibold text-primary/80 leading-none mt-0.5">
-                      <svg className="w-3 h-3 mr-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="8" r="7"></circle>
-                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
-                      </svg>
-                      {userState.gamerscore}
+                    <span className="text-[10px] font-semibold text-primary/80 leading-none mt-0.5">
+                      ⭐ {userState.gamerscore}
                     </span>
                   </div>
                 </Button>
@@ -211,6 +185,26 @@ const Nav = ({ current, isLogined }) => {
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
+
+            <Button
+              isIconOnly
+              variant="flat"
+              onPress={() => {
+                handleToggleScreen();
+              }}
+              className="bg-content1 border border-divider text-default-500 hover:text-foreground hover:bg-content2 shadow-sm"
+              aria-label={t('Toggle fullscreen')}
+            >
+              {document.fullscreenElement ? (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M8 3v3h-3m18 0h-3v-3m0 18v-3h3M3 16h3v3"></path>
+                </svg>
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+                </svg>
+              )}
+            </Button>
           </NavbarContent>
         )
       }
