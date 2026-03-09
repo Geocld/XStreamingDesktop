@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { Button, Tabs, Tab, Card, CardBody, Input, addToast } from "@heroui/react";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { useTheme } from "next-themes";
 import { useSettings } from "../../context/userContext";
 
 import Ipc from "../../lib/ipc";
@@ -24,7 +23,6 @@ function Settings() {
   const { t, i18n: { language: locale } } = useTranslation("settings");
   const { settings: localSettings, setSettings: setLocalSettings, resetSettings } = useSettings();
   const router = useRouter();
-  const { theme } = useTheme();
 
   console.log('locale:', locale)
 

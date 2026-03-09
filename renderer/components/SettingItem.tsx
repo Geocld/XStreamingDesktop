@@ -8,13 +8,11 @@ import {
   Slider,
 } from "@heroui/react";
 import { useTranslation } from "next-i18next";
-import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { useSettings } from "../context/userContext";
 import Ipc from "../lib/ipc";
 
 const SettingItem = (props) => {
-  const { theme } = useTheme();
   const { settings, setSettings } = useSettings();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const item = props.item || {};
