@@ -4,7 +4,6 @@ import {
   NavbarBrand,
   NavbarContent,
   NavbarItem,
-  Link,
   DropdownItem,
   DropdownTrigger,
   Dropdown,
@@ -81,6 +80,39 @@ const Nav = ({ current, isLogined }) => {
 
   return (
     <Navbar maxWidth="full" className="bg-background border-b border-divider" style={{ justifyContent: "flex-start", zIndex: 100 }}>
+      <NavbarBrand className="grow-0">
+        <p className="font-bold text-inherit pr-20">
+          XStreaming
+
+          {
+            newVersions ? (
+              <Popover color="default" placement="bottom">
+                <PopoverTrigger>
+                  <Button color="success" size="sm" variant="light">
+                    {t('newVersion')}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <div className="px-1 py-2">
+                    <div className="text-small">{t('curVerson')}: <span className="text-yellow-500 pl-1">v{newVersions.version}</span></div>
+                    <div className="text-small">{t('latestVerson')}: <span className="text-green-500 pl-1">v{newVersions.latestVer}</span></div>
+                    <div className="text-center">
+                      <Button color="success" size="sm" variant="light" onPress={() => {
+                        window.open(newVersions.url, '_blank')
+                      }}>
+                        {t('Download')}
+                      </Button>
+                    </div>
+                    
+                  </div>
+                </PopoverContent>
+              </Popover>
+            ) : (
+              <span className="text-small pl-2 text-gray-500">v{ pkg.version }</span>
+            )
+          }
+        </p>
+      </NavbarBrand>
       <NavbarContent className="flex gap-4" justify="start">
         {isMainPage ? (
           <NavbarItem>
