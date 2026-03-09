@@ -2,7 +2,7 @@
   "private": true,
   "name": "xstreaming",
   "description": "xstreaming",
-  "version": "1.9.7",
+  "version": "1.9.8",
   "author": "Geocld <lijiahao5372@gmail.com>",
   "main": "app/background.js",
   "scripts": {
