@@ -55,7 +55,7 @@ const MsalModal = ({ verificationUri, userCode, expiresIn, show, onRefresh, onCo
   };
 
   return (
-    <Modal size="xl" isOpen={show} hideCloseButton>
+    <Modal size="xl" scrollBehavior="inside" isOpen={show} hideCloseButton>
       <ModalContent>
         <>
           <ModalHeader className="flex flex-col gap-1 pb-3">

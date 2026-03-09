@@ -519,13 +519,17 @@ function Home() {
     Ipc.send("app", "restart");
   }
 
+  const handleSettings = () => {
+    router.push(`/${locale}/settings`);
+  }
+
   return (
     <>
       <Nav current={t("Consoles")} isLogined={isLogined} />
 
       {loading && <Loading loadingText={loadingText} />}
 
-      <AuthModal show={showLoginModal} onConfirm={handleLogin} />
+      <AuthModal show={showLoginModal} onSettings={handleSettings} onConfirm={handleLogin} />
       {msalData && (
         <MsalModal
           verificationUri={msalData.verification_uri}

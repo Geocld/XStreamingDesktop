@@ -9,8 +9,12 @@ import {
 } from "@heroui/react";
 import { useTranslation } from 'next-i18next';
 
-const AuthModal = ({ show, onConfirm }) => {
+const AuthModal = ({ show, onConfirm, onSettings }) => {
   const { t } = useTranslation('common')
+
+  const handleSettings = () => {
+    onSettings && onSettings();
+  };
 
   const handleConfirm = () => {
     onConfirm && onConfirm();
@@ -25,6 +29,9 @@ const AuthModal = ({ show, onConfirm }) => {
             <p>{t('Login has expired or not logged in, please log in again')}</p>
           </ModalBody>
           <ModalFooter>
+            <Button onPress={handleSettings}>
+              {t('Settings')}
+            </Button>
             <Button color="primary" onPress={handleConfirm}>
               {t('Login')}
             </Button>
