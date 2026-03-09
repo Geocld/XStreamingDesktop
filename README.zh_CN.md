@@ -75,6 +75,52 @@ yarn
 npm run dev
 ```
 
+## 开发者
+
+XStreaming 的发展离不开这些 Hacker 们，他们贡献了大量能力，也欢迎关注他们 ❤️
+
+<!-- readme: contributors -start -->
+<table>
+<tr>
+    <td align="center">
+        <a href="https://github.com/Geocld">
+            <img src="https://avatars.githubusercontent.com/u/13679095?v=4" width="90;" alt="Geocld"/>
+            <br />
+            <sub><b>Geocld</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/TigerBeanst">
+            <img src="https://avatars.githubusercontent.com/u/3889846?v=4" width="90;" alt="TigerBeanst"/>
+            <br />
+            <sub><b>TigerBeanst</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/Sirherobrine23">
+            <img src="https://avatars.githubusercontent.com/u/50121801?v=4" width="90;" alt="Sirherobrine23"/>
+            <br />
+            <sub><b>Sirherobrine23</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/liamharper2453">
+            <img src="https://avatars.githubusercontent.com/u/25060863?v=4" width="90;" alt="liamharper2453"/>
+            <br />
+            <sub><b>liamharper2453</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/xAbdoAT">
+            <img src="https://avatars.githubusercontent.com/u/160148781?v=4" width="90;" alt="xAbdoAT"/>
+            <br />
+            <sub><b>xAbdoAT</b></sub>
+        </a>
+    </td>
+  </tr>
+</table>
+<!-- readme: contributors -end -->
+
 ### 开源协议
 
 XStreaming 遵循 [MIT 协议](./LICENSE).
