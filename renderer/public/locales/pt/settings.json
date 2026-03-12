@@ -147,5 +147,7 @@
   "MSAL": "Device Authorization Login",
   "MSALDesc": "Enable device authorization login. If you encounter issues with regular login or cannot use xCloud, please try enabling this option",
   "coop_title": "Local Two-Player Mode",
-  "coop_desc": "Enable local two-player mode, please connect two controllers"
+  "coop_desc": "Enable local two-player mode, please connect two controllers",
+  "discord_rpc_title": "Discord Rich Presence",
+  "discord_rpc_desc": "Mostrar o que você está jogando no Discord (Aviso de limite: evite alternar rapidamente)"
 }

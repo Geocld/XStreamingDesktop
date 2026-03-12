@@ -1,6 +1,6 @@
 import {
-  Autocomplete,
-  AutocompleteItem,
+  Select,
+  SelectItem,
   Card,
   CardBody,
   Radio,
@@ -123,13 +123,13 @@ const SettingItem = (props) => {
           <div className="setting-title text-foreground">{item.title}</div>
           <div className="setting-description text-default-500">{item.description}</div>
           {item.type === "select" && defaultValue !== undefined && (
-            <Autocomplete
-              className="setting-select"
+            <Select
+              className="setting-select max-w-xs"
               labelPlacement={"outside-left"}
               label={item.title}
-              selectedKey={defaultValue}
-              isClearable={false}
-              onSelectionChange={(value) => {
+              selectedKeys={defaultValue !== undefined ? [defaultValue] : []}
+              onSelectionChange={(keys) => {
+                const value = Array.from(keys)[0] as string ?? '';
                 handleChangeSetting(value);
               }}
               listboxProps={{
@@ -145,10 +145,10 @@ const SettingItem = (props) => {
             >
               {displayData.map((i) => {
                 return (
-                  <AutocompleteItem key={i.value}>{i.label}</AutocompleteItem>
+                  <SelectItem key={i.value}>{i.label}</SelectItem>
                 );
               })}
-            </Autocomplete>
+            </Select>
           )}
 
           {item.type === "radio" && (

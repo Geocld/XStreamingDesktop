@@ -131,5 +131,7 @@
   "MSAL": "Device Authorization Login",
   "MSALDesc": "Enable device authorization login, allowing authentication via an external browser without entering account credentials in XStreaming",
   "coop_title": "Local Two-Player Mode",
-  "coop_desc": "Enable local two-player mode, please connect two controllers"
+  "coop_desc": "Enable local two-player mode, please connect two controllers",
+  "discord_rpc_title": "Discord Rich Presence",
+  "discord_rpc_desc": "Show what you're playing on Discord (Rate limit warning: Avoid rapid toggling)"
 }
