@@ -134,5 +134,7 @@
   "MSAL": "裝置授權登入",
   "MSALDesc": "開啟裝置授權登入，如一般登入遇到問題或無法使用xCloud，請嘗試啟用此選項",
   "coop_title": "本地雙人模式",
-  "coop_desc": "啟用本地雙人模式，請連接兩個控制器"
+  "coop_desc": "啟用本地雙人模式，請連接兩個控制器",
+  "discord_rpc_title": "Discord 在線狀態",
+  "discord_rpc_desc": "在 Discord 上顯示你正在玩的遊戲 (限制警告：請勿頻繁切換)"
 }

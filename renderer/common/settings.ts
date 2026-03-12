@@ -95,6 +95,16 @@ const getSettingsMetas = (t) => {
           { value: true, label: t('Enable') },
         ],
       },
+      {
+        name: 'discord_rpc',
+        type: 'radio',
+        title: t('discord_rpc_title'),
+        description: t('discord_rpc_desc'),
+        data: [
+          { value: true, label: t('Enable') },
+          { value: false, label: t('Disable') },
+        ],
+      },
       // {
       //   name: 'fsr_sharpness',
       //   type: 'slider',
@@ -445,7 +455,7 @@ const getSettingsMetas = (t) => {
         ),
         data: [],
       },
-    ]
+    ],
   }
 
   return settings;

@@ -135,5 +135,7 @@
   "MSAL": "设备授权登录",
   "MSALDesc": "启用设备授权登录，如常规登录遇到问题或无法使用xCloud，请尝试开启该选项",
   "coop_title": "本地双人模式",
-  "coop_desc": "启用本地双人模式，请连接两个控制器"
+  "coop_desc": "启用本地双人模式，请连接两个控制器",
+  "discord_rpc_title": "Discord 存在感",
+  "discord_rpc_desc": "在 Discord 上显示你正在玩的游戏 (限制警告：请勿频繁切换)"
 }

@@ -7,6 +7,7 @@ import Authentication from "./authentication";
 import MsalAuthentication from "./MsalAuthentication";
 import Ipc from "./ipc";
 import { defaultSettings } from '../renderer/context/userContext.defaults'
+import DiscordRpcHelper from './helpers/discordrpc'
 
 import xboxWebApi from "xbox-webapi";
 import xCloudApi from "./helpers/xcloudapi";
@@ -37,6 +38,8 @@ export default class Application {
 
   public _authentication: Authentication;
   public _msalAuthentication: MsalAuthentication;
+
+  public _discordRpc: DiscordRpcHelper;
 
   public streamingTokens: any
 
@@ -74,6 +77,11 @@ export default class Application {
     this._ipc = new Ipc(this);
     this._authentication = new Authentication(this);
     this._msalAuthentication = new MsalAuthentication(this);
+    this._discordRpc = new DiscordRpcHelper();
+
+    if (settings.discord_rpc !== false) {
+      this._discordRpc.enable()
+    }
 
     this._ipc.startUp();
 
@@ -202,7 +210,10 @@ export default class Application {
         ? this._mainWindow.show()
         : this.openMainWindow();
     });
-    ElectronApp.on("before-quit", () => (this._isQuitting = true));
+    ElectronApp.on("before-quit", () => {
+      this._isQuitting = true;
+      this._discordRpc && this._discordRpc.destroy();
+    });
   }
 
   _webApi: xboxWebApi;
@@ -270,6 +281,7 @@ export default class Application {
         // Run workers
         this._xboxWorker = new xboxWorker(this);
         this._ipc.onUserLoaded();
+        this._discordRpc.setIdle();
       })
       .catch((error) => {
         this.log(
