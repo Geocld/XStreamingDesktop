@@ -34,6 +34,14 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.9.9" date="2026-04-17">
+      <description>
+          <ul>
+            <li>Fixed control issues in Microsoft Flight Simulator and Minecraft Dungeons.</li>
+            <li>Fixed system pop-up issues</li>
+          </ul>
+      </description>
+    </release>
     <release version="1.9.8" date="2026-03-09">
       <description>
           <ul>

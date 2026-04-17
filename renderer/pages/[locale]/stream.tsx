@@ -1,9 +1,18 @@
 import moment from "moment";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import xStreamingPlayer from "xstreaming-player";
-import { addToast } from "@heroui/react";
+import {
+  addToast,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Input,
+} from "@heroui/react";
 import ActionBar from "../../components/ActionBar";
 import Display from "../../components/Display";
 import FSRDisplay from "../../components/FSRDisplay";
@@ -19,6 +28,11 @@ import Ipc from "../../lib/ipc";
 import { DISPLAY_KEY, FSR_DISPLAY_KEY } from "../../common/constans";
 
 const XCLOUD_PREFIX = "xcloud_";
+const SYSTEM_UI_TARGET_SHOW_MESSAGE_DIALOG =
+  "/streaming/systemUi/messages/ShowMessageDialog";
+const SYSTEM_UI_TARGET_SHOW_VIRTUAL_KEYBOARD =
+  "/streaming/systemUi/messages/ShowVirtualKeyboard";
+const STREAMING_TOUCHCONTROLS_SCOPE = "/streaming/touchcontrols";
 
 const DEFAULT_OPTIONS = {
   sharpness: 5,
@@ -55,6 +69,20 @@ function Stream() {
   const [showFSRDisplay, setShowFSRDisplay] = useState(false);
   const [showAudio, setShowAudio] = useState(false);
   const [showTextModal, setShowTextModal] = useState(false);
+  const [showSystemMessageModal, setShowSystemMessageModal] = useState(false);
+  const [systemMessageTitle, setSystemMessageTitle] = useState("");
+  const [systemMessageContent, setSystemMessageContent] = useState("");
+  const [systemMessageButtons, setSystemMessageButtons] = useState<
+    Array<{ label: string; index: number }>
+  >([]);
+  const [showSystemKeyboardModal, setShowSystemKeyboardModal] = useState(false);
+  const [systemKeyboardTitle, setSystemKeyboardTitle] = useState("");
+  const [systemKeyboardDescription, setSystemKeyboardDescription] = useState("");
+  const [systemKeyboardText, setSystemKeyboardText] = useState("");
+  const [systemKeyboardMaxLength, setSystemKeyboardMaxLength] = useState<
+    number | undefined
+  >(undefined);
+  const [systemKeyboardInputScope, setSystemKeyboardInputScope] = useState(0);
   const [showActionbar, setShowActionbar] = useState(false);
   const [volume, setVolume] = useState(1);
   const [openMicro, setOpenMicro] = useState(false);
@@ -63,6 +91,294 @@ function Stream() {
   const connectStateRef = useRef("");
   const keepaliveInterval = useRef(null);
   const streamStateInterval = useRef(null);
+  const systemMessageTransactionRef = useRef<any>(null);
+  const systemMessageActionRef = useRef<{
+    defaultIndex?: number;
+    cancelIndex?: number;
+  }>({});
+  const systemKeyboardTransactionRef = useRef<any>(null);
+
+  const closeSystemMessageModal = () => {
+    setShowSystemMessageModal(false);
+    setSystemMessageTitle("");
+    setSystemMessageContent("");
+    setSystemMessageButtons([]);
+    systemMessageTransactionRef.current = null;
+    systemMessageActionRef.current = {};
+  };
+
+  const completeSystemMessage = (result?: number) => {
+    const transaction = systemMessageTransactionRef.current;
+    if (
+      transaction &&
+      transaction.isTransaction &&
+      transaction.completion &&
+      typeof transaction.completion.complete === "function"
+    ) {
+      transaction.completion.complete(
+        JSON.stringify({
+          Result: result,
+        })
+      );
+    }
+    closeSystemMessageModal();
+  };
+
+  const cancelSystemMessage = () => {
+    const transaction = systemMessageTransactionRef.current;
+    const { cancelIndex, defaultIndex } = systemMessageActionRef.current || {};
+    const fallbackIndex =
+      typeof cancelIndex === "number"
+        ? cancelIndex
+        : typeof defaultIndex === "number"
+        ? defaultIndex
+        : undefined;
+
+    if (typeof fallbackIndex === "number") {
+      completeSystemMessage(fallbackIndex);
+      return;
+    }
+
+    if (
+      transaction &&
+      transaction.isTransaction &&
+      transaction.completion &&
+      typeof transaction.completion.cancel === "function"
+    ) {
+      transaction.completion.cancel();
+    }
+    closeSystemMessageModal();
+  };
+
+  const closeSystemKeyboardModal = useCallback(() => {
+    if (xPlayer) {
+      xPlayer.setKeyboardInput(true);
+    }
+    setShowSystemKeyboardModal(false);
+    setSystemKeyboardTitle("");
+    setSystemKeyboardDescription("");
+    setSystemKeyboardText("");
+    setSystemKeyboardMaxLength(undefined);
+    setSystemKeyboardInputScope(0);
+    systemKeyboardTransactionRef.current = null;
+  }, [xPlayer]);
+
+  const completeSystemKeyboard = () => {
+    const transaction = systemKeyboardTransactionRef.current;
+    if (
+      transaction &&
+      transaction.isTransaction &&
+      transaction.completion &&
+      typeof transaction.completion.complete === "function"
+    ) {
+      transaction.completion.complete(
+        JSON.stringify({
+          Text: systemKeyboardText,
+        })
+      );
+    }
+    closeSystemKeyboardModal();
+  };
+
+  const cancelSystemKeyboard = () => {
+    const transaction = systemKeyboardTransactionRef.current;
+    if (
+      transaction &&
+      transaction.isTransaction &&
+      transaction.completion &&
+      typeof transaction.completion.cancel === "function"
+    ) {
+      transaction.completion.cancel();
+    }
+    closeSystemKeyboardModal();
+  };
+
+  const resolveSystemKeyboardProps = () => {
+    let type:
+      | "text"
+      | "url"
+      | "email"
+      | "password"
+      | "tel"
+      | "search" = "text";
+    let inputMode:
+      | "text"
+      | "url"
+      | "email"
+      | "numeric"
+      | "tel"
+      | "search" = "text";
+
+    switch (systemKeyboardInputScope) {
+      case 1:
+        type = "url";
+        inputMode = "url";
+        break;
+      case 5:
+        type = "email";
+        inputMode = "email";
+        break;
+      case 29:
+        type = "text";
+        inputMode = "numeric";
+        break;
+      case 31:
+        type = "password";
+        inputMode = "text";
+        break;
+      case 32:
+        type = "tel";
+        inputMode = "tel";
+        break;
+      case 50:
+        type = "search";
+        inputMode = "search";
+        break;
+      default:
+        type = "text";
+        inputMode = "text";
+        break;
+    }
+
+    return {
+      type,
+      inputMode,
+    };
+  };
+
+  const handleSystemUiEvent = useCallback((event) => {
+    if (!event || !event.target) {
+      return false;
+    }
+
+    if (event.target === SYSTEM_UI_TARGET_SHOW_MESSAGE_DIALOG) {
+      const payload = event.payload || {};
+      const toValidIndex = (value: any) => {
+        if (typeof value === "number" && Number.isFinite(value)) {
+          return value;
+        }
+        if (typeof value === "string" && value.trim() !== "") {
+          const parsed = Number(value);
+          if (Number.isFinite(parsed)) {
+            return parsed;
+          }
+        }
+        return undefined;
+      };
+
+      const parsedButtons: Array<{ label: string; index: number }> = [];
+      const pushButton = (label: any, index: number) => {
+        if (typeof label !== "string") {
+          return;
+        }
+        const nextLabel = label.trim();
+        if (!nextLabel) {
+          return;
+        }
+        parsedButtons.push({
+          label: nextLabel,
+          index,
+        });
+      };
+
+      // Align with Android mapping first.
+      pushButton(payload.CommandLabel1, 0);
+      pushButton(payload.CommandLabel2, 1);
+      pushButton(payload.CommandLabel3, 2);
+      pushButton(payload.CommandLabel4, 3);
+
+      // Compatibility fallback for other payload shapes.
+      if (!parsedButtons.length && Array.isArray(payload.Commands)) {
+        payload.Commands.forEach((command: any, idx: number) => {
+          if (typeof command === "string") {
+            pushButton(command, idx);
+            return;
+          }
+          const label =
+            command?.Label ?? command?.label ?? command?.Text ?? command?.text;
+          const commandIndex =
+            toValidIndex(command?.Result) ??
+            toValidIndex(command?.result) ??
+            toValidIndex(command?.Index) ??
+            toValidIndex(command?.index) ??
+            idx;
+          pushButton(label, commandIndex);
+        });
+      }
+
+      setSystemMessageTitle(payload.TitleText || "");
+      setSystemMessageContent(payload.ContentText || "");
+      setSystemMessageButtons(parsedButtons);
+      systemMessageActionRef.current = {
+        defaultIndex: toValidIndex(payload.DefaultIndex),
+        cancelIndex: toValidIndex(payload.CancelIndex),
+      };
+      systemMessageTransactionRef.current = {
+        id: event.id,
+        isTransaction: event.isTransaction,
+        completion: event.completion,
+      };
+      setShowSystemMessageModal(true);
+      return true;
+    }
+
+    if (event.target === SYSTEM_UI_TARGET_SHOW_VIRTUAL_KEYBOARD) {
+      const payload = event.payload || {};
+      if (xPlayer) {
+        xPlayer.setKeyboardInput(false);
+      }
+      setSystemKeyboardTitle(payload.TitleText || "");
+      setSystemKeyboardDescription(payload.DescriptionText || "");
+      setSystemKeyboardText(payload.DefaultText || "");
+      setSystemKeyboardInputScope(payload.InputScope ?? 0);
+      setSystemKeyboardMaxLength(
+        typeof payload.MaxLength === "number" && payload.MaxLength > 0
+          ? payload.MaxLength
+          : undefined
+      );
+      systemKeyboardTransactionRef.current = {
+        id: event.id,
+        isTransaction: event.isTransaction,
+        completion: event.completion,
+      };
+      if (
+        event.isTransaction &&
+        event.completion &&
+        typeof event.completion.setOnRemoteCancellation === "function"
+      ) {
+        const transactionId = event.id;
+        event.completion.setOnRemoteCancellation(() => {
+          if (systemKeyboardTransactionRef.current?.id === transactionId) {
+            closeSystemKeyboardModal();
+          }
+        });
+      }
+      setShowSystemKeyboardModal(true);
+      return true;
+    }
+
+    return false;
+  }, [closeSystemKeyboardModal, xPlayer]);
+
+  const handleStreamingMessage = useCallback((event) => {
+    if (!event || typeof event.target !== "string") {
+      return false;
+    }
+
+    if (!event.target.startsWith(STREAMING_TOUCHCONTROLS_SCOPE)) {
+      return false;
+    }
+
+    if (
+      event.isTransaction &&
+      event.completion &&
+      typeof event.completion.cancel === "function"
+    ) {
+      event.completion.cancel();
+    }
+
+    return true;
+  }, []);
 
   useEffect(() => {
     let streamType = "home";
@@ -259,6 +575,8 @@ function Stream() {
             alert("ChatSDP Exchange error:" + JSON.stringify(error));
           });
       });
+      xPlayer.setSystemUiHandler(handleSystemUiEvent);
+      xPlayer.setMessageHandler(handleStreamingMessage);
 
       xPlayer.createOffer().then((offer: any) => {
         console.log("offer:", offer);
@@ -543,7 +861,7 @@ function Stream() {
       window.removeEventListener("mousedown", mouseEvent);
       window.removeEventListener('keydown', escEvent)
     };
-  }, [xPlayer, sessionId, t, router.query, settings]);
+  }, [xPlayer, sessionId, t, router.query, settings, handleSystemUiEvent, handleStreamingMessage]);
 
   const getVideoPlayerFilterStyle = (options) => {
     const filters = [];
@@ -829,6 +1147,85 @@ function Stream() {
           />
         )
       }
+
+      {showSystemMessageModal && (
+        <Modal isOpen={showSystemMessageModal} onClose={cancelSystemMessage}>
+          <ModalContent>
+            <>
+              {systemMessageTitle !== "" && (
+                <ModalHeader className="flex flex-col gap-1">
+                  {systemMessageTitle}
+                </ModalHeader>
+              )}
+              <ModalBody>
+                {systemMessageContent !== "" && <p>{systemMessageContent}</p>}
+              </ModalBody>
+              <ModalFooter className="flex flex-wrap justify-end gap-2">
+                {systemMessageButtons.length > 0 ? (
+                  systemMessageButtons.map(button => (
+                    <Button
+                      key={`system-message-btn-${button.index}`}
+                      color="primary"
+                      onPress={() => {
+                        completeSystemMessage(button.index);
+                      }}
+                    >
+                      {button.label}
+                    </Button>
+                  ))
+                ) : (
+                  <Button
+                    color="primary"
+                    onPress={() => {
+                      const { defaultIndex } = systemMessageActionRef.current;
+                      completeSystemMessage(
+                        typeof defaultIndex === "number" ? defaultIndex : 0
+                      );
+                    }}
+                  >
+                    {t("Confirm")}
+                  </Button>
+                )}
+              </ModalFooter>
+            </>
+          </ModalContent>
+        </Modal>
+      )}
+
+      {showSystemKeyboardModal && (
+        <Modal isOpen={showSystemKeyboardModal} onClose={cancelSystemKeyboard}>
+          <ModalContent>
+            <>
+              {systemKeyboardTitle !== "" && (
+                <ModalHeader className="flex flex-col gap-1">
+                  {systemKeyboardTitle}
+                </ModalHeader>
+              )}
+              <ModalBody>
+                {systemKeyboardDescription !== "" && (
+                  <p>{systemKeyboardDescription}</p>
+                )}
+                <Input
+                  label={t("Text")}
+                  value={systemKeyboardText}
+                  onValueChange={value => setSystemKeyboardText(value)}
+                  maxLength={systemKeyboardMaxLength}
+                  type={resolveSystemKeyboardProps().type}
+                  inputMode={resolveSystemKeyboardProps().inputMode}
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button color="default" onPress={cancelSystemKeyboard}>
+                  {t("Cancel")}
+                </Button>
+                <Button color="primary" onPress={completeSystemKeyboard}>
+                  {t("Confirm")}
+                </Button>
+              </ModalFooter>
+            </>
+          </ModalContent>
+        </Modal>
+      )}
 
       {showAudio && (
         <Audio
