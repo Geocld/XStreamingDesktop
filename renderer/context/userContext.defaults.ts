@@ -87,4 +87,5 @@ export const defaultSettings = {
   fsr: false,
   fsr_sharpness: 2,
   debug: false,
+  discord_rpc: true,
 };

@@ -26,10 +26,18 @@ function TitleModal(props) {
   const handleStartGame = () => {
     // console.log("titleItem:", titleItem);
     const titleId = titleItem.titleId || titleItem.XCloudTitleId;
+    const gameName = encodeURIComponent(titleItem.ProductTitle || '');
+    const gameImageUrl = (titleItem.Image_Tile?.URL || titleItem.Image_Poster?.URL)
+      ? encodeURIComponent('https:' + (titleItem.Image_Tile?.URL || titleItem.Image_Poster?.URL))
+      : '';
     // console.log("titleId:", titleId)
     router.push({
       pathname: `/${locale}/stream`,
-      query: { serverid: XCLOUD_PREFIX + titleId }
+      query: {
+        serverid: XCLOUD_PREFIX + titleId,
+        gameName,
+        gameImageUrl,
+      }
     });
   };
 

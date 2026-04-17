@@ -723,9 +723,19 @@ function Stream() {
       });
     } else if (sessionId === "") {
       setLoadingText(t("Connecting..."));
+
+      const gameNameParam = router.query.gameName
+        ? decodeURIComponent(router.query.gameName as string)
+        : '';
+      const gameImageUrlParam = router.query.gameImageUrl
+        ? decodeURIComponent(router.query.gameImageUrl as string)
+        : '';
+
       Ipc.send("streaming", "startStream", {
         type: streamType,
         target: serverId,
+        gameName: gameNameParam,
+        gameImageUrl: gameImageUrlParam,
       })
         .then((result: string) => {
           console.log("StartStream sessionId:", result);

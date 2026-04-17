@@ -148,6 +148,8 @@
   "fsr_sharpness_desc": "Set FSR sharpness",
   "MSAL": "Device Authorization Login",
   "MSALDesc": "Enable device authorization login. If you encounter issues with regular login or cannot use xCloud, please try enabling this option",
-  "Cooperative Mode": "Local Two-Player Mode",
-  "Enable cooperative mode for multiplayer gaming": "Enable local two-player mode, please connect two controllers"
+  "coop_title": "Local Two-Player Mode",
+  "coop_desc": "Enable local two-player mode, please connect two controllers",
+  "discord_rpc_title": "Discord Rich Presence",
+  "discord_rpc_desc": "Show what you're playing on Discord (Rate limit warning: Avoid rapid toggling)"
 }
