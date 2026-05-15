@@ -34,6 +34,13 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="1.10.0" date="2026-05-15">
+      <description>
+          <ul>
+            <li>Supported native gamepad kernal.</li>
+          </ul>
+      </description>
+    </release>
     <release version="1.9.9" date="2026-04-17">
       <description>
           <ul>

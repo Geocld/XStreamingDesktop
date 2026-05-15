@@ -3,6 +3,7 @@ import { session } from "electron";
 import { clearStreamToken } from '../helpers/streamTokenStore';
 import { clearWebToken } from '../helpers/webTokenStore';
 import { defaultSettings } from "../../renderer/context/userContext.defaults";
+import { NativeGamepadTestService } from "../gamepad/nativeTestService";
 
 export default class IpcApp extends IpcBase {
   // _streamingSessions:any = {}
@@ -206,5 +207,35 @@ export default class IpcApp extends IpcBase {
       this._application.resetAutoConnect();
       resolve({});
     });
+  }
+
+  startNativeGamepadTestSession() {
+    return Promise.resolve(NativeGamepadTestService.start());
+  }
+
+  stopNativeGamepadTestSession() {
+    return Promise.resolve(NativeGamepadTestService.stop());
+  }
+
+  getNativeGamepadTestSnapshot() {
+    return Promise.resolve(NativeGamepadTestService.getSnapshot());
+  }
+
+  triggerNativeGamepadTestRumble(data: {
+    deviceId?: unknown;
+    low?: unknown;
+    high?: unknown;
+    durationMs?: unknown;
+  }) {
+    return Promise.resolve(NativeGamepadTestService.rumble(data || {}));
+  }
+
+  triggerNativeGamepadTestTriggerRumble(data: {
+    deviceId?: unknown;
+    left?: unknown;
+    right?: unknown;
+    durationMs?: unknown;
+  }) {
+    return Promise.resolve(NativeGamepadTestService.rumbleTriggers(data || {}));
   }
 }

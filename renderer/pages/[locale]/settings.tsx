@@ -19,10 +19,23 @@ import pkg from "../../../package.json";
 
 import { getStaticPaths, makeStaticProperties } from "../../lib/get-static";
 
+const resolveGamepadKernel = (settings: any) => {
+  const direct = String(settings?.gamepad_kernel || settings?.gamepad_kernal || "")
+    .trim()
+    .toLowerCase();
+
+  if (direct === "native" || direct === "web") {
+    return direct;
+  }
+
+  return "web";
+};
+
 function Settings() {
   const { t, i18n: { language: locale } } = useTranslation("settings");
   const { settings: localSettings, setSettings: setLocalSettings, resetSettings } = useSettings();
   const router = useRouter();
+  const isNativeGamepadKernel = resolveGamepadKernel(localSettings) === "native";
 
   console.log('locale:', locale)
 
@@ -412,7 +425,7 @@ function Settings() {
                   color="primary"
                   onPress={() => {
                     router.push({
-                      pathname: `/${locale}/test`
+                      pathname: `/${locale}/${isNativeGamepadKernel ? "nativeTest" : "test"}`
                     });
                   }}
                 >

@@ -93,10 +93,16 @@ const SettingItem = (props) => {
         localStorage.setItem('fontSize', value)
         document.documentElement.style.fontSize = value + 'px';
       } else {
-        setSettings({
+        const nextSettings = {
           ...settings,
           [key]: value,
-        });
+        };
+
+        if (key === 'gamepad_kernel') {
+          nextSettings.gamepad_kernal = value;
+        }
+
+        setSettings(nextSettings);
         if (item.needRestart) {
           props.onRestartWarn && props.onRestartWarn();
         }

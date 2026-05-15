@@ -26,6 +26,10 @@ import { useSettings } from "../../context/userContext";
 import { getStaticPaths, makeStaticProperties } from "../../lib/get-static";
 import Ipc from "../../lib/ipc";
 import { DISPLAY_KEY, FSR_DISPLAY_KEY } from "../../common/constans";
+import type {
+  NativeGamepadTestControllerSnapshot,
+  NativeGamepadTestSnapshot,
+} from "../../common/nativeGamepadTest";
 
 const XCLOUD_PREFIX = "xcloud_";
 const SYSTEM_UI_TARGET_SHOW_MESSAGE_DIALOG =
@@ -43,6 +47,117 @@ const DEFAULT_OPTIONS = {
 
 const FSR_DEFAULT_OPTIONS = {
   sharpness: 2,
+};
+
+const createEmptyNativeGamepadState = () => ({
+  GamepadIndex: 0,
+  A: 0,
+  B: 0,
+  X: 0,
+  Y: 0,
+  LeftShoulder: 0,
+  RightShoulder: 0,
+  LeftTrigger: 0,
+  RightTrigger: 0,
+  View: 0,
+  Menu: 0,
+  LeftThumb: 0,
+  RightThumb: 0,
+  DPadUp: 0,
+  DPadDown: 0,
+  DPadLeft: 0,
+  DPadRight: 0,
+  Nexus: 0,
+  LeftThumbXAxis: 0,
+  LeftThumbYAxis: 0,
+  RightThumbXAxis: 0,
+  RightThumbYAxis: 0,
+});
+
+const resolveGamepadKernel = (settings: any): "Web" | "Native" => {
+  if (settings?.coop) {
+    return "Web";
+  }
+
+  const normalized = String(settings?.gamepad_kernel || settings?.gamepad_kernal || "")
+    .trim()
+    .toLowerCase();
+  return normalized === "native" ? "Native" : "Web";
+};
+
+const toButtonValue = (value: unknown) => (value ? 1 : 0);
+
+const clampUnit = (value: unknown) => {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric) || numeric <= 0) {
+    return 0;
+  }
+  return Math.min(1, numeric);
+};
+
+const clampSignedUnit = (value: unknown) => {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) {
+    return 0;
+  }
+  return Math.max(-1, Math.min(1, numeric));
+};
+
+const normalizeNativeGamepadSnapshot = (value: unknown): NativeGamepadTestSnapshot => {
+  const snapshot = value as NativeGamepadTestSnapshot | null;
+  return {
+    started: !!snapshot?.started,
+    available: !!snapshot?.available,
+    error: snapshot?.error ? String(snapshot.error) : null,
+    logs: Array.isArray(snapshot?.logs) ? snapshot.logs.map((item) => String(item)) : [],
+    updatedAt: Number(snapshot?.updatedAt) || 0,
+    activeDeviceId: snapshot?.activeDeviceId ? String(snapshot.activeDeviceId) : null,
+    controllers: Array.isArray(snapshot?.controllers) ? snapshot.controllers : [],
+  };
+};
+
+const selectNativeController = (snapshot: NativeGamepadTestSnapshot) => {
+  return (
+    snapshot.controllers.find((controller) => controller.id === snapshot.activeDeviceId) ||
+    snapshot.controllers[0] ||
+    null
+  );
+};
+
+const nativeControllerToGamepadState = (
+  controller: NativeGamepadTestControllerSnapshot | null
+) => {
+  if (!controller) {
+    return createEmptyNativeGamepadState();
+  }
+
+  const buttons = (controller.buttons || {}) as Record<string, any>;
+  const axes = (controller.axes || {}) as Record<string, any>;
+
+  return {
+    GamepadIndex: 0,
+    A: toButtonValue(buttons.a),
+    B: toButtonValue(buttons.b),
+    X: toButtonValue(buttons.x),
+    Y: toButtonValue(buttons.y),
+    LeftShoulder: toButtonValue(buttons.leftShoulder),
+    RightShoulder: toButtonValue(buttons.rightShoulder),
+    LeftTrigger: clampUnit(axes.leftTrigger),
+    RightTrigger: clampUnit(axes.rightTrigger),
+    View: toButtonValue(buttons.back),
+    Menu: toButtonValue(buttons.start),
+    LeftThumb: toButtonValue(buttons.leftStick),
+    RightThumb: toButtonValue(buttons.rightStick),
+    DPadUp: toButtonValue(buttons.dpadUp),
+    DPadDown: toButtonValue(buttons.dpadDown),
+    DPadLeft: toButtonValue(buttons.dpadLeft),
+    DPadRight: toButtonValue(buttons.dpadRight),
+    Nexus: toButtonValue(buttons.guide),
+    LeftThumbXAxis: clampSignedUnit(axes.leftStickX),
+    LeftThumbYAxis: clampSignedUnit(axes.leftStickY),
+    RightThumbXAxis: clampSignedUnit(axes.rightStickX),
+    RightThumbYAxis: clampSignedUnit(axes.rightStickY),
+  };
 };
 
 function format(source: string, ...args: string[]): string {
@@ -381,6 +496,59 @@ function Stream() {
   }, []);
 
   useEffect(() => {
+    const gamepadKernel = resolveGamepadKernel({
+      gamepad_kernel: settings?.gamepad_kernel,
+      gamepad_kernal: settings?.gamepad_kernal,
+      coop: settings?.coop,
+    });
+
+    if (gamepadKernel !== "Native") {
+      window.gpState = undefined;
+      return;
+    }
+
+    let active = true;
+    const pollingRate = Number(settings?.polling_rate) || 250;
+    const pollingIntervalMs = Math.max(16, Math.round(1000 / pollingRate));
+
+    window.gpState = createEmptyNativeGamepadState();
+
+    const refreshNativeGamepadState = async (action: "start" | "refresh") => {
+      try {
+        const result =
+          action === "start"
+            ? await Ipc.send("app", "startNativeGamepadTestSession")
+            : await Ipc.send("app", "getNativeGamepadTestSnapshot");
+
+        if (!active) {
+          return;
+        }
+
+        const snapshot = normalizeNativeGamepadSnapshot(result);
+        window.gpState = nativeControllerToGamepadState(selectNativeController(snapshot));
+      } catch {
+        if (active) {
+          window.gpState = createEmptyNativeGamepadState();
+        }
+      }
+    };
+
+    void refreshNativeGamepadState("start");
+    const pollTimer = setInterval(() => {
+      void refreshNativeGamepadState("refresh");
+    }, pollingIntervalMs);
+
+    return () => {
+      active = false;
+      if (pollTimer) {
+        clearInterval(pollTimer);
+      }
+      window.gpState = createEmptyNativeGamepadState();
+      void Ipc.send("app", "stopNativeGamepadTestSession").catch(() => undefined);
+    };
+  }, [settings?.coop, settings?.gamepad_kernel, settings?.gamepad_kernal, settings?.polling_rate]);
+
+  useEffect(() => {
     let streamType = "home";
     let serverId = router.query.serverid as string;
 
@@ -461,17 +629,18 @@ function Stream() {
       }
 
       // Set gamepad kernal
-      xPlayer.setGamepadKernal("Web");
+      const gamepadKernel = resolveGamepadKernel(settings);
+      xPlayer.setGamepadKernal(gamepadKernel);
 
       // Set gamepad mix
-      xPlayer.setGamepadMix(settings.gamepad_mix)
+      xPlayer.setGamepadMix(gamepadKernel === "Web" && settings.gamepad_mix)
 
       // Set gamepad index
       xPlayer.setGamepadIndex(settings.gamepad_index);
 
       // Set vibration
       xPlayer.setVibration(settings.vibration);
-      xPlayer.setVibrationMode("Webview");
+      xPlayer.setVibrationMode(gamepadKernel === "Native" ? "Native" : "Webview");
 
       // Set deadzone
       xPlayer.setGamepadDeadZone(settings.dead_zone);

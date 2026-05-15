@@ -223,13 +223,13 @@ const getSettingsMetas = (t) => {
     ],
     gamepad: [
       {
-        name: 'coop',
+        name: 'gamepad_kernel',
         type: 'radio',
-        title: t('coop_title'),
-        description: t('coop_desc'),
+        title: t('Gamepad kernel'),
+        description: t('Gamepad kernel description'),
         data: [
-          { value: false, label: t('Disable') },
-          { value: true, label: t('Enable') },
+          { value: 'Web', label: 'Web' },
+          { value: 'Native', label: 'Native' },
         ],
       },
       {
@@ -321,6 +321,16 @@ const getSettingsMetas = (t) => {
           { value: 19.23, label: '19.23HZ' },
           { value: 17.86, label: '17.86HZ' },
           { value: 16.67, label: '16.67HZ' },
+        ],
+      },
+      {
+        name: 'coop',
+        type: 'radio',
+        title: t('coop_title'),
+        description: t('coop_desc'),
+        data: [
+          { value: false, label: t('Disable') },
+          { value: true, label: t('Enable') },
         ],
       },
     ],
