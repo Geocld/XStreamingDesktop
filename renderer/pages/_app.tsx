@@ -4,6 +4,7 @@ import { appWithTranslation } from 'next-i18next';
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import React from "react";
 
+import GamepadNavigationProvider from "../components/GamepadNavigationProvider";
 import { UserProvider } from "../context/userContext";
 import "../styles.css";
 
@@ -44,7 +45,9 @@ const  App = ({ Component, pageProps }) => {
       <ToastProvider />
       <NextThemesProvider attribute="class" defaultTheme={'xbox-dark'}>
         <UserProvider>
-          <Component {...pageProps} />
+          <GamepadNavigationProvider>
+            <Component {...pageProps} />
+          </GamepadNavigationProvider>
         </UserProvider>
       </NextThemesProvider>
     </HeroUIProvider>

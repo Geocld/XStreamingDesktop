@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Tabs, Tab, Card, CardBody, Input, addToast } from "@heroui/react";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
@@ -14,7 +14,6 @@ import FeedbackModal from "../../components/FeedbackModal";
 import ConfirmModal from "../../components/ConfirmModal";
 import KeyboardMap from "../../components/KeyboardMap";
 import updater from "../../lib/updater";
-import { FOCUS_ELEMS } from '../../common/constans';
 import pkg from "../../../package.json";
 
 import { getStaticPaths, makeStaticProperties } from "../../lib/get-static";
@@ -54,9 +53,6 @@ function Settings() {
   const [serverUsername, setServerUsername] = useState('');
   const [serverPwd, setServerPwd] = useState('');
 
-  const currentIndex = useRef(0);
-  const focusable = useRef<any>([]);
-
   useEffect(() => {
     const _isLogined = window.sessionStorage.getItem("isLogined") || "0";
     if (_isLogined === "1") {
@@ -72,97 +68,11 @@ function Settings() {
     setSettings(_settings);
 
     setTimeout(() => {
-      focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-
       setServerUrl(localSettings.server_url);
       setServerUsername(localSettings.server_username);
       setServerPwd(localSettings.server_credential);
     }, 1000);
-
-    function nextItem(index) {
-      index++;
-      currentIndex.current = index % focusable.current.length;
-      const elem = focusable.current[currentIndex.current];
-      const keyboardEvent = new KeyboardEvent('keydown', {
-        key: 'Tab',
-        code: 'Tab',
-        keyCode: 9,
-        charCode: 9,
-        view: window,
-        bubbles: true
-      });
-
-      document.dispatchEvent(keyboardEvent);
-      elem.focus();
-    }
-
-    function prevItem(index) {
-      if (index === 0) {
-        currentIndex.current = focusable.current.length - 1
-      } else {
-        index -= 1;
-        currentIndex.current = index % focusable.current.length;
-      }
-
-      const elem = focusable.current[currentIndex.current];
-      const keyboardEvent = new KeyboardEvent('keydown', {
-        key: 'Tab',
-        code: 'Tab',
-        keyCode: 9,
-        charCode: 9,
-        view: window,
-        bubbles: true,
-        shiftKey: true
-      });
-      document.dispatchEvent(keyboardEvent);
-      elem && elem.focus();
-    }
-
-    function clickItem() {
-      setTimeout(() => {
-        const elem = focusable.current[currentIndex.current];
-        elem && elem.blur();
-        elem && elem.click();
-      }, 300);
-    }
-
-    const pollGamepads = () => {
-      const gamepads = navigator.getGamepads();
-      let _gamepad = null
-      gamepads.forEach(gp => {
-        if (gp) _gamepad = gp
-      })
-      if (_gamepad) {
-        _gamepad.buttons.forEach((b, idx) => {
-          if (b.pressed) {
-            if (idx === 0) {
-              clickItem();
-            } else if (idx === 12) {
-              prevItem(currentIndex.current);
-            } else if (idx === 13) {
-              nextItem(currentIndex.current);
-            } else if (idx === 14) {
-              prevItem(currentIndex.current);
-            } else if (idx === 15) {
-              nextItem(currentIndex.current);
-            }
-          }
-        })
-      }
-    }
-
-    const timer = setInterval(pollGamepads, 100);
-
-    return () => {
-      timer && clearInterval(timer)
-    }
   }, [t, localSettings]);
-
-  const resetNavigationElems = () => {
-    setTimeout(() => {
-      focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-    }, 800);
-  };
 
   const handleResetSettings = () => {
     window.localStorage.clear();
@@ -290,9 +200,7 @@ function Settings() {
       />
 
       <Layout>
-        <Tabs aria-label="Options" onSelectionChange={() => {
-          resetNavigationElems()
-        }}>
+        <Tabs aria-label="Options">
           <Tab key="Base" title={t("Base")}>
             {settings.language &&
               settings.language.map((item) => {

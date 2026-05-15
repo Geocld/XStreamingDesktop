@@ -1,8 +1,7 @@
 import { Card, CardBody, CardHeader, Divider, Progress } from "@heroui/react";
 import moment from 'moment';
 import { useTranslation } from "next-i18next";
-import { useEffect, useRef, useState } from "react";
-import { FOCUS_ELEMS } from '../../common/constans';
+import { useEffect, useState } from "react";
 import AchivementModal from "../../components/AchivementModal";
 import Layout from "../../components/Layout";
 import Loading from "../../components/Loading";
@@ -22,9 +21,6 @@ function Achivements() {
   const [currentDetail, setCurrentDetail] = useState(null);
   const [showDetail, setShowDetail] = useState(false);
 
-  const currentIndex = useRef(0);
-  const focusable = useRef<any>([]);
-
   useEffect(() => {
     setLoading(true);
     setLoadingText(t("Loading..."));
@@ -37,102 +33,12 @@ function Achivements() {
     Ipc.send("xCloud", "getHistoryAchivements").then(data => {
       setAchivements(data);
       setLoading(false);
-
-      setTimeout(() => {
-        focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-      },  1000);
     });
-
-    const clearAllFocus = () => {
-      if (focusable.current) {
-        Array.from(focusable.current).forEach(elem => {
-          (elem as HTMLElement).style.outline = 'none';
-        });
-      }
-    };
-
-    function nextItem(index) {
-      index++;
-      currentIndex.current = index % focusable.current.length;
-      const elem = focusable.current[currentIndex.current];
-
-      clearAllFocus();
-
-      if (elem) {
-        elem.style.outline = '2px solid #FFB900';
-        elem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    }
-
-    function prevItem(index) {
-      clearAllFocus();
-
-      if (index === 0) {
-        currentIndex.current = focusable.current.length - 1
-      } else {
-        index -= 1;
-        currentIndex.current = index % focusable.current.length;
-      }
-
-      const elem = focusable.current[currentIndex.current];
-
-      if (elem) {
-        elem.style.outline = '2px solid #FFB900';
-        elem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    }
-
-    function clickItem() {
-      setTimeout(() => {
-        const elem = focusable.current[currentIndex.current];
-        if (elem) {
-          elem.style.outline = 'none';
-          elem.click();
-        }
-      }, 300);
-    }
-
-    const pollGamepads = () => {
-      const gamepads = navigator.getGamepads();
-      let _gamepad = null
-      gamepads.forEach(gp => {
-        if (gp) _gamepad = gp
-      })
-      if (_gamepad) {
-        _gamepad.buttons.forEach((b, idx) => {
-          if (b.pressed) {
-            if (idx === 0) {
-              clickItem();
-            } else if (idx === 12) {
-              prevItem(currentIndex.current);
-            } else if (idx === 13) {
-              nextItem(currentIndex.current);
-            } else if (idx === 14) {
-              prevItem(currentIndex.current);
-            } else if (idx === 15) {
-              nextItem(currentIndex.current);
-            }
-          }
-        })
-      }
-    }
-
-    const timer = setInterval(pollGamepads, 100);
-
-    return () => {
-      timer && clearInterval(timer)
-    }
   }, [t]);
 
   const formatTime = isoString => {
     const date = moment(isoString).local();
     return date.format(t('dateFormat', {defaultValue: 'YYYY-MM-DD HH:mm:ss'}));
-  };
-
-  const resetNavigationElems = () => {
-    setTimeout(() => {
-      focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-    },  800);
   };
 
   const handleViewDetail = achivement => {
@@ -142,10 +48,6 @@ function Achivements() {
       setCurrentDetail(data);
       setLoading(false);
       setShowDetail(true);
-      setTimeout(() => {
-        const dialog = document.querySelector('[role="dialog"]');
-        focusable.current = dialog.querySelectorAll(FOCUS_ELEMS);
-      },  800);
     });
   }
 
@@ -157,7 +59,6 @@ function Achivements() {
 
       { (showDetail && currentDetail) && <AchivementModal achivement={currentDetail} onClose={() => {
         setShowDetail(false);
-        resetNavigationElems();
       }} /> }
 
       <Layout>

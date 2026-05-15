@@ -19,7 +19,6 @@ import { useSettings } from "../../context/userContext";
 import Ipc from "../../lib/ipc";
 
 import Image from "next/image";
-import { FOCUS_ELEMS } from '../../common/constans';
 
 import getServer from '../../lib/get-server';
 import { getStaticPaths, makeStaticProperties } from "../../lib/get-static";
@@ -64,9 +63,6 @@ function Home() {
   const authInterval = useRef(null);
   const autoConnectTriggered = useRef(false);
 
-  const currentIndex = useRef(0);
-  const focusable = useRef<any>([]);
-
   useEffect(() => {
     const localTheme = localStorage.getItem('theme');
     if (localTheme === 'xbox-light') {
@@ -88,84 +84,6 @@ function Home() {
       }
     })
 
-    focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-
-    const clearAllFocus = () => {
-      if (focusable.current) {
-        Array.from(focusable.current).forEach(elem => {
-          (elem as HTMLElement).style.outline = 'none';
-        });
-      }
-    };
-
-    function nextItem(index) {
-      index++;
-      currentIndex.current = index % focusable.current.length;
-      const elem = focusable.current[currentIndex.current];
-
-      clearAllFocus();
-
-      if (elem) {
-        elem.style.outline = '2px solid #FFB900';
-        elem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    }
-
-    function prevItem(index) {
-      clearAllFocus();
-
-      if (index === 0) {
-        currentIndex.current = focusable.current.length - 1
-      } else {
-        index -= 1;
-        currentIndex.current = index % focusable.current.length;
-      }
-
-      const elem = focusable.current[currentIndex.current];
-
-      if (elem) {
-        elem.style.outline = '2px solid #FFB900';
-        elem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    }
-
-    function clickItem() {
-      setTimeout(() => {
-        const elem = focusable.current[currentIndex.current];
-        if (elem) {
-          elem.style.outline = 'none';
-          elem.click();
-        }
-      }, 300);
-    }
-
-    const pollGamepads = () => {
-      const gamepads = navigator.getGamepads();
-      let _gamepad = null
-      gamepads.forEach(gp => {
-        if (gp) _gamepad = gp
-      })
-      if (_gamepad) {
-        _gamepad.buttons.forEach((b, idx) => {
-          if (b.pressed) {
-            if (idx === 0) {
-              clickItem();
-            } else if (idx === 12) {
-              prevItem(currentIndex.current);
-            } else if (idx === 13) {
-              nextItem(currentIndex.current);
-            } else if (idx === 14) {
-              prevItem(currentIndex.current);
-            } else if (idx === 15) {
-              nextItem(currentIndex.current);
-            }
-          }
-        })
-      }
-    }
-
-    const timer = setInterval(pollGamepads, 100);
-
     const _isLogined = window.sessionStorage.getItem("isLogined") || "0";
     if (_isLogined === "1") {
       setIsLogined(true);
@@ -185,27 +103,15 @@ function Home() {
         setConsoles(_consoles);
         setLoading(false);
 
-        setTimeout(() => {
-          focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-        }, 1000);
-
         Ipc.send("consoles", "get").then(res => {
           setConsoles(res);
           localStorage.setItem(LOCAL_CONSOLES, JSON.stringify(res));
-
-          setTimeout(() => {
-            focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-          }, 1000);
         });
       } else {
         setLoadingText(t("Fetching consoles..."));
         Ipc.send("consoles", "get").then(res => {
           setConsoles(res);
           setLoading(false);
-
-          setTimeout(() => {
-            focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-          }, 1000);
         });
       }
     } else {
@@ -248,14 +154,7 @@ function Home() {
 
                     localStorage.setItem(LOCAL_CONSOLES, JSON.stringify(res));
 
-                    setTimeout(() => {
-                      focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-                    }, 1000);
                   });
-
-                  setTimeout(() => {
-                    focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-                  }, 1000);
                 } else {
                   setLoadingText(t("Fetching consoles..."));
                   Ipc.send("consoles", "get").then(res => {
@@ -263,10 +162,6 @@ function Home() {
                     setLoading(false);
 
                     localStorage.setItem(LOCAL_CONSOLES, JSON.stringify(res));
-
-                    setTimeout(() => {
-                      focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-                    }, 1000);
                   });
                 }
 
@@ -284,7 +179,6 @@ function Home() {
 
     return () => {
       if (authInterval.current) clearInterval(authInterval.current);
-      timer && clearInterval(timer);
     };
   }, [t, setTheme]);
 
@@ -366,14 +260,7 @@ function Home() {
 
                   localStorage.setItem(LOCAL_CONSOLES, JSON.stringify(res));
 
-                  setTimeout(() => {
-                    focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-                  },  1000);
                 });
-
-                setTimeout(() => {
-                  focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-                },  1000);
               } else {
                 setLoading(true);
                 setLoadingText(t("Fetching consoles..."));
@@ -383,10 +270,6 @@ function Home() {
                   setLoading(false);
 
                   localStorage.setItem(LOCAL_CONSOLES, JSON.stringify(res));
-
-                  setTimeout(() => {
-                    focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-                  },  1000);
                 });
               }
               
@@ -435,14 +318,7 @@ function Home() {
 
               localStorage.setItem(LOCAL_CONSOLES, JSON.stringify(res));
 
-              setTimeout(() => {
-                focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-              },  1000);
             });
-
-            setTimeout(() => {
-              focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-            },  1000);
           } else {
             setLoading(true);
             setLoadingText(t("Fetching consoles..."));
@@ -452,10 +328,6 @@ function Home() {
               setLoading(false);
 
               localStorage.setItem(LOCAL_CONSOLES, JSON.stringify(res));
-
-              setTimeout(() => {
-                focusable.current = document.querySelectorAll(FOCUS_ELEMS);
-              },  1000);
             });
           }
           

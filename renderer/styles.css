@@ -23,6 +23,11 @@ body {
   outline: none;
 }
 
+.gamepad-navigation-active *:focus {
+  outline: 2px solid #FFB900 !important;
+  outline-offset: 2px;
+}
+
 div#app_body {
   /* position: fixed; */
   /* padding-top: 70px; */
