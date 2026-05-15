@@ -1,6 +1,5 @@
 import { Button, Card, CardBody, Chip, addToast } from "@heroui/react";
 import { useEffect, useState } from "react";
-import { useTranslation } from "next-i18next";
 import Nav from "../../components/Nav";
 import Ipc from "../../lib/ipc";
 import { getStaticPaths, makeStaticProperties } from "../../lib/get-static";
