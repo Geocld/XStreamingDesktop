@@ -584,7 +584,7 @@ function Stream() {
     window.addEventListener('keydown', escEvent)
 
     const mouseInterval = setInterval(() => {
-      if (Date.now() - lastMovement >= 2000) {
+      if (Date.now() - lastMovement >= 5000) {
         setShowActionbar(false)
       } else {
         setShowActionbar(true)
