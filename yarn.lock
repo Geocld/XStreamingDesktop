@@ -8107,7 +8107,7 @@ xmlbuilder@>=11.0.1, xmlbuilder@^15.1.1:
   resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-15.1.1.tgz#9dcdce49eea66d8d10b42cae94a79c3c8d0c2ec5"
   integrity sha512-yMqGBqtXyeN1e3TGYvgNgDVZ3j84W4cwkOXQswghol6APgZWaff9lnbvN7MHYJOiXsvGPXtjTYJEiC9J2wv9Eg==
 
-xstreaming-player@0.3.2:
+xstreaming-player@^0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/xstreaming-player/-/xstreaming-player-0.3.2.tgz#10f469bd87facaf7ffdf864fa7db98ece3d1d510"
   integrity sha512-/zgJGynzBzCg5fHa5niEfWbL1dPQoAVLwl6fLC/4tK1NvIuniPONmzJrAQqYWLSDOIHz1SaAfMNjZvraspVALA==
