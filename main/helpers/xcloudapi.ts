@@ -3,6 +3,7 @@ import Application from "../application";
 import { Address6 } from "ip-address";
 import axios from 'axios';
 import { defaultSettings } from "../../renderer/context/userContext.defaults";
+import { saveStreamToken } from "./streamTokenStore";
 
 export interface playResult {
   sessionPath: string;
@@ -19,6 +20,8 @@ export interface exchangeResult {
 }
 
 export default class xCloudApi {
+  static _refreshStreamingTokenPromise: Promise<void> | null = null;
+
   _application;
 
   _host: string;
@@ -44,8 +47,100 @@ export default class xCloudApi {
     this._type = type;
   }
 
+  getStreamingToken() {
+    const streamingTokens = this._application?.streamingTokens;
+    if (!streamingTokens) {
+      return null;
+    }
+
+    return this._type === "home"
+      ? streamingTokens.xHomeToken
+      : streamingTokens.xCloudToken;
+  }
+
+  applyStreamingToken(streamingToken) {
+    if (!streamingToken?.data?.gsToken) {
+      throw new Error("Streaming token is missing gsToken");
+    }
+
+    this._token = streamingToken.data.gsToken;
+
+    const defaultRegion = streamingToken.getDefaultRegion?.();
+    if (defaultRegion?.baseUri) {
+      this._host = defaultRegion.baseUri.substring(8);
+    }
+  }
+
+  syncTokenFromApplication() {
+    const streamingToken = this.getStreamingToken();
+    if (streamingToken?.data?.gsToken) {
+      this.applyStreamingToken(streamingToken);
+    }
+  }
+
+  isAuthError(error) {
+    return error?.status === 401 || error?.status === 403;
+  }
+
+  refreshStreamingToken() {
+    if (xCloudApi._refreshStreamingTokenPromise) {
+      return xCloudApi._refreshStreamingTokenPromise;
+    }
+
+    xCloudApi._refreshStreamingTokenPromise = (async () => {
+      const settings: any = this._application._store.get(
+        "settings",
+        defaultSettings
+      );
+
+      let streamingTokens;
+      if (settings.use_msal) {
+        this._application._msalAuthentication._tokenStore.load();
+        streamingTokens =
+          await this._application._msalAuthentication.getStreamingToken();
+      } else {
+        this._application._authentication._tokenStore.load();
+        streamingTokens =
+          await this._application._authentication.getStreamingToken(
+            this._application._authentication._tokenStore
+          );
+      }
+
+      if (!streamingTokens) {
+        throw new Error("Failed to refresh streaming tokens");
+      }
+
+      this._application.streamingTokens = streamingTokens;
+      saveStreamToken(streamingTokens);
+    })().finally(() => {
+      xCloudApi._refreshStreamingTokenPromise = null;
+    });
+
+    return xCloudApi._refreshStreamingTokenPromise.then(() => {
+      this.syncTokenFromApplication();
+    });
+  }
+
+  requestWithAuthRetry(request) {
+    this.syncTokenFromApplication();
+
+    return request().catch(async (error) => {
+      if (!this.isAuthError(error)) {
+        throw error;
+      }
+
+      this._application.log(
+        "xCloudApi",
+        `[requestWithAuthRetry] auth failed for ${this._type}, refreshing token`
+      );
+
+      await this.refreshStreamingToken();
+      return request();
+    });
+  }
+
   get(url: string, method = "GET") {
-    return new Promise((resolve, reject) => {
+    return this.requestWithAuthRetry(() => new Promise((resolve, reject) => {
       let responseData = "";
 
       const req = https.request(
@@ -118,11 +213,11 @@ export default class xCloudApi {
         reject(error);
       });
       req.end();
-    });
+    }));
   }
 
   post(url: string, postData = {}, headers = {}) {
-    return new Promise((resolve, reject) => {
+    return this.requestWithAuthRetry(() => new Promise((resolve, reject) => {
       let responseData = "";
       const mergedHeaders = Object.assign(
         {},
@@ -186,7 +281,7 @@ export default class xCloudApi {
       req.write(JSON.stringify(postData));
 
       req.end();
-    });
+    }));
   }
 
   getWaitingTimes(titleId) {
@@ -558,7 +653,7 @@ export default class xCloudApi {
   }
 
   getConsoles() {
-    return new Promise((resolve) => {
+    return this.requestWithAuthRetry(() => new Promise((resolve) => {
       const deviceInfo = JSON.stringify({
         appInfo: {
           env: {
@@ -621,7 +716,7 @@ export default class xCloudApi {
           console.log('get consoles error:', e)
           resolve([]);
         });
-    });
+    }));
   }
 
   inputConfigs(xboxTitleId: string) {
