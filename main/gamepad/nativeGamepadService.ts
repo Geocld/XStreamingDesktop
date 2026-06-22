@@ -19,6 +19,7 @@ const runtimeRequire =
 const MAX_LOG_ENTRIES = 40;
 const DEFAULT_RUMBLE_DURATION_MS = 1000;
 const MAX_RUMBLE_DURATION_MS = 60_000;
+const SDL_CONTROLLER_NOT_CORRELATED_MESSAGE = "Controller isn't correlated yet";
 const SDL_HINTS: Record<string, string> = {
   SDL_JOYSTICK_HIDAPI: "1",
   SDL_JOYSTICK_HIDAPI_XBOX: "1",
@@ -266,7 +267,7 @@ const resetControllerTriggerBindings = (
   bindings.rightTrigger = parseTriggerBinding(mapping, "rightTrigger");
 };
 
-class NativeGamepadTestServiceImpl {
+class NativeGamepadServiceImpl {
   private started = false;
   private sdl: any = null;
   private error: string | null = null;
@@ -322,7 +323,7 @@ class NativeGamepadTestServiceImpl {
         error instanceof Error
           ? error.message
           : String(error || "Failed to open native joystick sidecar.");
-      this.pushLog(`native gamepad tester: failed to open joystick ${deviceId}: ${message}`);
+      this.pushLog(`native gamepad service: failed to open joystick ${deviceId}: ${message}`);
       return null;
     }
   }
@@ -463,6 +464,10 @@ class NativeGamepadTestServiceImpl {
     return error instanceof Error ? error.message : String(error || "unknown error");
   }
 
+  private isControllerCorrelationError(targetName: string, message: string) {
+    return targetName === "controller" && message.includes(SDL_CONTROLLER_NOT_CORRELATED_MESSAGE);
+  }
+
   private removeController(
     deviceId: string,
     options: { closeInstance: boolean; closeJoystick?: boolean; reason?: string | null }
@@ -483,7 +488,7 @@ class NativeGamepadTestServiceImpl {
     }
 
     if (options.reason) {
-      this.pushLog(`native gamepad tester: controller ${deviceId} ${options.reason}`);
+      this.pushLog(`native gamepad service: controller ${deviceId} ${options.reason}`);
     } else {
       this.markUpdated();
     }
@@ -536,7 +541,7 @@ class NativeGamepadTestServiceImpl {
         this.activeDeviceId = deviceId;
       }
       this.pushLog(
-        `native gamepad tester: controller connected ${deviceId} (${String(
+        `native gamepad service: controller connected ${deviceId} (${String(
           device?.name || "unknown"
         )})`
       );
@@ -630,7 +635,7 @@ class NativeGamepadTestServiceImpl {
         );
         resetControllerTriggerBindings(nextEntry.triggerBindings, mapping);
         this.syncEntryFromController(nextEntry);
-        this.pushLog(`native gamepad tester: controller remapped ${deviceId}`);
+        this.pushLog(`native gamepad service: controller remapped ${deviceId}`);
       });
 
       controller.on("close", () => {
@@ -690,7 +695,7 @@ class NativeGamepadTestServiceImpl {
           ? error.message
           : String(error || "Failed to open native controller.");
       this.error = message;
-      this.pushLog(`native gamepad tester: failed to open controller ${deviceId}: ${message}`);
+      this.pushLog(`native gamepad service: failed to open controller ${deviceId}: ${message}`);
     }
   }
 
@@ -715,13 +720,13 @@ class NativeGamepadTestServiceImpl {
         error instanceof Error
           ? error.message
           : String(error || "Failed to load peasyo-sdl-lib.");
-      this.pushLog(`native gamepad tester: ${this.error}`);
+      this.pushLog(`native gamepad service: ${this.error}`);
       return this.getSnapshot();
     }
 
     if (!this.sdl?.controller) {
       this.error = "Invalid peasyo-sdl-lib controller module.";
-      this.pushLog(`native gamepad tester: ${this.error}`);
+      this.pushLog(`native gamepad service: ${this.error}`);
       this.sdl = null;
       return this.getSnapshot();
     }
@@ -730,7 +735,7 @@ class NativeGamepadTestServiceImpl {
     this.sdl.controller.on("deviceRemove", this.handleDeviceRemove);
 
     const devices = Array.isArray(this.sdl.controller.devices) ? this.sdl.controller.devices : [];
-    this.pushLog(`native gamepad tester: detected controller devices ${devices.length}`);
+    this.pushLog(`native gamepad service: detected controller devices ${devices.length}`);
     for (const device of devices) {
       this.openController(device);
     }
@@ -816,10 +821,10 @@ class NativeGamepadTestServiceImpl {
     }
 
     if (failures.length > 0) {
-      this.pushLog(`native gamepad tester: rumble fallback failures ${failures.join("; ")}`);
+      this.pushLog(`native gamepad service: rumble fallback failures ${failures.join("; ")}`);
     }
     this.pushLog(
-      `native gamepad tester: rumble ${entry.deviceId} via ${succeededTargets.join(
+      `native gamepad service: rumble ${entry.deviceId} via ${succeededTargets.join(
         "+"
       )} low=${low.toFixed(2)} high=${high.toFixed(2)} duration=${durationMs}ms`
     );
@@ -839,6 +844,7 @@ class NativeGamepadTestServiceImpl {
     left?: unknown;
     right?: unknown;
     durationMs?: unknown;
+    suppressTransientErrors?: unknown;
   }) {
     const entry = this.getActiveEntry(data?.deviceId);
     if (!entry) {
@@ -848,31 +854,71 @@ class NativeGamepadTestServiceImpl {
     const left = clampUnit(data?.left ?? 1);
     const right = clampUnit(data?.right ?? 1);
     const durationMs = clampDurationMs(data?.durationMs);
-    const targets = this.getRumbleTargets(entry, "hasRumbleTriggers", "rumbleTriggers");
+    const suppressTransientErrors = data?.suppressTransientErrors !== false;
+    const targets = this.getRumbleTargets(entry, "hasRumbleTriggers", "rumbleTriggers").sort(
+      (a, b) => Number(b.name === "joystick") - Number(a.name === "joystick")
+    );
     if (targets.length < 1) {
       throw new Error("Selected native controller does not support trigger rumble.");
     }
 
     const failures: string[] = [];
+    const suppressedFailures: string[] = [];
     const succeededTargets: string[] = [];
     for (const { name, target } of targets) {
+      if (name === "controller" && succeededTargets.length > 0) {
+        continue;
+      }
+
       try {
         target.rumbleTriggers(left, right, durationMs);
         succeededTargets.push(name);
       } catch (error) {
-        failures.push(`${name}: ${this.describeCallError(error)}`);
+        const message = this.describeCallError(error);
+        const failure = `${name}: ${message}`;
+        if (suppressTransientErrors && this.isControllerCorrelationError(name, message)) {
+          suppressedFailures.push(failure);
+        } else {
+          failures.push(failure);
+        }
       }
     }
 
     if (succeededTargets.length < 1) {
+      if (failures.length < 1 && suppressedFailures.length > 0) {
+        this.pushLog(
+          `native gamepad service: trigger rumble suppressed transient failures ${suppressedFailures.join(
+            "; "
+          )}`
+        );
+
+        return {
+          ok: true,
+          suppressed: true,
+          deviceId: entry.deviceId,
+          targets: succeededTargets,
+          failures: suppressedFailures,
+          left,
+          right,
+          durationMs,
+        };
+      }
+
       throw new Error(`Native controller trigger rumble failed: ${failures.join("; ")}`);
     }
 
     if (failures.length > 0) {
-      this.pushLog(`native gamepad tester: trigger rumble fallback failures ${failures.join("; ")}`);
+      this.pushLog(`native gamepad service: trigger rumble fallback failures ${failures.join("; ")}`);
+    }
+    if (suppressedFailures.length > 0) {
+      this.pushLog(
+        `native gamepad service: trigger rumble suppressed transient failures ${suppressedFailures.join(
+          "; "
+        )}`
+      );
     }
     this.pushLog(
-      `native gamepad tester: trigger rumble ${entry.deviceId} via ${succeededTargets.join(
+      `native gamepad service: trigger rumble ${entry.deviceId} via ${succeededTargets.join(
         "+"
       )} left=${left.toFixed(2)} right=${right.toFixed(2)} duration=${durationMs}ms`
     );
@@ -888,4 +934,4 @@ class NativeGamepadTestServiceImpl {
   }
 }
 
-export const NativeGamepadTestService = new NativeGamepadTestServiceImpl();
+export const NativeGamepadService = new NativeGamepadServiceImpl();

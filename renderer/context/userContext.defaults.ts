@@ -27,6 +27,7 @@ export const defaultSettings = {
   dead_zone: 0.1,
   edge_compensation: 0,
   force_trigger_rumble: '',
+  swap_trigger_rumble: false,
   power_on: false,
   video_format: "",
   virtual_gamepad_opacity: 0.6,

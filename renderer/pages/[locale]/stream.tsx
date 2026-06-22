@@ -641,6 +641,7 @@ function Stream() {
       // Set vibration
       xPlayer.setVibration(settings.vibration);
       xPlayer.setVibrationMode(gamepadKernel === "Native" ? "Native" : "Webview");
+      (xPlayer as any).setSwapTriggerRumble?.(!!settings.swap_trigger_rumble);
 
       // Set deadzone
       xPlayer.setGamepadDeadZone(settings.dead_zone);

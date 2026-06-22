@@ -3,7 +3,7 @@ import { session } from "electron";
 import { clearStreamToken } from '../helpers/streamTokenStore';
 import { clearWebToken } from '../helpers/webTokenStore';
 import { defaultSettings } from "../../renderer/context/userContext.defaults";
-import { NativeGamepadTestService } from "../gamepad/nativeTestService";
+import { NativeGamepadService } from "../gamepad/nativeGamepadService";
 
 export default class IpcApp extends IpcBase {
   // _streamingSessions:any = {}
@@ -210,15 +210,15 @@ export default class IpcApp extends IpcBase {
   }
 
   startNativeGamepadTestSession() {
-    return Promise.resolve(NativeGamepadTestService.start());
+    return Promise.resolve(NativeGamepadService.start());
   }
 
   stopNativeGamepadTestSession() {
-    return Promise.resolve(NativeGamepadTestService.stop());
+    return Promise.resolve(NativeGamepadService.stop());
   }
 
   getNativeGamepadTestSnapshot() {
-    return Promise.resolve(NativeGamepadTestService.getSnapshot());
+    return Promise.resolve(NativeGamepadService.getSnapshot());
   }
 
   triggerNativeGamepadTestRumble(data: {
@@ -227,7 +227,7 @@ export default class IpcApp extends IpcBase {
     high?: unknown;
     durationMs?: unknown;
   }) {
-    return Promise.resolve(NativeGamepadTestService.rumble(data || {}));
+    return Promise.resolve(NativeGamepadService.rumble(data || {}));
   }
 
   triggerNativeGamepadTestTriggerRumble(data: {
@@ -235,7 +235,8 @@ export default class IpcApp extends IpcBase {
     left?: unknown;
     right?: unknown;
     durationMs?: unknown;
+    suppressTransientErrors?: unknown;
   }) {
-    return Promise.resolve(NativeGamepadTestService.rumbleTriggers(data || {}));
+    return Promise.resolve(NativeGamepadService.rumbleTriggers(data || {}));
   }
 }

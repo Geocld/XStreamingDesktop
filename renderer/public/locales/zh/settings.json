@@ -57,6 +57,8 @@
   "All": "全部",
   "Left trigger": "左扳机",
   "Right trigger": "右扳机",
+  "Swap trigger rumble": "扳机振动对调",
+  "swap_trigger_rumble_description": "当系统出现左右扳机振动相反时，开启后会对调左右扳机振动输出",
   "Ipv6": "Ipv6",
   "Prioritize using IPv6 connection": "优先使用Ipv6连接",
   "Signal server": "信令服务器",

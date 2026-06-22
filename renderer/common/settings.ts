@@ -279,6 +279,16 @@ const getSettingsMetas = (t) => {
         ],
       },
       {
+        name: 'swap_trigger_rumble',
+        type: 'radio',
+        title: t('Swap trigger rumble'),
+        description: t('swap_trigger_rumble_description'),
+        data: [
+          { value: false, label: t('Disable') },
+          { value: true, label: t('Enable') },
+        ],
+      },
+      {
         name: 'gamepad_mix',
         type: 'radio',
         title: t('Gamepad_mix_title'),
