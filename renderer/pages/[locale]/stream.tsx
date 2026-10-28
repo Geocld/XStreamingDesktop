@@ -178,7 +178,8 @@ function Stream() {
   const [connectState, setConnectState] = useState("");
   const [sessionId, setSessionId] = useState("");
   const [showPerformance, setShowPerformance] = useState(false);
-  const [showFailed, setShowFailed] = useState(false);
+  const [showConnectError, setShowConnectError] = useState(false);
+  const [connectErrorContent, setConnectErrorContent] = useState("");
   const [showWarning, setShowWarning] = useState(false);
   const [showDisplay, setShowDisplay] = useState(false);
   const [showFSRDisplay, setShowFSRDisplay] = useState(false);
@@ -212,6 +213,65 @@ function Stream() {
     cancelIndex?: number;
   }>({});
   const systemKeyboardTransactionRef = useRef<any>(null);
+  const leavingAfterErrorRef = useRef(false);
+
+  /**
+   * Show a blocking error and drop the loading overlay. The stream may not be
+   * usable anymore, so the only action offered is to go back.
+   */
+  const reportConnectError = useCallback((content: string) => {
+    setLoading(false);
+    setShowWarning(false);
+    setConnectErrorContent(content);
+    setShowConnectError(true);
+  }, []);
+
+  /**
+   * Leave the stream page and return to the previous page (console list /
+   * cloud games), releasing the failed session on the way out so the user can
+   * start a new stream right away.
+   */
+  const leaveStreamOnError = useCallback(() => {
+    if (leavingAfterErrorRef.current) {
+      return;
+    }
+    leavingAfterErrorRef.current = true;
+
+    setShowConnectError(false);
+    setConnectErrorContent("");
+    setShowWarning(false);
+    setLoading(false);
+
+    if (streamStateInterval.current) {
+      clearInterval(streamStateInterval.current);
+      streamStateInterval.current = null;
+    }
+
+    if (keepaliveInterval.current) {
+      clearInterval(keepaliveInterval.current);
+      keepaliveInterval.current = null;
+    }
+
+    if (xPlayer) {
+      try {
+        xPlayer.close();
+      } catch (error) {
+        console.log("Failed to close player after connection error:", error);
+      }
+    }
+
+    if (sessionId) {
+      try {
+        Ipc.send("streaming", "stopStream", { sessionId }).catch((error) => {
+          console.log("Failed to stop stream after connection error:", error);
+        });
+      } catch (error) {
+        console.log("Failed to stop stream after connection error:", error);
+      }
+    }
+
+    router.back();
+  }, [router, sessionId, xPlayer]);
 
   const closeSystemMessageModal = () => {
     setShowSystemMessageModal(false);
@@ -727,9 +787,11 @@ function Stream() {
 
       xPlayer.setConnectFailHandler(() => {
         // Not connected
-        setShowWarning(false);
-        setShowFailed(true);
-        setLoading(false);
+        reportConnectError(
+          t(
+            "NAT failed. If you are trying to stream remotely, please ensure that you have a public IPV4/6 address and that your router has port forwarding enabled for ports 9002/3074."
+          )
+        );
       });
 
       xPlayer.setSdpHandler((client, offer) => {
@@ -742,7 +804,15 @@ function Stream() {
           })
           .catch((error) => {
             console.log("ChatSDP Exchange error:", error);
-            alert("ChatSDP Exchange error:" + JSON.stringify(error));
+            if (connectStateRef.current === "connected") {
+              // The stream is already running, a chat renegotiation failure
+              // should not tear it down.
+              alert("ChatSDP Exchange error:" + JSON.stringify(error));
+            } else {
+              reportConnectError(
+                "ChatSDP Exchange error: " + JSON.stringify(error)
+              );
+            }
           });
       });
       xPlayer.setSystemUiHandler(handleSystemUiEvent);
@@ -791,9 +861,15 @@ function Stream() {
           })
           .catch((error) => {
             console.log("SDP Exchange error:", error);
-            alert("SDP Exchange error:" + JSON.stringify(error));
+            reportConnectError("SDP Exchange error: " + JSON.stringify(error));
           });
-      });
+      })
+        .catch((error) => {
+          console.log("Create offer error:", error);
+          reportConnectError(
+            "Failed to create offer. Error details:\n" + JSON.stringify(error)
+          );
+        });
 
       xPlayer.getEventBus().on("connectionstate", (event) => {
         console.log("connectionstate changed:", event);
@@ -912,7 +988,7 @@ function Stream() {
           setSessionId(result);
         })
         .catch((error) => {
-          alert(
+          reportConnectError(
             "Failed to start new stream. Error details:\n" +
               JSON.stringify(error)
           );
@@ -966,45 +1042,33 @@ function Stream() {
                   );
                   break;
 
-                case "failed":
+                case "failed": {
                   // Error
                   clearInterval(streamStateInterval.current);
+                  streamStateInterval.current = null;
 
-                  if (
-                    session.errorDetails.message.includes('WaitingForServerToRegister')
-                  ) {
+                  const errorMessage = session.errorDetails?.message || "";
+                  let errorContent = "";
+
+                  if (errorMessage.includes("WaitingForServerToRegister")) {
                     // Detected the "WaitingForServerToRegister" error. This means the console is not connected to the xbox servers
-                    alert(
-                      t('WaitingForServerToRegister') +
-                        "Stream error result: " +
-                        session.state +
-                        "\nDetails: [" +
-                        session.errorDetails.code +
-                        "] " +
-                        session.errorDetails.message
-                    );
-                  } else if (session.errorDetails.message.includes('xboxstreaminghelper.cpp')) {
-                    alert(
-                      t('XboxstreaminghelperErr') +
-                        "Stream error result: " +
-                        session.state +
-                        "\nDetails: [" +
-                        session.errorDetails.code +
-                        "] " +
-                        session.errorDetails.message
-                    );
-                  } else {
-                    alert(
-                      "Stream error result: " +
-                        session.state +
-                        "\nDetails: [" +
-                        session.errorDetails.code +
-                        "] " +
-                        session.errorDetails.message
-                    );
+                    errorContent = t("WaitingForServerToRegister") + "\n";
+                  } else if (errorMessage.includes("xboxstreaminghelper.cpp")) {
+                    errorContent = t("XboxstreaminghelperErr") + "\n";
                   }
+
+                  errorContent +=
+                    "Stream error result: " +
+                    session.state +
+                    "\nDetails: [" +
+                    session.errorDetails?.code +
+                    "] " +
+                    errorMessage;
+
                   console.log("Full stream error:", session.errorDetails);
+                  reportConnectError(errorContent);
                   break;
+                }
 
                 case "queued":
                   setLoadingText(formatQueueData())
@@ -1012,7 +1076,11 @@ function Stream() {
               }
             })
             .catch((error) => {
-              alert(
+              if (streamStateInterval.current) {
+                clearInterval(streamStateInterval.current);
+                streamStateInterval.current = null;
+              }
+              reportConnectError(
                 "Failed to get player state. Error details:\n" +
                   JSON.stringify(error)
               );
@@ -1041,7 +1109,16 @@ function Stream() {
       window.removeEventListener("mousedown", mouseEvent);
       window.removeEventListener('keydown', escEvent)
     };
-  }, [xPlayer, sessionId, t, router.query, settings, handleSystemUiEvent, handleStreamingMessage]);
+  }, [
+    xPlayer,
+    sessionId,
+    t,
+    router.query,
+    settings,
+    handleSystemUiEvent,
+    handleStreamingMessage,
+    reportConnectError,
+  ]);
 
   const getVideoPlayerFilterStyle = (options) => {
     const filters = [];
@@ -1267,11 +1344,10 @@ function Stream() {
       }
 
       <FailedModal
-        show={showFailed}
-        onCancel={() => {
-          setShowFailed(false);
-          onDisconnect();
-        }}
+        show={showConnectError}
+        content={connectErrorContent}
+        confirmText={t("Confirm")}
+        onCancel={leaveStreamOnError}
       />
 
       <WarningModal
