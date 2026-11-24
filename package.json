@@ -16,6 +16,8 @@
   },
   "dependencies": {
     "@heroui/react": "^2.8.1",
+    "@heroui/theme": "2.4.20",
+    "@heroui/toast": "2.0.14",
     "axios": "^1.7.7",
     "compare-versions": "^6.1.0",
     "debounce": "^2.1.1",
